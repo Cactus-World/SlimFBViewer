@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+	/**
+ * SlimFBViewer is an Open Source app realized by Cactus World Android Development <android@cactus-world.de> based on SlimFacebook by Leonardo Rignanese <rignanese.leo@gmail.com>
+ * GNU GENERAL PUBLIC LICENSE  Version 2, June 1991
+ * GITHUB: https://github.com/cactus_world/SlimFBViewer
+ */
+-->
+<resources>
+	<string name="fixComposeMessageAbort" translatable="false">
+        javascript:function fixComposeMessageAbort(){
+        var a=(document.
+    </string>
+    <string name="editCss" translatable="false">
+		javascript:function addStyle(css) {
+		var node = document.createElement(\'style\');
+		node.innerHTML = css;
+        document.body.appendChild(node);
+		}
+		addStyle(\'$css\');
+	</string>
+    <string name="fixMessages" translatable="false">
+		javascript:function fixMessages() {
+		var a=(document.querySelectorAll(\'#messages_jewel ._19no.touchable\'))[0];
+        a.href=\'https://slimsocial.leo\';
+        a.setAttribute(\'data-autoid\',\'\');
+		}
+		fixMessages();
+</string>
+
+    <string name="hideHeaderFooterMessages" translatable="false">
+		javascript: function hideHeaderFooterMessages(){
+	var divs = document.getElementById(\'viewport\').children;
+	for(var i = 0; i &#60; divs.length; i++) {
+		if(divs[i].id != \'objects_container\')
+		divs[i].style.display=\'none\';
+	}
+}
+hideHeaderFooterMessages();
+</string>
+
+</resources>
