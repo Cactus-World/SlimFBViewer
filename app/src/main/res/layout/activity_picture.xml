@@ -47,7 +47,7 @@ tools:context="de.cactus_world.SlimFBViewer.PictureActivity">
     app:layout_constraintTop_toBottomOf="@id/appBarLayout">
 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-<de.cactus_world.leo.SlimFBViewer.utility.MyAdvancedWebView
+<de.cactus_world.SlimFBViewer.utility.MyAdvancedWebView
     android:id="@+id/webViewPicture"
     android:layout_width="match_parent"
     android:layout_height="match_parent"

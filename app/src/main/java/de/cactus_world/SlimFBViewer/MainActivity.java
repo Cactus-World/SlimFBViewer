@@ -132,7 +132,7 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
 
         public WebResourceRetrievalResponse() {
             this.webResourceRetrievalType = null;
-            this.webResourceContentEncoding=null;
+            this.webResourceContentEncoding = null;
             this.webResourceRetrievalContent = null;
             this.webResourceRetrievalHeaders = new HashMap();
             this.webResourceRetrievalByteContent = null;
@@ -154,7 +154,7 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
             this.setWebResourceRetrievalHeaders(responseHeaders);
         }
 
-        public WebResourceRetrievalResponse(String type,String encoding, int statusCode, String statusReason, Map responseHeaders) {
+        public WebResourceRetrievalResponse(String type, String encoding, int statusCode, String statusReason, Map responseHeaders) {
             this.setWebResourceRetrievalType(type);
             this.setWebResourceContentEncoding(encoding);
             this.setWebResourceRetrievalContent(null);
@@ -162,8 +162,9 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
             this.setWebResourceRetrievalStatusReason(statusReason);
             this.setWebResourceRetrievalHeaders(responseHeaders);
             this.webResourceRetrievalByteContent = null;
-            }
-        public WebResourceRetrievalResponse(String type,String encoding, int statusCode, String statusReason, Map responseHeaders, String content) {
+        }
+
+        public WebResourceRetrievalResponse(String type, String encoding, int statusCode, String statusReason, Map responseHeaders, String content) {
             this.setWebResourceRetrievalType(type);
             this.setWebResourceContentEncoding(encoding);
             this.setWebResourceRetrievalContent(content);
@@ -327,65 +328,66 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
 
 
     private WebResourceRetrievalResponse getWebResourceFromServer(Uri url, String method, Map<String, String> params) {
-        ByteArrayInputStream byteArrayInputStream = null;
-        HttpURLConnection httpURLConnection = null;
-        BufferedReader bufferedReader = null;
-        android.webkit.CookieManager cookieManager = CookieManager.getInstance();
-        //CookieHandler.setDefault(this.cookieManager);
+        {
+            ByteArrayInputStream byteArrayInputStream = null;
 
-        if (isInternetAvailable()) {
-            try {
-                httpURLConnection = (HttpURLConnection) (new URL(url.toString())).openConnection();
-                httpURLConnection.setRequestProperty("user-agent", "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36");
-                httpURLConnection.setUseCaches(true);
-                httpURLConnection.setDoInput(true);
-                httpURLConnection.setRequestMethod(method);
-                String cookieString = cookieManager.getCookie(url.toString());
-                if (method.equals("POST")) {
-                    httpURLConnection.setDoOutput(true);
-                    try {
-                        BufferedOutputStream outputStream = new BufferedOutputStream(httpURLConnection.getOutputStream());
-                        BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
+            HttpURLConnection httpURLConnection = null;
+            BufferedReader bufferedReader = null;
+            android.webkit.CookieManager cookieManager = CookieManager.getInstance();
+            //CookieHandler.setDefault(this.cookieManager);
+
+            if (isInternetAvailable()) {
+                try {
+                    httpURLConnection = (HttpURLConnection) (new URL(url.toString())).openConnection();
+                    httpURLConnection.setRequestProperty("user-agent", "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36");
+                    httpURLConnection.setUseCaches(true);
+                    httpURLConnection.setDoInput(true);
+                    httpURLConnection.setRequestMethod(method);
+                    String cookieString = cookieManager.getCookie(url.toString());
+                    if (method.equals("POST")) {
+                        httpURLConnection.setDoOutput(true);
+                        try {
+                            BufferedOutputStream outputStream = new BufferedOutputStream(httpURLConnection.getOutputStream());
+                            BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
+                            Set paramList = params.keySet();
+                            Boolean firstArgumentSet = false;
+                            for (Object key : paramList) {
+                                if (((String) key).equals("X-XSRF-TOKEN")) {
+                                    httpURLConnection.addRequestProperty("X-XSRF-TOKEN", (String) params.get(key));
+                                }
+                                if (firstArgumentSet) {
+                                    bufferedWriter.write("&" + (String) key + "=" + (String) params.get(key));
+                                } else {
+                                    bufferedWriter.write((String) key + "=" + (String) params.get(key));
+                                    firstArgumentSet = true;
+                                }
+
+                            }
+                            if (cookieString != null && !cookieString.isEmpty()) {
+                                bufferedWriter.write("&Cookie=" + cookieString);
+                            }
+                            bufferedWriter.flush();
+                            bufferedWriter.close();
+                            outputStream.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        httpURLConnection.addRequestProperty("Cookie", cookieString);
                         Set paramList = params.keySet();
-                        Boolean firstArgumentSet = false;
                         for (Object key : paramList) {
-                            if (((String) key).equals("X-XSRF-TOKEN"))
-                            {
-                                httpURLConnection.addRequestProperty("X-XSRF-TOKEN",(String)params.get(key));
-                            }
-                            if (firstArgumentSet) {
-                                bufferedWriter.write("&" + (String) key + "=" + (String) params.get(key));
-                            } else {
-                                bufferedWriter.write((String) key + "=" + (String) params.get(key));
-                                firstArgumentSet = true;
-                            }
-
+                            httpURLConnection.setRequestProperty((String) key, (String) params.get(key));
                         }
-                        if (cookieString != null && !cookieString.isEmpty()) {
-                            bufferedWriter.write("&Cookie=" + cookieString);
-                        }
-                        bufferedWriter.flush();
-                        bufferedWriter.close();
-                        outputStream.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
                     }
-                } else {
-                    httpURLConnection.addRequestProperty("Cookie", cookieString);
-                    Set paramList = params.keySet();
-                    for (Object key : paramList) {
-                        httpURLConnection.setRequestProperty((String) key, (String) params.get(key));
+                    httpURLConnection.connect();
+                    if (httpURLConnection.getHeaderField("Set-Cookie") != null) {
+                        cookieManager.setCookie(url.toString(), httpURLConnection.getHeaderField("Set-Cookie"));
                     }
-                }
-                httpURLConnection.connect();
-                if (httpURLConnection.getHeaderField("Set-Cookie") != null) {
-                    cookieManager.setCookie(url.toString(), httpURLConnection.getHeaderField("Set-Cookie"));
-                }
-                List<String> setCookie = httpURLConnection.getHeaderFields().get("set-cookie");
-                int responseCode = httpURLConnection.getResponseCode();
-                String responseMessage = httpURLConnection.getResponseMessage();
-                //StringBuilder test= new StringBuilder();
-                Map<String, List<String>> responseHeaders = httpURLConnection.getHeaderFields();
+                    List<String> setCookie = httpURLConnection.getHeaderFields().get("set-cookie");
+                    int responseCode = httpURLConnection.getResponseCode();
+                    String responseMessage = httpURLConnection.getResponseMessage();
+                    //StringBuilder test= new StringBuilder();
+                    Map<String, List<String>> responseHeaders = httpURLConnection.getHeaderFields();
                 /*for (Map.Entry<String, List<String>> responseHeader :responseHeaders.entrySet())
                 {
                     if (responseHeader.getKey()==null)
@@ -406,67 +408,68 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
                     test.append("\n");
                 }
 */
-                //String test = httpURLConnection.getRequestMethod();
-                InputStream inputStream = httpURLConnection.getInputStream();
+                    //String test = httpURLConnection.getRequestMethod();
+                    InputStream inputStream = httpURLConnection.getInputStream();
 
-                if (!((String) ((List<String>) responseHeaders.get("Content-Type")).get(0)).contains("image")) {
-                    bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-                    StringBuffer buffer = new StringBuffer();
-                    String line = "";
+                    if (!((String) ((List<String>) responseHeaders.get("Content-Type")).get(0)).contains("image")) {
+                        bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+                        StringBuffer buffer = new StringBuffer();
+                        String line = "";
 
-                    while ((line = bufferedReader.readLine()) != null) {
-                        buffer.append(line + "\n");
-                        Log.d("Response: ", "> " + line);   //here u ll get whole response...... :-)
+                        while ((line = bufferedReader.readLine()) != null) {
+                            buffer.append(line + "\n");
+                            Log.d("Response: ", "> " + line);   //here u ll get whole response...... :-)
 
+                        }
+
+                        int i = responseHeaders.get("Content-Type").get(0).indexOf("charset=");
+                        String contentEncoding = (httpURLConnection.getContentEncoding() != null) ? httpURLConnection.getContentEncoding() : ((String) responseHeaders.get("Content-Type").get(0)).substring(responseHeaders.get("Content-Type").get(0).indexOf("charset=") + 8);
+                        contentEncoding = i >= 0 ? contentEncoding : "chunked";
+                        return new WebResourceRetrievalResponse(httpURLConnection.getContentType(), contentEncoding, httpURLConnection.getResponseCode(), httpURLConnection.getResponseMessage(), responseHeaders, buffer.toString());
+                    } else {
+                        int i = responseHeaders.get("Content-Type").get(0).indexOf("charset=");
+                        String contentEncoding = (httpURLConnection.getContentEncoding() != null) ? httpURLConnection.getContentEncoding() : ((String) responseHeaders.get("Content-Type").get(0)).substring(responseHeaders.get("Content-Type").get(0).indexOf("charset=") + 8);
+                        contentEncoding = i >= 0 ? contentEncoding : "chunked";
+                        WebResourceRetrievalResponse webResourceRetrievalResponse = new WebResourceRetrievalResponse(httpURLConnection.getContentType(), contentEncoding, httpURLConnection.getResponseCode(), httpURLConnection.getResponseMessage(), responseHeaders);
+                        byte[] inputBytes = new byte[1000];
+                        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                        ArrayList<Byte> byteArrayList = new ArrayList<Byte>();
+                        int bytesRead = -1;
+                        while ((bytesRead = inputStream.read(inputBytes, 0, inputBytes.length)) != -1) {
+                            byteArrayOutputStream.write(inputBytes, 0, bytesRead);
+                        }
+
+                        webResourceRetrievalResponse.setWebResourceRetrievalByteContent(byteArrayOutputStream.toByteArray());
+                        try {
+                            if (byteArrayOutputStream != null)
+                                byteArrayOutputStream.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        return webResourceRetrievalResponse;
                     }
-
-                    int i = responseHeaders.get("Content-Type").get(0).indexOf("charset=");
-                    String contentEncoding = (httpURLConnection.getContentEncoding() != null) ? httpURLConnection.getContentEncoding() : ((String) responseHeaders.get("Content-Type").get(0)).substring(responseHeaders.get("Content-Type").get(0).indexOf("charset=") + 8);
-                    contentEncoding = i>=0 ? contentEncoding : "chunked";
-                    return new WebResourceRetrievalResponse(httpURLConnection.getContentType(),contentEncoding, httpURLConnection.getResponseCode(), httpURLConnection.getResponseMessage(), responseHeaders, buffer.toString());
-                } else {
-                    int i = responseHeaders.get("Content-Type").get(0).indexOf("charset=");
-                    String contentEncoding = (httpURLConnection.getContentEncoding() != null) ? httpURLConnection.getContentEncoding() : ((String) responseHeaders.get("Content-Type").get(0)).substring(responseHeaders.get("Content-Type").get(0).indexOf("charset=") + 8);
-                    contentEncoding = i>=0 ? contentEncoding : "chunked";
-                    WebResourceRetrievalResponse webResourceRetrievalResponse = new WebResourceRetrievalResponse(httpURLConnection.getContentType(),contentEncoding, httpURLConnection.getResponseCode(), httpURLConnection.getResponseMessage(), responseHeaders);
-                    byte[] inputBytes = new byte[1000];
-                    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                    ArrayList<Byte> byteArrayList = new ArrayList<Byte>();
-                    int bytesRead = -1;
-                    while ((bytesRead = inputStream.read(inputBytes, 0, inputBytes.length)) != -1) {
-                        byteArrayOutputStream.write(inputBytes, 0, bytesRead);
+                } catch (Exception e) {
+                    //Something went wrong
+                    e.printStackTrace();
+                } finally {
+                    if (httpURLConnection != null) {
+                        httpURLConnection.disconnect();
                     }
-
-                    webResourceRetrievalResponse.setWebResourceRetrievalByteContent(byteArrayOutputStream.toByteArray());
                     try {
-                        if (byteArrayOutputStream != null)
-                            byteArrayOutputStream.close();
+                        if (bufferedReader != null)
+                            bufferedReader.close();
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                    return webResourceRetrievalResponse;
-                }
-            } catch (Exception e) {
-                //Something went wrong
-                e.printStackTrace();
-            } finally {
-                if (httpURLConnection != null) {
-                    httpURLConnection.disconnect();
-                }
-                try {
-                    if (bufferedReader != null)
-                        bufferedReader.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
                 }
             }
+            return null;
         }
-        return null;
     }
 
     private WebResourceResponse getCssWebResourceResponseFromAsset(String assetName) {
         try {
-            return getUtf8EncodedCssWebResourceResponse(getAssets().open("style/"+assetName));
+            return getUtf8EncodedCssWebResourceResponse(getAssets().open("style/" + assetName));
         } catch (IOException e) {
             return null;
         }
@@ -480,8 +483,8 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
         return new WebResourceResponse("text/html", "UTF-8", data);
     }
 
-    private WebResourceResponse getUtf8EncodedWebResourceResponse(String type,String encoding, InputStream data) {
-        if (encoding != null ) {
+    private WebResourceResponse getUtf8EncodedWebResourceResponse(String type, String encoding, InputStream data) {
+        if (encoding != null) {
             return new WebResourceResponse(type, encoding, data);
         } else {
             return new WebResourceResponse(type, "UTF-8", data);
@@ -696,39 +699,42 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
             @Override
             public void onLoadResource(WebView view, String url) {
 
-                    if (url.contains(getString(R.string.urlFacebookMobileMessages))) {
-                        WebResourceRetrievalResponse webResourceRetrievalResponse = getWebResourceFromServer(Uri.parse(url), "GET", new HashMap<String, String>());
-                        view.loadData(webResourceRetrievalResponse.webResourceRetrievalContent, webResourceRetrievalResponse.webResourceRetrievalType,webResourceRetrievalResponse.webResourceContentEncoding);
-
-                    }else if (url.contains(getString(R.string.urlFacebookMobileSearch)))
-                    {
-                        WebResourceRetrievalResponse webResourceRetrievalResponse = getWebResourceFromServer(Uri.parse(url),"GET",new HashMap<String, String>());
-                        if (webResourceRetrievalResponse != null && webResourceRetrievalResponse.getWebResourceRetrievalType().contains("text")) {
-                            //Pattern pattern = Pattern.compile("\\._52z5\\{([^}]*)\\}");
-                            Pattern pattern = Pattern.compile("(<div.*?data-sigil=\\\"MTopBlueBarHeader\\\"[^>]*)>");
-                            Matcher matcher = pattern.matcher(webResourceRetrievalResponse.getWebResourceRetrievalContent());
-                            StringBuffer newWebResponse = new StringBuffer();
-                            while (matcher.find()) {
-                                //matcher.appendReplacement(newCSSResponse, "._52z5{display: none;" + matcher.group(1) + "}");
-                                matcher.appendReplacement(newWebResponse, matcher.group(1) + " style=\"display:none;\"" + ">");
-                                //matcher.appendReplacement(newWebResponse,matcher.group(1)+">");
-                            }
-                            matcher.appendTail(newWebResponse);
-                            webResourceRetrievalResponse.webResourceRetrievalContent = newWebResponse.toString();
-                            view.loadData(webResourceRetrievalResponse.webResourceRetrievalContent, webResourceRetrievalResponse.webResourceRetrievalType, webResourceRetrievalResponse.webResourceContentEncoding);
-                        }
-                    }else {
-                        WebResourceRetrievalResponse webResourceRetrievalResponse = getWebResourceFromServer(Uri.parse(url),"GET",new HashMap<String, String>());
-                        if (false && webResourceRetrievalResponse != null && webResourceRetrievalResponse.webResourceRetrievalContent != null && webResourceRetrievalResponse.webResourceRetrievalContent.contains("MTopBlueBarHeader")) {
-                            webResourceRetrievalResponse.webResourceRetrievalContent = webResourceRetrievalResponse.webResourceRetrievalContent.replace("function Y(){!D&&E&&(D=b(\"DOM\").scry(E,\"*\",\"MTopBlueBarHeader\")[0]);return D||null}", "");
-                            view.loadData(webResourceRetrievalResponse.webResourceRetrievalContent, webResourceRetrievalResponse.webResourceRetrievalType, webResourceRetrievalResponse.webResourceContentEncoding);
-                        }else {
-                            super.onLoadResource(view, url);
-                        }
-
-
+                if (url.contains(getString(R.string.urlFacebookMobileMessages))) {
+                    WebResourceRetrievalResponse webResourceRetrievalResponse = getWebResourceFromServer(Uri.parse(url), "GET", new HashMap<String, String>());
+                    if (webResourceRetrievalResponse != null) {
+                        view.loadData(webResourceRetrievalResponse.webResourceRetrievalContent, webResourceRetrievalResponse.webResourceRetrievalType, webResourceRetrievalResponse.webResourceContentEncoding);
+                    } else {
+                        super.onLoadResource(view, url);
                     }
+
+                } else if (url.contains(getString(R.string.urlFacebookMobileSearch))) {
+                    WebResourceRetrievalResponse webResourceRetrievalResponse = getWebResourceFromServer(Uri.parse(url), "GET", new HashMap<String, String>());
+                    if (webResourceRetrievalResponse != null && webResourceRetrievalResponse.getWebResourceRetrievalType().contains("text")) {
+                        //Pattern pattern = Pattern.compile("\\._52z5\\{([^}]*)\\}");
+                        Pattern pattern = Pattern.compile("(<div.*?data-sigil=\\\"MTopBlueBarHeader\\\"[^>]*)>");
+                        Matcher matcher = pattern.matcher(webResourceRetrievalResponse.getWebResourceRetrievalContent());
+                        StringBuffer newWebResponse = new StringBuffer();
+                        while (matcher.find()) {
+                            //matcher.appendReplacement(newCSSResponse, "._52z5{display: none;" + matcher.group(1) + "}");
+                            matcher.appendReplacement(newWebResponse, matcher.group(1) + " style=\"display:none;\"" + ">");
+                            //matcher.appendReplacement(newWebResponse,matcher.group(1)+">");
+                        }
+                        matcher.appendTail(newWebResponse);
+                        webResourceRetrievalResponse.webResourceRetrievalContent = newWebResponse.toString();
+                        view.loadData(webResourceRetrievalResponse.webResourceRetrievalContent, webResourceRetrievalResponse.webResourceRetrievalType, webResourceRetrievalResponse.webResourceContentEncoding);
+                    }
+                } else {
+                    WebResourceRetrievalResponse webResourceRetrievalResponse = getWebResourceFromServer(Uri.parse(url), "GET", new HashMap<String, String>());
+                    if (false && webResourceRetrievalResponse != null && webResourceRetrievalResponse.webResourceRetrievalContent != null && webResourceRetrievalResponse.webResourceRetrievalContent.contains("MTopBlueBarHeader")) {
+                        webResourceRetrievalResponse.webResourceRetrievalContent = webResourceRetrievalResponse.webResourceRetrievalContent.replace("function Y(){!D&&E&&(D=b(\"DOM\").scry(E,\"*\",\"MTopBlueBarHeader\")[0]);return D||null}", "");
+                        view.loadData(webResourceRetrievalResponse.webResourceRetrievalContent, webResourceRetrievalResponse.webResourceRetrievalType, webResourceRetrievalResponse.webResourceContentEncoding);
+                    } else {
+                        super.onLoadResource(view, url);
+                    }
+
+
                 }
+            }
 
 
             public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
@@ -811,25 +817,23 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
                 String url = webResourceRequest.getUrl().toString();
                 if (savedPreferences.getBoolean("pref_noBar", true)) {
                     //if (url.contains("home.php") && !url.contains(".css") && !url.contains(".js")) {
-                    if (url.contains(getString(R.string.urlFacebookMobileMessagesComposer)))
-                    {
+                    if (url.contains(getString(R.string.urlFacebookMobileMessagesComposer))) {
                         //doUpdateVisitedHistory(webView,getString(R.string.urlFacebookMobileMessages),false);
                     }
-                    if (webResourceRequest.getUrl().toString().contains("login") && ! savedPreferences.getBoolean("hasRun",false))
-                    {
+                    if (webResourceRequest.getUrl().toString().contains("login") && !savedPreferences.getBoolean("hasRun", false)) {
                         SharedPreferences.Editor sharedPreferencesEditor = savedPreferences.edit();
-                        sharedPreferencesEditor.putBoolean("hasRun",true);
+                        sharedPreferencesEditor.putBoolean("hasRun", true);
                         sharedPreferencesEditor.commit();
                     }
-                    if (webResourceRequest.getMethod().equals("GET") && savedPreferences.getBoolean("hasRun",false)) {
-                    //if (webResourceRequest.isForMainFrame()) {
+                    if (webResourceRequest.getMethod().equals("GET") && savedPreferences.getBoolean("hasRun", false)) {
+                        //if (webResourceRequest.isForMainFrame()) {
+
                         WebResourceRetrievalResponse webResourceRetrievalResponse = getWebResourceFromServer(webResourceRequest.getUrl(), webResourceRequest.getMethod(), webResourceRequest.getRequestHeaders());
                         //ByteArrayInputStream css = new ByteArrayInputStream(getString(R.string.jT1iNd9vJ_t_css).getBytes());
                         Object webResourceRRequest;
                         ByteArrayInputStream webResponse = null;
 
-                        if (webResourceRetrievalResponse != null && url.contains(getString(R.string.urlFacebookMobileMessages)))
-                        {
+                        if (webResourceRetrievalResponse != null && url.contains(getString(R.string.urlFacebookMobileMessages))) {
                             Pattern pattern = Pattern.compile("(<div.*?data-sigil=\\\"MTopBlueBarHeader\\\"[^>]*)>");
                             Matcher matcher = pattern.matcher(webResourceRetrievalResponse.getWebResourceRetrievalContent());
                             StringBuffer newWebResponse = new StringBuffer();
@@ -844,7 +848,8 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
                         /*if (webResourceRetrievalResponse != null && webResourceRetrievalResponse.webResourceRetrievalContent != null && webResourceRetrievalResponse.webResourceRetrievalContent.contains("MTopBlueBarHeader")) {
                             webResourceRetrievalResponse.webResourceRetrievalContent = webResourceRetrievalResponse.webResourceRetrievalContent.replace("function Y(){!D&&E&&(D=b(\"DOM\").scry(E,\"*\",\"MTopBlueBarHeader\")[0]);return D||null}", "");
                         }
-                        */if (webResourceRetrievalResponse != null && webResourceRetrievalResponse.getWebResourceRetrievalType().contains("text")) {
+                        */
+                        if (webResourceRetrievalResponse != null && webResourceRetrievalResponse.getWebResourceRetrievalType().contains("text")) {
                             //Pattern pattern = Pattern.compile("\\._52z5\\{([^}]*)\\}");
 
                             Pattern pattern = Pattern.compile("(<div.*?data-sigil=\\\"MTopBlueBarHeader\\\"[^>]*)>");
@@ -870,11 +875,11 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
                             }
                         } else if (webResourceRetrievalResponse != null && !webResourceRetrievalResponse.getWebResourceRetrievalType().contains("video")) {
 
-                            if (webResourceRetrievalResponse.getWebResourceRetrievalByteContent()!=null) {
+                            if (webResourceRetrievalResponse.getWebResourceRetrievalByteContent() != null) {
                                 int size = webResourceRetrievalResponse.getWebResourceRetrievalByteContent().length;
                                 byte[] bytes = webResourceRetrievalResponse.getWebResourceRetrievalByteContent();
                                 webResponse = new ByteArrayInputStream(bytes);
-                            }else{
+                            } else {
                                 try {
                                     webResponse = new ByteArrayInputStream(webResourceRetrievalResponse.getWebResourceRetrievalContent().getBytes("UTF-8"));
                                 } catch (UnsupportedEncodingException e) {
@@ -882,8 +887,8 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
                                 }
                             }
 
-                        }else if (webResourceRetrievalResponse!= null && webResourceRetrievalResponse.getWebResourceRetrievalType().contains("video"))
-                            return super.shouldInterceptRequest(webView,webResourceRequest);
+                        } else if (webResourceRetrievalResponse != null && webResourceRetrievalResponse.getWebResourceRetrievalType().contains("video"))
+                            return super.shouldInterceptRequest(webView, webResourceRequest);
 
                         WebResourceResponse webResourceResponse = null;
 
@@ -915,7 +920,7 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
                                 responseHeaders.put("timing-allow-origin", "*");
                             }*/
                         if (webResponse != null) {
-                            webResourceResponse = getUtf8EncodedWebResourceResponse(webResourceRetrievalResponse.getWebResourceRetrievalType(),webResourceRetrievalResponse.getWebResourceContentEncoding(), webResponse);
+                            webResourceResponse = getUtf8EncodedWebResourceResponse(webResourceRetrievalResponse.getWebResourceRetrievalType(), webResourceRetrievalResponse.getWebResourceContentEncoding(), webResponse);
                         }
                         if (webResourceResponse != null) {
                             webResourceResponse.setResponseHeaders(responseHeaders);
@@ -1123,8 +1128,8 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
             //open the activity to show the pic
             startActivity(new Intent(this, PictureActivity.class).putExtra("URL", url));
         }
-        if (url.contains(getString(R.string.urlFacebookMobileMessages))){
-            webViewFacebook.getWebViewClient().doUpdateVisitedHistory(webViewFacebook,url,false);
+        if (url.contains(getString(R.string.urlFacebookMobileMessages))) {
+            webViewFacebook.getWebViewClient().doUpdateVisitedHistory(webViewFacebook, url, false);
         }
         //webViewFacebook.loadUrl(url);
         //ApplyCustomCss();
