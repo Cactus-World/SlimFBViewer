@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="it.rignanese.leo.slimfacebook.de.rignanese.leo.slimfacebook.MainActivity">
+    tools:context="de.cactus_world.SlimFBViewer.MainActivity">
     <item
         android:id="@+id/home"
         android:icon="@drawable/home"

@@ -20,14 +20,14 @@
                 android:action="android.intent.action.VIEW"
                 android:data="https://github.com/rignaneseleo/SlimSocial-for-Facebook" />
         </PreferenceScreen>
-        <PreferenceScreen
+        <!--<PreferenceScreen
             android:key="pref_SaschaHa"
             android:summary="@string/summary_SaschaHa"
             android:title="SaschaHa">
             <intent
                 android:action="android.intent.action.VIEW"
                 android:data="https://www.facebook.com/SaschaHa-Apps-658340960897111/" />
-        </PreferenceScreen>
+        </PreferenceScreen>-->
         <PreferenceScreen
             android:key="pref_delight.im"
             android:summary="@string/summary_AdvancedWebView"
@@ -143,7 +143,7 @@
             android:title="Subscribe/Unsubscribe the BETA">
             <intent
                 android:action="android.intent.action.VIEW"
-                android:data="https://play.google.com/apps/testing/it.rignanese.leo.slimfacebook" />
+                android:data="https://play.google.com/apps/testing/de.cactus_world.SlimFBViewer" />
         </PreferenceScreen>
     </PreferenceCategory>
 

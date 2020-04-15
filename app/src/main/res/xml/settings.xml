@@ -2,48 +2,48 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceCategory android:title="@string/prefCat_fb_settings_title">
 
-        <de.cactus_world.leo.SlimFBViewer.utils.SwitchWithoutBugs
+        <de.cactus_world.SlimFBViewer.utils.SwitchWithoutBugs
             android:defaultValue="false"
             android:key="pref_recentNewsFirst"
             android:summary="@string/summary_recentNewsFirst"
             android:title="@string/title_recentNewsFirst" />
 
-        <de.cactus_world.leo.SlimFBViewer.utils.SwitchWithoutBugs
+        <de.cactus_world.SlimFBViewer.utils.SwitchWithoutBugs
             android:defaultValue="false"
             android:key="pref_centerTextPosts"
             android:summary="@string/summary_centerTextPosts"
             android:title="@string/title_centerTextPosts" />
 
-        <de.cactus_world.leo.SlimFBViewer.utils.SwitchWithoutBugs
+        <de.cactus_world.SlimFBViewer.utils.SwitchWithoutBugs
             android:defaultValue="false"
             android:key="pref_addSpaceBetweenPosts"
             android:summary="@string/summary_addSpaceBetweenPosts"
             android:title="@string/title_addSpaceBetweenPosts" />
 
-        <de.cactus_world.leo.SlimFBViewer.utils.SwitchWithoutBugs
+        <de.cactus_world.SlimFBViewer.utils.SwitchWithoutBugs
             android:defaultValue="false"
             android:key="pref_fixedBar"
             android:summary="@string/summary_fixedBar"
             android:title="@string/title_fixedBar" />
-        <de.cactus_world.leo.SlimFBViewer.utils.SwitchWithoutBugs
+        <de.cactus_world.SlimFBViewer.utils.SwitchWithoutBugs
             android:defaultValue="true"
             android:key="pref_noBar"
             android:summary="@string/summary_noBar"
             android:title="@string/title_noBar" />
 
-        <de.cactus_world.leo.SlimFBViewer.utils.SwitchWithoutBugs
+        <de.cactus_world.SlimFBViewer.utils.SwitchWithoutBugs
             android:defaultValue="false"
             android:key="pref_removeMessengerDownload"
             android:summary="@string/summary_removeMessengerDownload"
             android:title="@string/title_removeMessengerDownload" />
 
-        <de.cactus_world.leo.SlimFBViewer.utils.SwitchWithoutBugs
+        <de.cactus_world.SlimFBViewer.utils.SwitchWithoutBugs
             android:defaultValue="false"
             android:key="pref_hideSponsoredPosts"
             android:summary="@string/summary_hideSponsoredPosts"
             android:title="@string/title_hideSponsoredPosts" />
 
-        <!--<it.rignanese.leo.slimfacebook.utils.SwitchWithoutBugs
+        <!--<it.rignanese.slimfacebook.utils.SwitchWithoutBugs
             android:defaultValue="false"
             android:key="pref_useMessenger"
             android:summary="@string/summary_useMessenger"
@@ -69,7 +69,7 @@
     <PreferenceCategory android:title="@string/prefCat_app_settings_title">
 
 
-        <de.cactus_world.leo.SlimFBViewer.utils.SwitchWithoutBugs
+        <de.cactus_world.SlimFBViewer.utils.SwitchWithoutBugs
             android:defaultValue="false"
             android:key="pref_enableMessagesShortcut"
             android:summary="@string/summary_enableMessagesShortcut"
@@ -77,21 +77,21 @@
 
 
         <!--Set the saving data -->
-        <de.cactus_world.leo.SlimFBViewer.utils.SwitchWithoutBugs
+        <de.cactus_world.SlimFBViewer.utils.SwitchWithoutBugs
             android:defaultValue="false"
 
             android:key="pref_doNotDownloadImages"
             android:summary="@string/summary_downloadImages"
             android:title="@string/title_downloadImages" />
 
-        <de.cactus_world.leo.SlimFBViewer.utils.SwitchWithoutBugs
+        <de.cactus_world.SlimFBViewer.utils.SwitchWithoutBugs
             android:defaultValue="true"
             android:key="pref_useSlimSocialSubfolderToDownloadedFiles"
             android:summary="@string/summary_useSlimSocialSubfolderToDownloadedFiles"
             android:title="@string/title_useSlimSocialSubfolderToDownloadedFiles" />
 
         <!--Allow Geolocation -->
-        <de.cactus_world.leo.SlimFBViewer.utils.SwitchWithoutBugs
+        <de.cactus_world.SlimFBViewer.utils.SwitchWithoutBugs
             android:defaultValue="true"
 
             android:key="pref_allowGeolocation"
@@ -99,7 +99,7 @@
             android:title="@string/title_allowGeolocation" />
 
         <!--Enable FastShare -->
-        <de.cactus_world.leo.SlimFBViewer.utils.SwitchWithoutBugs
+        <de.cactus_world.SlimFBViewer.utils.SwitchWithoutBugs
             android:defaultValue="true"
 
             android:key="pref_enableFastShare"
@@ -107,7 +107,7 @@
             android:title="@string/title_enableFastShare" />
 
         <!-- Notifications
-        <it.rignanese.leo.slimfacebook.utils.SwitchWithoutBugs
+        <it.rignanese.slimfacebook.utils.SwitchWithoutBugs
             android:key="pref_notifications"
             android:title="@string/title_enableNotifications"/>-->
     </PreferenceCategory>
@@ -118,7 +118,7 @@
             android:title="@string/title_rate">
             <intent
                 android:action="android.intent.action.VIEW"
-                android:data="market://details?id=it.rignanese.leo.slimfacebook" />
+                android:data="market://details?id=de.cactus_world.SlimFBViewer" />
         </PreferenceScreen>
         <PreferenceScreen
             android:summary="@string/supportMyProjects"
@@ -144,8 +144,8 @@
             android:title="@string/credits">
             <intent
                 android:action="android.intent.action.VIEW"
-                android:targetClass="it.rignanese.leo.slimfacebook.settings.CreditsActivity"
-                android:targetPackage="it.rignanese.leo.slimfacebook" />
+                android:targetClass="de.cactus_world.SlimFBViewer.settings.CreditsActivity"
+                android:targetPackage="de.cactus_world.SlimFBViewer" />
         </PreferenceScreen>
         <PreferenceScreen
             android:key="pref_key_version"

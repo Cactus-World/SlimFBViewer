@@ -49,7 +49,7 @@ SlimFBViewer is an Open Source app realized by Cactus World Android development 
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/appBarLayout">
 
-        <de.cactus_world.leo.SlimFBViewer.utility.MyAdvancedWebView
+        <de.cactus_world.SlimFBViewer.utility.MyAdvancedWebView
             android:id="@+id/webView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

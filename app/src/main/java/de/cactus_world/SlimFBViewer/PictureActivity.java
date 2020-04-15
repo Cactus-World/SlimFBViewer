@@ -1,4 +1,4 @@
-package de.cactus_world.SlimFBViewer
+package de.cactus_world.SlimFBViewer;
 
 import android.app.DownloadManager;
 import android.content.BroadcastReceiver;

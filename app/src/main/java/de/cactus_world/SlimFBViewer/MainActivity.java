@@ -57,6 +57,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.preference.Preference;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.appbar.AppBarLayout;
@@ -646,6 +647,7 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
 
         */
         cookieManager = android.webkit.CookieManager.getInstance();
+
         //cookieManager.setAcceptThirdPartyCookies(webViewFacebook,true);
 
         //webViewFacebook.setCookiesEnabled(true);
@@ -656,6 +658,7 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
         //CookieHandler.setDefault(this.cookieManager);
         cookieManager.setAcceptCookie(true);
         //cookieManager.setAcceptThirdPartyCookies(this.webViewFacebook, true);
+
         webViewFacebook.setWebViewClient(new WebViewClient() {
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
@@ -692,13 +695,41 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
 
             @Override
             public void onLoadResource(WebView view, String url) {
-                {
+
                     if (url.contains(getString(R.string.urlFacebookMobileMessages))) {
                         WebResourceRetrievalResponse webResourceRetrievalResponse = getWebResourceFromServer(Uri.parse(url), "GET", new HashMap<String, String>());
+                        view.loadData(webResourceRetrievalResponse.webResourceRetrievalContent, webResourceRetrievalResponse.webResourceRetrievalType,webResourceRetrievalResponse.webResourceContentEncoding);
+
+                    }else if (url.contains(getString(R.string.urlFacebookMobileSearch)))
+                    {
+                        WebResourceRetrievalResponse webResourceRetrievalResponse = getWebResourceFromServer(Uri.parse(url),"GET",new HashMap<String, String>());
+                        if (webResourceRetrievalResponse != null && webResourceRetrievalResponse.getWebResourceRetrievalType().contains("text")) {
+                            //Pattern pattern = Pattern.compile("\\._52z5\\{([^}]*)\\}");
+                            Pattern pattern = Pattern.compile("(<div.*?data-sigil=\\\"MTopBlueBarHeader\\\"[^>]*)>");
+                            Matcher matcher = pattern.matcher(webResourceRetrievalResponse.getWebResourceRetrievalContent());
+                            StringBuffer newWebResponse = new StringBuffer();
+                            while (matcher.find()) {
+                                //matcher.appendReplacement(newCSSResponse, "._52z5{display: none;" + matcher.group(1) + "}");
+                                matcher.appendReplacement(newWebResponse, matcher.group(1) + " style=\"display:none;\"" + ">");
+                                //matcher.appendReplacement(newWebResponse,matcher.group(1)+">");
+                            }
+                            matcher.appendTail(newWebResponse);
+                            webResourceRetrievalResponse.webResourceRetrievalContent = newWebResponse.toString();
+                            view.loadData(webResourceRetrievalResponse.webResourceRetrievalContent, webResourceRetrievalResponse.webResourceRetrievalType, webResourceRetrievalResponse.webResourceContentEncoding);
+                        }
+                    }else {
+                        WebResourceRetrievalResponse webResourceRetrievalResponse = getWebResourceFromServer(Uri.parse(url),"GET",new HashMap<String, String>());
+                        if (false && webResourceRetrievalResponse != null && webResourceRetrievalResponse.webResourceRetrievalContent != null && webResourceRetrievalResponse.webResourceRetrievalContent.contains("MTopBlueBarHeader")) {
+                            webResourceRetrievalResponse.webResourceRetrievalContent = webResourceRetrievalResponse.webResourceRetrievalContent.replace("function Y(){!D&&E&&(D=b(\"DOM\").scry(E,\"*\",\"MTopBlueBarHeader\")[0]);return D||null}", "");
+                            view.loadData(webResourceRetrievalResponse.webResourceRetrievalContent, webResourceRetrievalResponse.webResourceRetrievalType, webResourceRetrievalResponse.webResourceContentEncoding);
+                        }else {
+                            super.onLoadResource(view, url);
+                        }
+
+
                     }
-                    super.onLoadResource(view, url);
                 }
-            }
+
 
             public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
                 if (Build.VERSION.SDK_INT >= 11) {
@@ -784,7 +815,13 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
                     {
                         //doUpdateVisitedHistory(webView,getString(R.string.urlFacebookMobileMessages),false);
                     }
-                    if (webResourceRequest.getMethod().equals("GET")) {
+                    if (webResourceRequest.getUrl().toString().contains("login") && ! savedPreferences.getBoolean("hasRun",false))
+                    {
+                        SharedPreferences.Editor sharedPreferencesEditor = savedPreferences.edit();
+                        sharedPreferencesEditor.putBoolean("hasRun",true);
+                        sharedPreferencesEditor.commit();
+                    }
+                    if (webResourceRequest.getMethod().equals("GET") && savedPreferences.getBoolean("hasRun",false)) {
                     //if (webResourceRequest.isForMainFrame()) {
                         WebResourceRetrievalResponse webResourceRetrievalResponse = getWebResourceFromServer(webResourceRequest.getUrl(), webResourceRequest.getMethod(), webResourceRequest.getRequestHeaders());
                         //ByteArrayInputStream css = new ByteArrayInputStream(getString(R.string.jT1iNd9vJ_t_css).getBytes());
@@ -804,8 +841,12 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
                             matcher.appendTail(newWebResponse);
 
                         }
-                        if (webResourceRetrievalResponse != null && webResourceRetrievalResponse.getWebResourceRetrievalType().contains("text")) {
+                        /*if (webResourceRetrievalResponse != null && webResourceRetrievalResponse.webResourceRetrievalContent != null && webResourceRetrievalResponse.webResourceRetrievalContent.contains("MTopBlueBarHeader")) {
+                            webResourceRetrievalResponse.webResourceRetrievalContent = webResourceRetrievalResponse.webResourceRetrievalContent.replace("function Y(){!D&&E&&(D=b(\"DOM\").scry(E,\"*\",\"MTopBlueBarHeader\")[0]);return D||null}", "");
+                        }
+                        */if (webResourceRetrievalResponse != null && webResourceRetrievalResponse.getWebResourceRetrievalType().contains("text")) {
                             //Pattern pattern = Pattern.compile("\\._52z5\\{([^}]*)\\}");
+
                             Pattern pattern = Pattern.compile("(<div.*?data-sigil=\\\"MTopBlueBarHeader\\\"[^>]*)>");
                             Matcher matcher = pattern.matcher(webResourceRetrievalResponse.getWebResourceRetrievalContent());
                             StringBuffer newWebResponse = new StringBuffer();
@@ -819,6 +860,8 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
                                 boolean b = true;
                                 b = false;
                             }
+
+
                             //WebResourceResponse webResourceResponse = getCssWebResourceResponseFromAsset();//new WebResourceResponse("text/css", "utf-8", css);
                             try {
                                 webResponse = new ByteArrayInputStream(newWebResponse.toString().getBytes("UTF-8"));
@@ -839,7 +882,7 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
                                 }
                             }
 
-                        }else if (webResourceRetrievalResponse.getWebResourceRetrievalType().contains("video"))
+                        }else if (webResourceRetrievalResponse!= null && webResourceRetrievalResponse.getWebResourceRetrievalType().contains("video"))
                             return super.shouldInterceptRequest(webView,webResourceRequest);
 
                         WebResourceResponse webResourceResponse = null;
