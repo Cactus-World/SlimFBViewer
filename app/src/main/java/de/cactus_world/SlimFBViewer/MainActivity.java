@@ -700,15 +700,18 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
             public void onLoadResource(WebView view, String url) {
 
                 if (url.contains(getString(R.string.urlFacebookMobileMessages))) {
-                    WebResourceRetrievalResponse webResourceRetrievalResponse = getWebResourceFromServer(Uri.parse(url), "GET", new HashMap<String, String>());
-                    if (webResourceRetrievalResponse != null) {
+                    super.onLoadResource(view, url);
+                    //WebResourceRetrievalResponse webResourceRetrievalResponse = getWebResourceFromServer(Uri.parse(url), "GET", new HashMap<String, String>());
+                    /*if (webResourceRetrievalResponse != null) {
                         view.loadData(webResourceRetrievalResponse.webResourceRetrievalContent, webResourceRetrievalResponse.webResourceRetrievalType, webResourceRetrievalResponse.webResourceContentEncoding);
                     } else {
                         super.onLoadResource(view, url);
-                    }
+                    }*/
 
                 } else if (url.contains(getString(R.string.urlFacebookMobileSearch))) {
-                    WebResourceRetrievalResponse webResourceRetrievalResponse = getWebResourceFromServer(Uri.parse(url), "GET", new HashMap<String, String>());
+                    super.onLoadResource(view, url);
+                    view.loadUrl("javascript:$(\"#search-jewel\").click()");
+                    /*WebResourceRetrievalResponse webResourceRetrievalResponse = getWebResourceFromServer(Uri.parse(url), "GET", new HashMap<String, String>());
                     if (webResourceRetrievalResponse != null && webResourceRetrievalResponse.getWebResourceRetrievalType().contains("text")) {
                         //Pattern pattern = Pattern.compile("\\._52z5\\{([^}]*)\\}");
                         Pattern pattern = Pattern.compile("(<div.*?data-sigil=\\\"MTopBlueBarHeader\\\"[^>]*)>");
@@ -722,15 +725,16 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
                         matcher.appendTail(newWebResponse);
                         webResourceRetrievalResponse.webResourceRetrievalContent = newWebResponse.toString();
                         view.loadData(webResourceRetrievalResponse.webResourceRetrievalContent, webResourceRetrievalResponse.webResourceRetrievalType, webResourceRetrievalResponse.webResourceContentEncoding);
-                    }
+                    }*/
                 } else {
-                    WebResourceRetrievalResponse webResourceRetrievalResponse = getWebResourceFromServer(Uri.parse(url), "GET", new HashMap<String, String>());
-                    if (false && webResourceRetrievalResponse != null && webResourceRetrievalResponse.webResourceRetrievalContent != null && webResourceRetrievalResponse.webResourceRetrievalContent.contains("MTopBlueBarHeader")) {
-                        webResourceRetrievalResponse.webResourceRetrievalContent = webResourceRetrievalResponse.webResourceRetrievalContent.replace("function Y(){!D&&E&&(D=b(\"DOM\").scry(E,\"*\",\"MTopBlueBarHeader\")[0]);return D||null}", "");
+                    //WebResourceRetrievalResponse webResourceRetrievalResponse = getWebResourceFromServer(Uri.parse(url), "GET", new HashMap<String, String>());
+                    /*if (webResourceRetrievalResponse != null && webResourceRetrievalResponse.webResourceRetrievalContent != null && webResourceRetrievalResponse.webResourceRetrievalContent.contains("MTopBlueBarHeader")) {
+                        webResourceRetrievalResponse.webResourceRetrievalContent = webResourceRetrievalResponse.webResourceRetrievalContent.replace("function Y(){!D&&E&&(D=b(\"DOM\").scry(E,\"*\",\"MTopBlueBarHeader\")[0]);return D||null}", "function Y(){!D&&E&&(D=b(\"DOM\").scry(E,\"*\",\"MTopBlueBarHeader\")[0]);return null}");
                         view.loadData(webResourceRetrievalResponse.webResourceRetrievalContent, webResourceRetrievalResponse.webResourceRetrievalType, webResourceRetrievalResponse.webResourceContentEncoding);
                     } else {
-                        super.onLoadResource(view, url);
-                    }
+                    */    super.onLoadResource(view, url);
+                    //webViewFacebook.loadUrl(url);
+
 
 
                 }
@@ -828,8 +832,168 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
                     if (webResourceRequest.getMethod().equals("GET") && savedPreferences.getBoolean("hasRun", false)) {
                         //if (webResourceRequest.isForMainFrame()) {
 
-                        WebResourceRetrievalResponse webResourceRetrievalResponse = getWebResourceFromServer(webResourceRequest.getUrl(), webResourceRequest.getMethod(), webResourceRequest.getRequestHeaders());
+                        WebResourceRetrievalResponse webResourceRetrievalResponse=null;
+                        //= getWebResourceFromServer(webResourceRequest.getUrl(), webResourceRequest.getMethod(), webResourceRequest.getRequestHeaders());
                         //ByteArrayInputStream css = new ByteArrayInputStream(getString(R.string.jT1iNd9vJ_t_css).getBytes());
+                        {
+                            String method = webResourceRequest.getMethod().toString();
+                            ByteArrayInputStream byteArrayInputStream = null;
+                            Map <String,String> params = webResourceRequest.getRequestHeaders();
+
+                            HttpURLConnection httpURLConnection = null;
+                            BufferedReader bufferedReader = null;
+                            android.webkit.CookieManager cookieManager = CookieManager.getInstance();
+                            //CookieHandler.setDefault(this.cookieManager);
+
+                            if (isInternetAvailable()) {
+                                try {
+                                    httpURLConnection = (HttpURLConnection) (new URL(url.toString())).openConnection();
+                                    httpURLConnection.setRequestProperty("user-agent", "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36");
+                                    httpURLConnection.setUseCaches(true);
+                                    //httpURLConnection.setDoInput(true);
+                                    httpURLConnection.setConnectTimeout(0);
+                                    httpURLConnection.setRequestMethod(method);
+                                    String cookieString = cookieManager.getCookie(url.toString());
+                                    if (method.equals("POST")) {
+                                        httpURLConnection.setDoOutput(true);
+                                        try {
+                                            BufferedOutputStream outputStream = new BufferedOutputStream(httpURLConnection.getOutputStream());
+                                            BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
+                                            Set paramList = params.keySet();
+                                            Boolean firstArgumentSet = false;
+                                            for (Object key : paramList) {
+                                                if (((String) key).equals("X-XSRF-TOKEN")) {
+                                                    httpURLConnection.addRequestProperty("X-XSRF-TOKEN", (String) params.get(key));
+                                                }
+                                                if (firstArgumentSet) {
+                                                    bufferedWriter.write("&" + (String) key + "=" + (String) params.get(key));
+                                                } else {
+                                                    bufferedWriter.write((String) key + "=" + (String) params.get(key));
+                                                    firstArgumentSet = true;
+                                                }
+
+                                            }
+                                            if (cookieString != null && !cookieString.isEmpty()) {
+                                                bufferedWriter.write("&Cookie=" + cookieString);
+                                            }
+                                            bufferedWriter.flush();
+                                            bufferedWriter.close();
+                                            outputStream.close();
+                                        } catch (IOException e) {
+                                            e.printStackTrace();
+                                        }
+                                    } else {
+                                        httpURLConnection.addRequestProperty("Cookie", cookieString);
+                                        Set paramList = params.keySet();
+                                        for (Object key : paramList) {
+                                            httpURLConnection.setRequestProperty((String) key, (String) params.get(key));
+                                        }
+                                    }
+                                    httpURLConnection.connect();
+                                    if (httpURLConnection.getHeaderField("Set-Cookie") != null) {
+                                        cookieManager.setCookie(url.toString(), httpURLConnection.getHeaderField("Set-Cookie"));
+                                    }
+                                    List<String> setCookie = httpURLConnection.getHeaderFields().get("set-cookie");
+                                    int responseCode = httpURLConnection.getResponseCode();
+                                    String responseMessage = httpURLConnection.getResponseMessage();
+                                    //StringBuilder test= new StringBuilder();
+                                    Map<String, List<String>> responseHeaders = httpURLConnection.getHeaderFields();
+                /*for (Map.Entry<String, List<String>> responseHeader :responseHeaders.entrySet())
+                {
+                    if (responseHeader.getKey()==null)
+                    {
+                        continue;
+                    }
+                    test.append(responseHeader.getKey()+" : ");
+                    List  <String> responseHeaderValues = responseHeader.getValue();
+                    Iterator <String> it = responseHeaderValues.iterator();
+                    if (it.hasNext())
+                    {
+                        test.append(it.next());
+                        while (it.hasNext())
+                        {
+                            test.append("; "+it.next());
+                        }
+                    }
+                    test.append("\n");
+                }
+*/
+                                    //String test = httpURLConnection.getRequestMethod();
+                                    InputStream inputStream = httpURLConnection.getInputStream();
+
+                                    if (!((String) ((List<String>) responseHeaders.get("Content-Type")).get(0)).contains("image")) {
+                                        bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+                                        StringBuffer buffer = new StringBuffer();
+                                        String line = "";
+
+                                        while ((line = bufferedReader.readLine()) != null) {
+                                            buffer.append(line + "\n");
+                                            Log.d("Response: ", "> " + line);   //here u ll get whole response...... :-)
+
+                                        }
+
+                                        int i = responseHeaders.get("Content-Type").get(0).indexOf("charset=");
+                                        String contentEncoding = (httpURLConnection.getContentEncoding() != null) ? httpURLConnection.getContentEncoding() : ((String) responseHeaders.get("Content-Type").get(0)).substring(responseHeaders.get("Content-Type").get(0).indexOf("charset=") + 8);
+                                        contentEncoding = i >= 0 ? contentEncoding : "chunked";
+                                        webResourceRetrievalResponse= new WebResourceRetrievalResponse(httpURLConnection.getContentType(), contentEncoding, httpURLConnection.getResponseCode(), httpURLConnection.getResponseMessage(), responseHeaders, buffer.toString());
+                                    } else {
+                                        int i = responseHeaders.get("Content-Type").get(0).indexOf("charset=");
+                                        String contentEncoding = (httpURLConnection.getContentEncoding() != null) ? httpURLConnection.getContentEncoding() : ((String) responseHeaders.get("Content-Type").get(0)).substring(responseHeaders.get("Content-Type").get(0).indexOf("charset=") + 8);
+                                        contentEncoding = i >= 0 ? contentEncoding : "chunked";
+                                        webResourceRetrievalResponse = new WebResourceRetrievalResponse(httpURLConnection.getContentType(), contentEncoding, httpURLConnection.getResponseCode(), httpURLConnection.getResponseMessage(), responseHeaders);
+                                        byte[] inputBytes = new byte[1000];
+                                        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                                        ArrayList<Byte> byteArrayList = new ArrayList<Byte>();
+                                        int bytesRead = -1;
+                                        while ((bytesRead = inputStream.read(inputBytes, 0, inputBytes.length)) != -1) {
+                                            byteArrayOutputStream.write(inputBytes, 0, bytesRead);
+                                        }
+
+                                        webResourceRetrievalResponse.setWebResourceRetrievalByteContent(byteArrayOutputStream.toByteArray());
+                                        try {
+                                            if (byteArrayOutputStream != null)
+                                                byteArrayOutputStream.close();
+                                        } catch (IOException e) {
+                                            e.printStackTrace();
+                                        }
+                                        //return webResourceRetrievalResponse;
+                                    }
+                                } catch (Exception e) {
+                                    //Something went wrong
+                                    e.printStackTrace();
+                                } finally {
+                                    if (httpURLConnection != null) {
+                                        httpURLConnection.disconnect();
+                                    }
+                                    try {
+                                        if (bufferedReader != null)
+                                            bufferedReader.close();
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+                            //webResourceRetrievalResponse = null;
+                        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                         Object webResourceRRequest;
                         ByteArrayInputStream webResponse = null;
 
@@ -845,13 +1009,20 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
                             matcher.appendTail(newWebResponse);
 
                         }
-                        /*if (webResourceRetrievalResponse != null && webResourceRetrievalResponse.webResourceRetrievalContent != null && webResourceRetrievalResponse.webResourceRetrievalContent.contains("MTopBlueBarHeader")) {
-                            webResourceRetrievalResponse.webResourceRetrievalContent = webResourceRetrievalResponse.webResourceRetrievalContent.replace("function Y(){!D&&E&&(D=b(\"DOM\").scry(E,\"*\",\"MTopBlueBarHeader\")[0]);return D||null}", "");
+                        if (webResourceRetrievalResponse != null && webResourceRetrievalResponse.webResourceRetrievalContent != null && webResourceRetrievalResponse.webResourceRetrievalContent.contains("_6j_d.show")) {
+                            //webResourceRetrievalResponse.webResourceRetrievalContent = webResourceRetrievalResponse.webResourceRetrievalContent.replace("_6j_d.show{display:block}", "_6j_d.show{display:none}");
                         }
-                        */
-                        if (webResourceRetrievalResponse != null && webResourceRetrievalResponse.getWebResourceRetrievalType().contains("text")) {
+
+                        if (webResourceRetrievalResponse != null && (webResourceRetrievalResponse.getWebResourceRetrievalType().contains("text") || webResourceRetrievalResponse.getWebResourceRetrievalType().contains("css") )) {
                             //Pattern pattern = Pattern.compile("\\._52z5\\{([^}]*)\\}");
 
+                           // webResourceRetrievalResponse.webResourceRetrievalContent = webResourceRetrievalResponse.webResourceRetrievalContent.replace("_6j_d.show{display:block}", "_6j_d.show{display:none}");
+                            /*if (webResourceRetrievalResponse.webResourceRetrievalContent.contains("._52z5{"))
+                            {
+                                webResourceRetrievalResponse.webResourceRetrievalContent = webResourceRetrievalResponse.webResourceRetrievalContent.replace("._52z5{", "._52z5{visibility:hidden; ");
+
+                            }
+                            */
                             Pattern pattern = Pattern.compile("(<div.*?data-sigil=\\\"MTopBlueBarHeader\\\"[^>]*)>");
                             Matcher matcher = pattern.matcher(webResourceRetrievalResponse.getWebResourceRetrievalContent());
                             StringBuffer newWebResponse = new StringBuffer();
@@ -865,6 +1036,7 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
                                 boolean b = true;
                                 b = false;
                             }
+
 
 
                             //WebResourceResponse webResourceResponse = getCssWebResourceResponseFromAsset();//new WebResourceResponse("text/css", "utf-8", css);
@@ -888,7 +1060,9 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
                             }
 
                         } else if (webResourceRetrievalResponse != null && webResourceRetrievalResponse.getWebResourceRetrievalType().contains("video"))
+                        {
                             return super.shouldInterceptRequest(webView, webResourceRequest);
+                        }
 
                         WebResourceResponse webResourceResponse = null;
 
@@ -920,6 +1094,7 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
                                 responseHeaders.put("timing-allow-origin", "*");
                             }*/
                         if (webResponse != null) {
+
                             webResourceResponse = getUtf8EncodedWebResourceResponse(webResourceRetrievalResponse.getWebResourceRetrievalType(), webResourceRetrievalResponse.getWebResourceContentEncoding(), webResponse);
                         }
                         if (webResourceResponse != null) {
@@ -1106,7 +1281,9 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
     }
 
     private void GoSearch() {
-        webViewFacebook.loadUrl(getString(R.string.urlFacebookMobileSearch));
+        //webViewFacebook.loadUrl(getString(R.string.urlFacebookMobileSearch));
+        webViewFacebook.loadUrl("javascript:search_jewel.firstChild.click()");
+
     }
 
     private void RefreshPage() {
