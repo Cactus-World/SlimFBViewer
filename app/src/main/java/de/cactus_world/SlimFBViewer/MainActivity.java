@@ -1290,7 +1290,23 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
         if (noConnectionError) {
             webViewFacebook.goBack();
             noConnectionError = false;
-        } else webViewFacebook.reload();
+        } else {
+                String url = webViewFacebook.getUrl();
+            if (url.contains(fbMobileNewsfeedUrl)) {
+                setMenuItemActive(this.menuBar, this.menuBar.findItem(R.id.home));
+            } else if (url.contains(fbMobileFriendsUrl)) {
+                setMenuItemActive(this.menuBar, this.menuBar.findItem(R.id.friends));
+            } else if (url.contains(fbMobileMessageUrl)) {
+                setMenuItemActive(this.menuBar, this.menuBar.findItem(R.id.message));
+            } else if (url.contains(fbMobileNotificationsUrl)) {
+                setMenuItemActive(this.menuBar, this.menuBar.findItem(R.id.notifications));
+            } else if (url.contains(fbMobileSearchUrl)) {
+                setMenuItemActive(this.menuBar, this.menuBar.findItem(R.id.search));
+            } else if (url.contains(fbMobileBookmarksUrl)) {
+                setMenuItemActive(this.menuBar, this.menuBar.findItem(R.id.bookmarks));
+            }
+            webViewFacebook.reload();
+        }
     }
 
 
