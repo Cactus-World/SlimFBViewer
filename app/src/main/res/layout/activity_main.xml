@@ -40,7 +40,8 @@ app:popupTheme="@style/DefaultTheme.PopupOverlay"
             android:minHeight="0dp"
             android:theme="?toolBarOverlayTheme"
             android:visibility="visible"
-            app:popupTheme="?popupTheme" />
+            app:popupTheme="?popupTheme"
+            app:titleTextAppearance="@style/TextAppearance.AppCompat.Medium" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
