@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
+import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -13,6 +14,7 @@ import android.graphics.ColorFilter;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
@@ -73,6 +75,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.lang.ref.WeakReference;
+import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -101,6 +104,7 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
 
     private SwipeRefreshLayout swipeRefreshLayout;//the layout that allows the swipe refresh
     private ConstraintLayout constraintLayout;//app layout
+    private AppBarLayout appBarLayout;
     private Toolbar toolbar;
     private MyAdvancedWebView webViewFacebook;//the main webView where is shown facebook
     private WebViewClient webViewClient;
@@ -112,6 +116,13 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
     private boolean isSharer = false;//flag: true if the app is called from sharer
     private String urlSharer = "";//to save the url got from the sharer
     private boolean cssLoaded = false;
+    private boolean isFirstBookmarksLoad = true;
+    private boolean isFirstFeedLoad = true;
+    private boolean isFirstMessagesLoad = true;
+    private boolean isFirstNotificationsLoad = true;
+    private boolean isFirstFriendRequestsLoad = true;
+
+
     // create link handler (long clicked links)
     private final MyHandler linkHandler = new MyHandler(this);
 
@@ -120,6 +131,7 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
     private WebChromeClient myWebChromeClient;
     private WebChromeClient.CustomViewCallback mCustomViewCallback;
     private android.webkit.CookieManager cookieManager;
+    private boolean darkThemeSet=false;
 
     private class WebResourceRetrievalResponse {
         private String webResourceRetrievalType;
@@ -261,7 +273,7 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
     private String fbMobileSearchUrl;
     private String fbMobileBookmarksUrl;
     private HashMap<String, Integer> notificationStates = new HashMap<String, Integer>();
-
+private int toolBarColor=0;
 
     //*********************** ACTIVITY EVENTS ****************************
     @Override
@@ -278,10 +290,16 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        constraintLayout = findViewById(R.id.rootLayout);
+        //SetAppTheme();
+        appBarLayout = findViewById(R.id.appBarLayout);
+        //SetAppBarLayout();
         toolbar = findViewById(R.id.toolbar);
+        //SetToolBarTheme();
+
         setSupportActionBar(toolbar);
-        getActionBar().hide();
-        AppBarLayout appBarLayout = findViewById(R.id.appBarLayout);
+        //findViewById(R.id.toolbar).setBackgroundColor(toolBarColor);
+
         SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.swipe_container);
         int actionBarHeight = getSupportActionBar().getHeight();
         ConstraintLayout.LayoutParams layoutParams = ((ConstraintLayout.LayoutParams) appBarLayout.getLayoutParams());
@@ -291,6 +309,18 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
         // if the app is being launched for the first time
         //swipeRefreshLayout.setSize(swipeRefreshLayout.getHeight()+88);
         //swipeRefreshLayout.setTranslationY(-88);
+
+
+        try
+        {
+//            getActionBar().setDisplayShowTitleEnabled(false);
+            getActionBar().hide();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
         constraintLayout = (ConstraintLayout) findViewById(R.id.rootLayout);
         MyAdvancedWebView myAdvancedWebView = findViewById(webView);
         if (savedPreferences.getBoolean("first_run", true)) {
@@ -315,8 +345,37 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
         } else if (getIntent() != null && getIntent().getDataString() != null) {
             //if the app is opened by fb link
             webViewFacebook.loadUrl(FromDesktopToMobileUrl(getIntent().getDataString()));
-        } else GoHome();//load homepage
+        } else GoHome(true);//load homepage
         initNotificationStates();
+    }
+
+    private void SetAppTheme() {
+        if (darkThemeSet)
+        {
+            constraintLayout.setBackgroundColor(R.color.blackSlimFBViewerTheme);
+        }else {
+            constraintLayout.setBackgroundColor(R.color.blueSlimFacebookTheme);
+        }
+
+    }
+
+    private void SetAppBarLayout() {
+        if (darkThemeSet) {
+            appBarLayout.getContext().setTheme(R.style.DarkTheme_AppBarOverlay);
+        }
+        else{
+            appBarLayout.getContext().setTheme(R.style.DefaultTheme_AppBarOverlay);
+        }
+    }
+
+    private void SetToolBarTheme() {
+        if (darkThemeSet) {
+            toolbar.setPopupTheme(R.style.DarkTheme_PopupOverlay);
+        }
+        else{
+            toolbar.setPopupTheme(R.style.DefaultTheme_PopupOverlay);
+
+        }
     }
 
     private void initNotificationStates() {
@@ -732,9 +791,9 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
                         webResourceRetrievalResponse.webResourceRetrievalContent = webResourceRetrievalResponse.webResourceRetrievalContent.replace("function Y(){!D&&E&&(D=b(\"DOM\").scry(E,\"*\",\"MTopBlueBarHeader\")[0]);return D||null}", "function Y(){!D&&E&&(D=b(\"DOM\").scry(E,\"*\",\"MTopBlueBarHeader\")[0]);return null}");
                         view.loadData(webResourceRetrievalResponse.webResourceRetrievalContent, webResourceRetrievalResponse.webResourceRetrievalType, webResourceRetrievalResponse.webResourceContentEncoding);
                     } else {
-                    */    super.onLoadResource(view, url);
+                    */
+                    super.onLoadResource(view, url);
                     //webViewFacebook.loadUrl(url);
-
 
 
                 }
@@ -828,17 +887,18 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
                         SharedPreferences.Editor sharedPreferencesEditor = savedPreferences.edit();
                         sharedPreferencesEditor.putBoolean("hasRun", true);
                         sharedPreferencesEditor.commit();
+                        return super.shouldInterceptRequest(webView,webResourceRequest);
                     }
                     if (webResourceRequest.getMethod().equals("GET") && savedPreferences.getBoolean("hasRun", false)) {
                         //if (webResourceRequest.isForMainFrame()) {
 
-                        WebResourceRetrievalResponse webResourceRetrievalResponse=null;
+                        WebResourceRetrievalResponse webResourceRetrievalResponse = null;
                         //= getWebResourceFromServer(webResourceRequest.getUrl(), webResourceRequest.getMethod(), webResourceRequest.getRequestHeaders());
                         //ByteArrayInputStream css = new ByteArrayInputStream(getString(R.string.jT1iNd9vJ_t_css).getBytes());
                         {
                             String method = webResourceRequest.getMethod().toString();
                             ByteArrayInputStream byteArrayInputStream = null;
-                            Map <String,String> params = webResourceRequest.getRequestHeaders();
+                            Map<String, String> params = webResourceRequest.getRequestHeaders();
 
                             HttpURLConnection httpURLConnection = null;
                             BufferedReader bufferedReader = null;
@@ -921,7 +981,7 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
                                     //String test = httpURLConnection.getRequestMethod();
                                     InputStream inputStream = httpURLConnection.getInputStream();
 
-                                    if (!((String) ((List<String>) responseHeaders.get("Content-Type")).get(0)).contains("image")) {
+                                    if (!((String) ((List<String>) responseHeaders.get("Content-Type")).get(0)).contains("image") && !((String) ((List<String>) responseHeaders.get("Content-Type")).get(0)).contains("video")&& !((String) ((List<String>) responseHeaders.get("Content-Type")).get(0)).contains("audio")) {
                                         bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
                                         StringBuffer buffer = new StringBuffer();
                                         String line = "";
@@ -935,8 +995,8 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
                                         int i = responseHeaders.get("Content-Type").get(0).indexOf("charset=");
                                         String contentEncoding = (httpURLConnection.getContentEncoding() != null) ? httpURLConnection.getContentEncoding() : ((String) responseHeaders.get("Content-Type").get(0)).substring(responseHeaders.get("Content-Type").get(0).indexOf("charset=") + 8);
                                         contentEncoding = i >= 0 ? contentEncoding : "chunked";
-                                        webResourceRetrievalResponse= new WebResourceRetrievalResponse(httpURLConnection.getContentType(), contentEncoding, httpURLConnection.getResponseCode(), httpURLConnection.getResponseMessage(), responseHeaders, buffer.toString());
-                                    } else {
+                                        webResourceRetrievalResponse = new WebResourceRetrievalResponse(httpURLConnection.getContentType(), contentEncoding, httpURLConnection.getResponseCode(), httpURLConnection.getResponseMessage(), responseHeaders, buffer.toString());
+                                    } else if (!((String) ((List<String>) responseHeaders.get("Content-Type")).get(0)).contains("video") && !((String) ((List<String>) responseHeaders.get("Content-Type")).get(0)).contains("audio")) {
                                         int i = responseHeaders.get("Content-Type").get(0).indexOf("charset=");
                                         String contentEncoding = (httpURLConnection.getContentEncoding() != null) ? httpURLConnection.getContentEncoding() : ((String) responseHeaders.get("Content-Type").get(0)).substring(responseHeaders.get("Content-Type").get(0).indexOf("charset=") + 8);
                                         contentEncoding = i >= 0 ? contentEncoding : "chunked";
@@ -957,7 +1017,10 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
                                             e.printStackTrace();
                                         }
                                         //return webResourceRetrievalResponse;
+                                    }else{//video or audio stream detected
+                                        return super.shouldInterceptRequest(webView, webResourceRequest);
                                     }
+
                                 } catch (Exception e) {
                                     //Something went wrong
                                     e.printStackTrace();
@@ -975,23 +1038,6 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
                             }
                             //webResourceRetrievalResponse = null;
                         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
                         Object webResourceRRequest;
@@ -1013,16 +1059,26 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
                             //webResourceRetrievalResponse.webResourceRetrievalContent = webResourceRetrievalResponse.webResourceRetrievalContent.replace("_6j_d.show{display:block}", "_6j_d.show{display:none}");
                         }
 
-                        if (webResourceRetrievalResponse != null && (webResourceRetrievalResponse.getWebResourceRetrievalType().contains("text") || webResourceRetrievalResponse.getWebResourceRetrievalType().contains("css") )) {
+                        if (webResourceRetrievalResponse != null && (webResourceRetrievalResponse.getWebResourceRetrievalType().contains("text") || webResourceRetrievalResponse.getWebResourceRetrievalType().contains("css"))) {
                             //Pattern pattern = Pattern.compile("\\._52z5\\{([^}]*)\\}");
 
-                           // webResourceRetrievalResponse.webResourceRetrievalContent = webResourceRetrievalResponse.webResourceRetrievalContent.replace("_6j_d.show{display:block}", "_6j_d.show{display:none}");
+                            // webResourceRetrievalResponse.webResourceRetrievalContent = webResourceRetrievalResponse.webResourceRetrievalContent.replace("_6j_d.show{display:block}", "_6j_d.show{display:none}");
                             /*if (webResourceRetrievalResponse.webResourceRetrievalContent.contains("._52z5{"))
                             {
                                 webResourceRetrievalResponse.webResourceRetrievalContent = webResourceRetrievalResponse.webResourceRetrievalContent.replace("._52z5{", "._52z5{visibility:hidden; ");
 
                             }
                             */
+                            if (webResourceRetrievalResponse.webResourceRetrievalContent.contains(getString(R.string.messageHistorySelector)))
+                            {
+                                if (savedPreferences.getBoolean("pref_noMessageHistoryEntry",false))
+                                {
+                                    webResourceRetrievalResponse.webResourceRetrievalContent=webResourceRetrievalResponse.webResourceRetrievalContent.replace(getString(R.string.messageHistorySelector)+"0",getString(R.string.messageHistorySelector)+"1");
+                                }else
+                                {
+                                    webResourceRetrievalResponse.webResourceRetrievalContent=webResourceRetrievalResponse.webResourceRetrievalContent.replace(getString(R.string.messageHistorySelector)+"1",getString(R.string.messageHistorySelector)+"0");
+                                }
+                            }
                             Pattern pattern = Pattern.compile("(<div.*?data-sigil=\\\"MTopBlueBarHeader\\\"[^>]*)>");
                             Matcher matcher = pattern.matcher(webResourceRetrievalResponse.getWebResourceRetrievalContent());
                             StringBuffer newWebResponse = new StringBuffer();
@@ -1036,7 +1092,6 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
                                 boolean b = true;
                                 b = false;
                             }
-
 
 
                             //WebResourceResponse webResourceResponse = getCssWebResourceResponseFromAsset();//new WebResourceResponse("text/css", "utf-8", css);
@@ -1059,8 +1114,7 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
                                 }
                             }
 
-                        } else if (webResourceRetrievalResponse != null && webResourceRetrievalResponse.getWebResourceRetrievalType().contains("video"))
-                        {
+                        } else if (webResourceRetrievalResponse != null && webResourceRetrievalResponse.getWebResourceRetrievalType().contains("video")) {
                             return super.shouldInterceptRequest(webView, webResourceRequest);
                         }
 
@@ -1235,11 +1289,15 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
     private void SetTheme() {
         switch (savedPreferences.getString("pref_theme", "default")) {
             case "DarkTheme": {
-                setTheme(R.style.DarkTheme);
+                setTheme(R.style.DarkTheme_NoActionBar);
+                toolBarColor=R.color.blackSlimFBViewerTheme;
+                this.darkThemeSet = true;
                 break;
             }
             default: {
-                setTheme(R.style.DefaultTheme);
+                setTheme(R.style.DefaultTheme_NoActionBar);
+                toolBarColor=R.color.blueSlimFacebookTheme;
+                this.darkThemeSet = false;
                 break;
             }
         }
@@ -1255,35 +1313,61 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
 
 
     //*********************** WEBVIEW FACILITIES ****************************
-    private void GoHome() {
-        if (savedPreferences.getBoolean("pref_recentNewsFirst", false)) {
-            webViewFacebook.loadUrl(getString(R.string.urlFacebookMobile) + "?sk=h_chr");
+    private void GoHome(boolean loadFromWeb) {
+        if (loadFromWeb) {
+            if (savedPreferences.getBoolean("pref_recentNewsFirst", false)) {
+                webViewFacebook.loadUrl(getString(R.string.urlFacebookMobile) + "?sk=h_chr");
+            } else {
+                webViewFacebook.loadUrl(getString(R.string.urlFacebookMobile) + "?sk=h_nor");
+            }
         } else {
-            webViewFacebook.loadUrl(getString(R.string.urlFacebookMobile) + "?sk=h_nor");
+            webViewFacebook.loadUrl("javascript:feed_jewel.firstChild.click()");
         }
     }
 
     private void GoNotifications() {
-        webViewFacebook.loadUrl(getString(R.string.urlFacebookMobileNotifications));
+        if (isFirstNotificationsLoad)
+        {
+            webViewFacebook.loadUrl(getString(R.string.urlFacebookMobileNotifications));
+            isFirstNotificationsLoad=false;
+        }else
+        {
+            webViewFacebook.loadUrl("javascript:notifications_jewel.firstChild.click()");
+        }
 
     }
 
     private void GoMessages() {
-        webViewFacebook.loadUrl(getString(R.string.urlFacebookMobileMessages));
+        if (isFirstMessagesLoad)
+        {
+            webViewFacebook.loadUrl(getString(R.string.urlFacebookMobileMessages));
+            isFirstMessagesLoad=false;
+        }else {
+            webViewFacebook.loadUrl("javascript:messages_jewel.firstChild.click()");
+        }
     }
 
     private void GoFriends() {
-        webViewFacebook.loadUrl(getString(R.string.urlFacebookMobileFriends));
+        if (isFirstFriendRequestsLoad) {
+            webViewFacebook.loadUrl(getString(R.string.urlFacebookMobileFriends));
+            isFirstFriendRequestsLoad = false;
+        } else {
+            webViewFacebook.loadUrl("javascript:requests_jewel.firstChild.click()");
+        }
     }
 
     private void GoBookmarks() {
-        webViewFacebook.loadUrl(getString(R.string.urlFacebookMobileBookmarks));
+        if (isFirstBookmarksLoad || savedPreferences.getBoolean("pref_noBar",false)) {
+            webViewFacebook.loadUrl(getString(R.string.urlFacebookMobileBookmarks));
+            isFirstBookmarksLoad = false;
+        } else {
+            webViewFacebook.loadUrl("javascript:bookmarks_jewel.firstChild.click()");
+        }
     }
 
     private void GoSearch() {
         //webViewFacebook.loadUrl(getString(R.string.urlFacebookMobileSearch));
         webViewFacebook.loadUrl("javascript:search_jewel.firstChild.click()");
-
     }
 
     private void RefreshPage() {
@@ -1291,7 +1375,7 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
             webViewFacebook.goBack();
             noConnectionError = false;
         } else {
-                String url = webViewFacebook.getUrl();
+            String url = webViewFacebook.getUrl();
             if (url.contains(fbMobileNewsfeedUrl)) {
                 setMenuItemActive(this.menuBar, this.menuBar.findItem(R.id.home));
             } else if (url.contains(fbMobileFriendsUrl)) {
@@ -1321,10 +1405,10 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
             //open the activity to show the pic
             startActivity(new Intent(this, PictureActivity.class).putExtra("URL", url));
         }
-        if (url.contains(getString(R.string.urlFacebookMobileMessages))) {
+        /*if (url.contains(getString(R.string.urlFacebookMobileMessages))) {
             webViewFacebook.getWebViewClient().doUpdateVisitedHistory(webViewFacebook, url, false);
         }
-        //webViewFacebook.loadUrl(url);
+        *///webViewFacebook.loadUrl(url);
         //ApplyCustomCss();
 
         return !b;
@@ -1532,7 +1616,7 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
                 break;
             }
             case R.id.home: {//go to the home
-                GoHome();
+                GoHome(false);
                 break;
             }
             case R.id.shareLink: {//share this page

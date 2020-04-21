@@ -116,7 +116,7 @@ SlimSocial for Facebook is an Open Source app realized by Leonardo Rignanese
     <string name="shareLink">Share this page</string>
     <string name="title_enableNotifications">Enable Notifications</string>
     <string name="noNotificationEnjoyLife">I am looking for the best way to implement them. In the meanwhile, enjoy life without Facebook\'s interruptions :)</string>
-    <string name="paypalDonationLink">https://cactus_world.github.io/</string>
+    <string name="paypalDonationLink" translatable="false">https://cactus_world.github.io/</string>
 
     <string name="download">Download</string>
     <string name="share">Share</string>
@@ -127,6 +127,9 @@ SlimSocial for Facebook is an Open Source app realized by Leonardo Rignanese
     <string name="notifications">Notifications</string>
     <string name="search">Search</string>
     <string name="bookmarks">Bookmarks</string>
+    <string name="messageHistorySelector" translatable="false">href="/messages/?no_hist=</string>
+    <string name="summary_noMessageHistoryEntry">Opening messages tab will not be included in history stack.</string>
+    <string name="title_noMessageHistoryEntry">No entry for message tab in history</string>
 
     <!--end other-->
 </resources>

@@ -26,11 +26,15 @@ public class SettingsActivity extends AppCompatActivity implements
         SharedPreferences.OnSharedPreferenceChangeListener {
     private static String appVersion;
     protected SwitchPreferenceCompat noBar,fixedBar;
+    private SharedPreferences savedPreferences;
     //using a PreferenceFragment along with the PreferenceActivity (see there
     // http://alvinalexander.com/android/android-tutorial-preferencescreen-preferenceactivity-preferencefragment )
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        savedPreferences = android.preference.PreferenceManager.getDefaultSharedPreferences(this); // setup the sharedPreferences
+
+        //SetTheme();
         super.onCreate(savedInstanceState);
 
         //get the appVersion
@@ -113,7 +117,18 @@ public class SettingsActivity extends AppCompatActivity implements
             }
         }
     }
-
+    private void SetTheme() {
+        switch (savedPreferences.getString("pref_theme", "default")) {
+            case "DarkTheme": {
+                setTheme(R.style.DarkTheme_NoActionBar);
+                break;
+            }
+            default: {
+                setTheme(R.style.DefaultTheme_NoActionBar);
+                break;
+            }
+        }
+    }
     private void restart() {
         // notify user
         Toast.makeText(SettingsActivity.this, R.string.applyingChanges, Toast.LENGTH_SHORT).show();

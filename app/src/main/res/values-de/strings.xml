@@ -88,4 +88,6 @@
     <string name="share">Teilen</string>
     <string name="title_noBar">Kein Menü am oberen Rand</string>
     <string name="summary_noBar">Das blaue Menü wird vom oberen Rand entfernt</string>
+    <string name="title_noMessageHistoryEntry">Kein Chronik-Eintrag für Nachrichten-Tab</string>
+    <string name="summary_noMessageHistoryEntry">Öffnen des Nachrichten-Tab wird nicht in Chronik inkludiert.</string>
 </resources>

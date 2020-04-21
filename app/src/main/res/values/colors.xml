@@ -3,6 +3,7 @@
     <color name="officialBlueFacebook">#3B5999</color><!--The original color of Facebook-->
 
     <!--standard theme-->
-    <color name="blueSlimFacebookTheme">#37538f</color>
+<color name="blackSlimFBViewerTheme">#FF000000</color>
+    <color name="blueSlimFacebookTheme">#FF37538f</color>
     <color name="darkBlueSlimFacebookTheme">#2d3a6b</color>
 </resources>

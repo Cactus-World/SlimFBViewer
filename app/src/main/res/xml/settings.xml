@@ -19,6 +19,11 @@
             android:key="pref_addSpaceBetweenPosts"
             android:summary="@string/summary_addSpaceBetweenPosts"
             android:title="@string/title_addSpaceBetweenPosts" />
+        <de.cactus_world.SlimFBViewer.utils.SwitchWithoutBugs
+            android:defaultValue="false"
+            android:key="pref_noMessageHistoryEntry"
+            android:summary="@string/summary_noMessageHistoryEntry"
+            android:title="@string/title_noMessageHistoryEntry" />
 
         <de.cactus_world.SlimFBViewer.utils.SwitchWithoutBugs
             android:defaultValue="false"

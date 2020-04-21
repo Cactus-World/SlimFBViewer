@@ -1,45 +1,107 @@
 <resources>
 
     <style name="DefaultTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="android:textColorPrimary">@android:color/white</item>
+        <item name="android:textColorPrimary">@android:color/black</item>
         <item name="android:textColor">@android:color/black</item>
+        <item name="android:background">@color/blueSlimFacebookTheme</item>
+        <item name="colorPrimary">@color/blueSlimFacebookTheme</item>
         <item name="android:actionBarStyle">@style/MyDefaultActionBar</item>
+        <item name="android:toolbarStyle">@style/DefaultTheme.ToolBarOverlay</item>
     </style>
 
-    <style name="MyDefaultActionBar" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="DarkTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:textColorPrimary">@android:color/white</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:background">@color/blackSlimFBViewerTheme</item>
+        <item name="colorPrimary">@color/blackSlimFBViewerTheme</item>
+        <item name="android:actionBarStyle">@style/MyDarkActionBar</item>
+        <item name="android:toolbarStyle">@style/DarkTheme.ToolBarOverlay</item>
+    </style>
+
+
+    <style name="MyDefaultActionBar" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="android:background">@color/blueSlimFacebookTheme</item>
+        <item name="android:actionBarTheme">@style/DefaultTheme.AppBarOverlay</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="MyDarkActionBar" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:background">@color/blackSlimFBViewerTheme</item>
+        <item name="android:actionBarTheme">@style/DarkTheme.AppBarOverlay</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
 
     <style name="DefaultTheme.NoActionBar" parent="Theme.AppCompat.NoActionBar">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
-
-    </style>
-    <style name="DarkTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="android:textColorPrimary">@android:color/white</item>
-        <item name="android:textColor">@android:color/black</item>
-        <item name="android:actionBarStyle">@style/MyDarkActionBar</item>
-    </style>
-
-    <style name="MyDarkActionBar" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="android:background">@android:color/black</item>
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
-    </style>
-    <style name="DarkTheme.NoActionBar" parent="Theme.AppCompat.NoActionBar">
-    <item name="windowActionBar">false</item>
-    <item name="windowNoTitle">true</item>
-    </style>
-    <style name="DefaultTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
-            <item name="android:colorControlNormal">@android:color/white</item>
-        </style>
-        <style name="DefaultTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
-    <style name="DarkTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
         <item name="android:colorControlNormal">@android:color/white</item>
+        <item name="android:actionBarStyle">@style/MyDefaultActionBar</item>
+        <item name="android:toolbarStyle">@style/DefaultTheme.ToolBarOverlay</item>
+        <item name="toolBarOverlayTheme">@style/DefaultTheme.ToolBarOverlay</item>
+        <item name="popupTheme">@style/DefaultTheme.PopupOverlay</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
     </style>
-    <style name="DarkTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
+
+    <style name="DarkTheme.NoActionBar" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:colorControlNormal">@android:color/white</item>
+        <item name="android:actionBarStyle">@style/MyDarkActionBar</item>
+        <item name="android:toolbarStyle">@style/DarkTheme.ToolBarOverlay</item>
+        <item name="toolBarOverlayTheme">@style/DarkTheme.ToolBarOverlay</item>
+        <item name="popupTheme">@style/DarkTheme.PopupOverlay</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="DefaultTheme.AppBarOverlay" parent="Theme.MaterialComponents.Light.DarkActionBar">
+        <item name="android:colorControlNormal">@android:color/white</item>
+        <item name="android:background">@color/blueSlimFacebookTheme</item>
+        <item name="android:colorForeground">@android:color/black</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="toolBarOverlayTheme">@style/DefaultTheme.ToolBarOverlay</item>
+        <item name="popupTheme">@style/DefaultTheme.PopupOverlay</item>
+
+    </style>
+
+    <style name="DarkTheme.AppBarOverlay" parent="Theme.MaterialComponents.Light.DarkActionBar">
+        <item name="android:colorControlNormal">@android:color/white</item>
+        <item name="android:background">@color/blackSlimFBViewerTheme</item>
+        <item name="android:colorForeground">@color/blackSlimFBViewerTheme</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:colorAccent">@color/blackSlimFBViewerTheme</item>
+        <item name="android:colorPrimary">@color/blackSlimFBViewerTheme</item>
+        <item name="toolBarOverlayTheme">@style/DarkTheme.ToolBarOverlay</item>
+        <item name="popupTheme">@style/DarkTheme.PopupOverlay</item>
+
+    </style>
+
+    <style name="DefaultTheme.ToolBarOverlay" parent="Theme.MaterialComponents.Light.DarkActionBar">
+        <item name="android:colorControlNormal">@android:color/white</item>
+        <item name="android:background">@color/blueSlimFacebookTheme</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:itemBackground">@android:color/white</item>
+        <item name="popupTheme">@style/DefaultTheme.PopupOverlay</item>    </style>
+
+    <style name="DarkTheme.ToolBarOverlay" parent="Theme.MaterialComponents.Light.DarkActionBar">
+        <item name="android:colorControlNormal">@android:color/white</item>
+        <item name="android:background">@color/blackSlimFBViewerTheme</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:colorPrimary">@color/blackSlimFBViewerTheme</item>
+        <item name="android:colorAccent">@color/blackSlimFBViewerTheme</item>
+        <item name="android:itemBackground">@color/blackSlimFBViewerTheme</item>
+        <item name="popupTheme">@style/DarkTheme.PopupOverlay</item>
+    </style>
+
+    <style name="DefaultTheme.PopupOverlay" parent="Theme.MaterialComponents.Light.DarkActionBar">
+        <item name="android:background">@android:color/white</item>
+        <item name="android:textColor">@android:color/black</item>
+    </style>
+
+    <style name="DarkTheme.PopupOverlay" parent="Theme.MaterialComponents.Light.DarkActionBar">
+        <item name="android:background">@android:color/black</item>
+        <item name="android:textColor">@android:color/white</item>
+
+    </style>
 
 
 </resources>

@@ -1,25 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?><!--
 SlimFBViewer is an Open Source app realized by Cactus World Android development based on SlimFacebook by Leonardo Rignanese
  GNU GENERAL PUBLIC LICENSE  Version 2, June 1991
--->
+AppBarLayout:
+Toolbar:
+app:popupTheme="@style/DefaultTheme.PopupOverlay"
+
+    -->
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/rootLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:backgroundTintMode="screen"
+    android:elevation="4dp"
     tools:context="de.cactus_world.SlimFBViewer.MainActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="@color/blueSlimFacebookTheme"
+        android:fitsSystemWindows="true"
         android:gravity="left"
         android:isScrollContainer="false"
         android:measureWithLargestChild="false"
+        android:outlineProvider="none"
         android:textAlignment="gravity"
-        android:theme="@style/DefaultTheme.AppBarOverlay"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -29,15 +35,12 @@ SlimFBViewer is an Open Source app realized by Cactus World Android development 
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="left"
-            android:backgroundTint="#f6eadb"
             android:foregroundGravity="fill_horizontal|left|fill_vertical"
             android:gravity="fill_horizontal|left"
             android:minHeight="0dp"
+            android:theme="?toolBarOverlayTheme"
             android:visibility="visible"
-            app:popupTheme="@style/DefaultTheme.PopupOverlay"
-            app:titleTextAppearance="@style/TextAppearance.AppCompat.Medium" />
-
-
+            app:popupTheme="?popupTheme" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
