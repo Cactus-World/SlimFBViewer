@@ -102,6 +102,7 @@ import static de.cactus_world.SlimFBViewer.R.id.webView;
  */
 public class MainActivity extends AppCompatActivity implements MyAdvancedWebView.Listener {
 
+    private static final int PICTURE_ACTIVITY = 1;
     private SwipeRefreshLayout swipeRefreshLayout;//the layout that allows the swipe refresh
     private ConstraintLayout constraintLayout;//app layout
     private AppBarLayout appBarLayout;
@@ -575,6 +576,10 @@ private int toolBarColor=0;
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
         webViewFacebook.onActivityResult(requestCode, resultCode, intent);
+        if (requestCode == PICTURE_ACTIVITY)
+        {
+            webViewFacebook.goBack();
+        }
     }
 
     // app is already running and gets a new intent (used to share link without open another activity)
@@ -1055,8 +1060,19 @@ private int toolBarColor=0;
                             matcher.appendTail(newWebResponse);
 
                         }
-                        if (webResourceRetrievalResponse != null && webResourceRetrievalResponse.webResourceRetrievalContent != null && webResourceRetrievalResponse.webResourceRetrievalContent.contains("_6j_d.show")) {
-                            //webResourceRetrievalResponse.webResourceRetrievalContent = webResourceRetrievalResponse.webResourceRetrievalContent.replace("_6j_d.show{display:block}", "_6j_d.show{display:none}");
+                        if (webResourceRetrievalResponse != null && webResourceRetrievalResponse.webResourceRetrievalContent != null && webResourceRetrievalResponse.webResourceRetrievalContent.contains("this._updatePosition")) {
+                            Pattern pattern = Pattern.compile("(this\\._updatePosition\\s*=\\s*function\\s*\\(\\).*?h\\s*=\\s*b\\(\\\"Vector\\\"\\)\\.getElementPosition\\(e\\);)");
+                            Matcher matcher = pattern.matcher(webResourceRetrievalResponse.getWebResourceRetrievalContent());
+                            StringBuffer newWebResponse = new StringBuffer();
+                            while (matcher.find())
+                            {
+                                matcher.appendReplacement(newWebResponse,matcher.group(1));
+                                newWebResponse.append("h = {y:(e.getBoundingClientRect().top + pageYOffset),x : (e.getBoundingClientRect().left + pageXOffset)};");
+                            }
+                            matcher.appendTail(newWebResponse);
+
+                            webResourceRetrievalResponse.setWebResourceRetrievalContent(newWebResponse.toString());
+                            //webResourceRetrievalContent = webResourceRetrievalResponse.webResourceRetrievalContent.replace("_6j_d.show{display:block}", "_6j_d.show{display:none}");
                         }
 
                         if (webResourceRetrievalResponse != null && (webResourceRetrievalResponse.getWebResourceRetrievalType().contains("text") || webResourceRetrievalResponse.getWebResourceRetrievalType().contains("css"))) {
@@ -1403,7 +1419,7 @@ private int toolBarColor=0;
 
         if (b) {
             //open the activity to show the pic
-            startActivity(new Intent(this, PictureActivity.class).putExtra("URL", url));
+            startActivityForResult(new Intent(this, PictureActivity.class).putExtra("URL", url),PICTURE_ACTIVITY);
         }
         /*if (url.contains(getString(R.string.urlFacebookMobileMessages))) {
             webViewFacebook.getWebViewClient().doUpdateVisitedHistory(webViewFacebook, url, false);
@@ -1424,6 +1440,8 @@ private int toolBarColor=0;
     public void onPageFinished(String url) {
         setMenuBarNotificationState(this.webViewFacebook, this.menuBar);
         ApplyCustomCss();
+        webViewFacebook.loadUrl(getString(R.string.fixMarkPeople));
+
         // MyAdvancedWebView myAdvancedWebView = findViewById(webView);
         //myAdvancedWebView.scrollBy(0,88);
         if (savedPreferences.getBoolean("pref_enableMessagesShortcut", false)) {
@@ -1705,7 +1723,9 @@ private int toolBarColor=0;
                             for (String key : notificationStates.keySet()) {
 
                                 if (html.contains(key)) {
-                                    Pattern pattern = Pattern.compile("\\u003Cdiv class=\"_59te jewel _hzb _2cnm\\s(.*)Count\".*id=\"([^_]*)_jewel\"[^>]*>\\u003Ca[^>]*>\\u003Cspan[^>]*>[^>]*\\u003C/span>\\u003Cdiv[^>]*>\\u003Cdiv[^>]*>\\u003Cspan class=\"_59tg\" data-sigil=\"count\">(\\d+)\\u003C/span>\\u003C/div>\\u003C/div>\\u003C/a>\\u003C/div>");
+//                                    Pattern pattern = Pattern.compile("\\u003Cdiv class=\"_59te jewel _hzb _2cnm\\s(.*)Count\".*id=\"([^_]*)_jewel\"[^>]*>\\u003Ca[^>]*>\\u003Cspan[^>]*>[^>]*\\u003C/span>\\u003Cdiv[^>]*>\\u003Cdiv[^>]*>\\u003Cspan class=\"_59tg\" data-sigil=\"count\">(\\d+)\\u003C/span>\\u003C/div>\\u003C/div>\\u003C/a>\\u003C/div>");
+                                    Pattern pattern = Pattern.compile("\\\\u003Cdiv\\s+class=\\\\\"_59te\\s+jewel\\s+_hzb.*?\\s+([A-Za-z]*?)Count\\\\\".*?id=\\\\\"([^_]*)_jewel\\\\\"[^>]*>\\\\u003Ca[^>]*>\\\\u003Cspan[^>]*>[^>]*\\\\u003C/span>\\\\u003Cdiv[^>]*>\\\\u003Cdiv[^>]*>\\\\u003Cspan class=\\\\\"_59tg\\\\\" data-sigil=\\\\\"count\\\\\">(\\d+)\\\\u003C/span>\\\\u003C/div>\\\\u003C/div>\\\\u003C/a>\\\\u003C/div>", Pattern.DOTALL);
+
                                     Matcher matcher = pattern.matcher(html);
                                     while (matcher.find()) {
                                         String type = matcher.group(2);
@@ -1848,6 +1868,7 @@ private int toolBarColor=0;
     }
 
     private void ApplyCustomCss() {
+
         String css = "";
         if (savedPreferences.getBoolean("pref_centerTextPosts", false)) {
             css += getString(R.string.centerTextPosts);

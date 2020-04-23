@@ -16,6 +16,7 @@ import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.WindowManager;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -51,16 +52,23 @@ public class PictureActivity extends AppCompatActivity implements MyAdvancedWebV
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         savedPreferences = PreferenceManager.getDefaultSharedPreferences(this); // setup the sharedPreferences
-        //SetTheme();//set the activity theme
+        SetTheme();//set the activity theme
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_picture);
         Toolbar toolbar = findViewById(R.id.toolbar);
+
         setSupportActionBar(toolbar);
         if (this.getActionBar() != null)
         {
             this.getActionBar().hide();
         }
-
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                webViewPicture.goBack();
+                finish();
+            }
+        });
         AppBarLayout appBarLayout = findViewById(R.id.appBarLayout);
         SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.swipe_container);
         int actionBarHeight = getSupportActionBar().getHeight();

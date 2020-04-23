@@ -36,6 +36,19 @@
 	}
 }
 hideHeaderFooterMessages();
-</string>
+	</string>
+	<string name="fixMarkPeople" translatable="false">
+		javascript:function fixMarkPeople(){
+		var textInput = document.getElementById(\'composerInput\');
+		textInput.oninput = function (correctMentions){
+		var mentionsField = document.querySelector(\'div.mentions-suggest\');
+  		var commentBox = document.querySelector(\'div.mentions\');
+  		if (mentionsField != null &amp;&amp; commentBox != null){
+    	mentionsField.style.display=\'block\';
+   		document.querySelector(\'div.mentions\').appendChild(mentionsField);
+  		}}
+		}
+		fixMarkPeople();
+	</string>
 
 </resources>
