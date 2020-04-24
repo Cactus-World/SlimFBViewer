@@ -37,6 +37,14 @@
                 android:data="https://github.com/indywidualny/FaceSlim" />
         </PreferenceScreen>
         <PreferenceScreen
+            android:key="pref_SlimSocial"
+            android:summary="@string/summary_SlimSocial"
+            android:title="SlimSocial Developer">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="https://github.com/rignaneseleo/SlimSocial-for-Facebook-UWP" />
+        </PreferenceScreen>
+        <PreferenceScreen
             android:key="pref_FaceSlim"
             android:summary="@string/summary_FaceSlim"
             android:title="FaceSlim Developers">

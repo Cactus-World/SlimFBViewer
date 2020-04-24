@@ -79,7 +79,7 @@
     <string name="summary_rate">Vous pouvez me soutenir en mettant 5 étoiles dans le Playstore. S\'il vous plaît, si quelque chose ne fonctionne pas, contactez-moi avant d\'écrire une mauvaise critique</string>
     <string name="title_enableMessagesShortcut">Activer les raccourcis messages</string>
     <string name="summary_enableMessagesShortcut">En activant ceci, l\'onglet messages SlimSocial s\'ouvrira lorsque vous appuyez sur l\'icone Facebook messages </string>
-    <string name="title_useSlimSocialSubfolderToDownloadedFiles">Utilisez le sous-dossier \'SlimSocial\'</string>
+    <string name="title_useSlimSocialSubfolderToDownloadedFiles">Utilisez le sous-dossier \'SlimFBViewer\'</string>
     <string name="summary_useSlimSocialSubfolderToDownloadedFiles">Enregistrer les images dans un sous-dossier plutôt que dans le dossier \'Téléchargements\'</string>
     <string name="title_noBar">no barre supérieure</string>
     <string name="summary_noBar">La barre bleue est éliminée sur le dessus</string>

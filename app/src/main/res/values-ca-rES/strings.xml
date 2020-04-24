@@ -80,7 +80,7 @@ Toca aquí per veure la seva increïble feina!</string>
     <string name="summary_rate">Pots ajudar-me escrivint ressenyes de 5 estels a playStore. Si us plau, si alguna cosa no funciona, contacta amb mi abans d\'escriure una mala crítica</string>
     <string name="title_enableMessagesShortcut">Habilitar drecera de missates</string>
     <string name="summary_enableMessagesShortcut">Habilitant això, la pestanya de missatges de SlimSocial s\'oabrirà quan toquis la icona de missatges de Facebook</string>
-    <string name="title_useSlimSocialSubfolderToDownloadedFiles">Fes servir la subcarpeta \'SlimSocial\'</string>
+    <string name="title_useSlimSocialSubfolderToDownloadedFiles">Fes servir la subcarpeta \'SlimFBViewer\'</string>
     <string name="summary_useSlimSocialSubfolderToDownloadedFiles">Desa les imatges a una subcarpeta enlloc de a la carpeta \'Descarregues\'</string>
     <string name="shareLink">Comparteix aquesta pàgina</string>
     <string name="title_enableNotifications">Permet notificacions</string>

@@ -79,7 +79,7 @@
     <string name="summary_rate">Du kan støtte meg ved å skrive en ★★★★★-anmeldelse i Play Store. Hvis noe ikke virker, vennligst kontakt meg før du skriver en dårlig anmeldelse</string>
     <string name="title_enableMessagesShortcut">Aktiver snarvei for meldinger</string>
     <string name="summary_enableMessagesShortcut">Hvis du aktiverer dette, åpnes kategorien SlimSocial-meldinger når du klikker på Facebook-meldingsikonet</string>
-    <string name="title_useSlimSocialSubfolderToDownloadedFiles">Bruk \'SlimSocial\'--undermappe</string>
+    <string name="title_useSlimSocialSubfolderToDownloadedFiles">Bruk \'SlimFBViewer\'--undermappe</string>
     <string name="summary_useSlimSocialSubfolderToDownloadedFiles">Lagre bilder i en undermappe i stedet for i \'Download\'-mappen</string>
     <string name="shareLink">Del denne siden</string>
     <string name="title_enableNotifications">Aktiver varsler</string>

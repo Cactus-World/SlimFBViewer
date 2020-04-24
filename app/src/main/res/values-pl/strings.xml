@@ -70,7 +70,7 @@
     <string name="holdImageToDownload">Przytrzymaj na zdjęciu, aby je pobrać!</string>
     <string name="title_enableMessagesShortcut">Włącz skrót do wiadomości</string>
     <string name="summary_enableMessagesShortcut">Włączenie tej opcji, spowoduje uruchomienie zakładki z wiadomościami SlimSocial po wciśnięciu ikony wiadomości na Facebooku</string>
-    <string name="title_useSlimSocialSubfolderToDownloadedFiles">Korzystaj z podfolderu \'SlimSocial\'</string>
+    <string name="title_useSlimSocialSubfolderToDownloadedFiles">Korzystaj z podfolderu \'SlimFBViewer\'</string>
     <string name="summary_useSlimSocialSubfolderToDownloadedFiles">Zapisuj zdjęcia w subfolderze, zamiast w folderze Download</string>
     <string name="summary_rate">Możesz wesprzeć mnie, dając 5 gwiazdek w opiniach w Sklepie Play. Proszę, jeśli coś nie działa, skontaktuj się ze mną, zanim napiszesz złą opinię</string>
     <string name="title_rate">Oceń tę aplikację, używając 5 gwiazdek</string>

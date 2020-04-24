@@ -80,7 +80,7 @@
     <string name="summary_rate">Вы можете поддержать меня, написав 5-звездочный обзор в PlayStore. Пожалуйста, если что-то не работает, свяжитесь со мной, прежде чем написать плохой отзыв</string>
     <string name="title_enableMessagesShortcut">Включить ярлык сообщений</string>
     <string name="summary_enableMessagesShortcut">Включив это, вы откроете вкладку сообщений SlimSocial, когда вы нажмете на иконку сообщений Facebook.</string>
-    <string name="title_useSlimSocialSubfolderToDownloadedFiles">Используйте подпапку SlimSocial</string>
+    <string name="title_useSlimSocialSubfolderToDownloadedFiles">Используйте подпапку SlimFBViewer</string>
     <string name="summary_useSlimSocialSubfolderToDownloadedFiles">Сохраняйте изображения в подпапке, а не в папке «Скачать»</string>
     <string name="shareLink">Поделиться этой страницей</string>
     <string name="title_enableNotifications">Включить уведомления</string>

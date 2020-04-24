@@ -79,7 +79,7 @@
     <string name="summary_rate">Você pode me ajudar escrevendo uma avaliação de 5 estrelas na PlayStore. Por favor se algo não funciona, entre em contato comigo antes de escrever uma avaliação negativa </string>
     <string name="title_enableMessagesShortcut">Ativar atalho de mensagens </string>
     <string name="summary_enableMessagesShortcut">Ativando isso, a aba de mensagens do SlimSocial será aberta quando tocar sobre o ícone de mensagens do Facebook </string>
-    <string name="title_useSlimSocialSubfolderToDownloadedFiles">Use a subpasta \'SlimSocial\' </string>
+    <string name="title_useSlimSocialSubfolderToDownloadedFiles">Use a subpasta \'SlimFBViewer\'</string>
     <string name="summary_useSlimSocialSubfolderToDownloadedFiles">Salve imagens em uma subpasta ao invés da pasta \'Download\' </string>
     <string name="shareLink">Compartilhe essa pagina</string>
     <string name="title_enableNotifications">Ativar notificações </string>

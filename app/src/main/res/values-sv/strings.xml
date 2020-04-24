@@ -79,7 +79,7 @@
 	<string name="summary_rate">Du kan stödja mig genom att skriva en femstjärnig recension i PlayStore. Snälla, om något inte fungerar så kontakta mig innan du skriver en dålig recension</string>
 	<string name="title_enableMessagesShortcut">Aktivera genväg för meddelanden</string>
 	<string name="summary_enableMessagesShortcut">Om du aktiverar detta öppnas fliken SlimSocial-meddelanden när du trycker på Facebook-meddelandesymbolen</string>
-	<string name="title_useSlimSocialSubfolderToDownloadedFiles">Använd \'SlimSocial\' undermapp</string>
+	<string name="title_useSlimSocialSubfolderToDownloadedFiles">Använd \'SlimFBViewer\' undermapp</string>
 	<string name="summary_useSlimSocialSubfolderToDownloadedFiles">Spara bilder i en undermapp istället för i mappen "Download"</string>
 	<string name="shareLink">Dela den här sidan</string>
 	<string name="title_enableNotifications">Aktivera notiser</string>

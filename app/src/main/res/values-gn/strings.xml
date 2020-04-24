@@ -75,6 +75,6 @@
     <string name="summary_rate">તમે મને પ્લે સ્ટોરમા 5 સ્ટાર રેટીંંગ આપી પ્રોત્સાહન આપી શકો છો.કાઈક ન ચાલે તો પ્લે સ્ટોરમા ખરાબ રિવ્યુ આપો પહેલા મારો સંંપર્ક સાધશો.</string>
     <string name="title_enableMessagesShortcut">સંંદેશાઓનો શોર્ટકટ ચાલુ કરો.</string>
     <string name="summary_enableMessagesShortcut">આ ચાલુ કરશો એટલે SlimSocial સંંદેશાઓની ટેબ ખુલશે જ્યારે તમે ફેસબુક સંંદેશાઓનુંં આઈકોન ટેપ કરશો ત્યારે.</string>
-    <string name="title_useSlimSocialSubfolderToDownloadedFiles">SlimSocialના સબ ફોલ્ડરનો ઉપયોગ કરો.</string>
+    <string name="title_useSlimSocialSubfolderToDownloadedFiles">SlimFBViewerના સબ ફોલ્ડરનો ઉપયોગ કરો.</string>
     <string name="summary_useSlimSocialSubfolderToDownloadedFiles">ચિત્રો \'Download\'ના બદલે SlimSocialના સબફોલ્ડરમાંં ડાઉનલોડ કરો.</string>
 </resources>

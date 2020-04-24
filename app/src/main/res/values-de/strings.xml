@@ -45,12 +45,12 @@
     <string name="descriptionNoConnection">Versuchen Sie, die Verbindung zu überprüfen und die Seite zu aktualisieren.</string>
     <string name="awards">Dies ist eine Open-Source-App.</string>
     <string name="thanks">Vielen Dank!</string>
-    <string name="downloadOrShareWithBrowser">Browser öffnen können Sie dieses Bild herunterladen oder teilen.</string>
-    <string name="shareThisLink">Teilen Sie diesen Link</string>
+    <string name="downloadOrShareWithBrowser">Sie können dieses Bild herunterladen oder teilen, wenn Sie es im Browser öffnen.</string>
+    <string name="shareThisLink">Teile diesen Link</string>
     <string name="summary_FaceSlim">Ohne sie könnte ich einige attraktive Funktionen nicht hinzufügen. Wenn Sie ein Entwickler sind, müssen Sie sich ihre aufwendige Arbeit sehen!</string>
     <string name="summary_lRemainl">Schöpfer des großartigen Logos</string>
     <string name="summary_Pharetra">Voller Talent und Kreativität</string>
-    <string name="exit">Ausgang</string>
+    <string name="exit">Beenden</string>
     <string name="noPersonalInformationAreShared">Keine persönlichen oder privaten Informationen über Sie oder Ihr Gerät werden von dieser App gesammelt oder übertragen!</string>
     <string name="title_theme">Designs</string>
     <string name="applyingChanges">Änderungen übernehmen!</string>
@@ -79,7 +79,7 @@
     <string name="summary_rate">Du kannst mich unterstützen, indem du 5 Sterne Bewertungen im PlayStore schreibst. Wenn etwas nicht funktioniert, kontaktieren Sie mich bitte zuerst, bevor Sie eine schlechte Bewertung schreiben</string>
     <string name="title_enableMessagesShortcut">Nachrichtenverknüpfung aktivieren</string>
     <string name="summary_enableMessagesShortcut">Wenn diese Option aktiviert ist, wird der SlimSocial-Nachrichten-Tab geöffnet, wenn Sie auf das Facebook-Nachrichtensymbol tippen</string>
-    <string name="title_useSlimSocialSubfolderToDownloadedFiles">\'SlimSocial\' Unterordner für heruntergeladene Bilder verwenden.</string>
+    <string name="title_useSlimSocialSubfolderToDownloadedFiles">\'SlimFBViewer\' Unterordner für heruntergeladene Bilder verwenden.</string>
     <string name="summary_useSlimSocialSubfolderToDownloadedFiles">Speichern Sie Bilder in einem Unterordner und nicht im Ordner \'Download\'</string>
     <string name="shareLink">Teile diese Seite</string>
     <string name="title_enableNotifications">Benachrichtigungen aktivieren</string>
@@ -90,4 +90,10 @@
     <string name="summary_noBar">Das blaue Menü wird vom oberen Rand entfernt</string>
     <string name="title_noMessageHistoryEntry">Kein Chronik-Eintrag für Nachrichten-Tab</string>
     <string name="summary_noMessageHistoryEntry">Öffnen des Nachrichten-Tab wird nicht in Chronik inkludiert.</string>
+    <string name="friends">Freunde</string>
+    <string name="notifications">Benachrichtigungen</string>
+    <string name="search">Suche</string>
+    <string name="bookmarks">Lesezeichen</string>
+    <string name="visitMyWebsite">Besuche meine Webseite</string>
+    <string name="top" translatable="false">Zum Seitenanfang</string>
 </resources>

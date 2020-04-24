@@ -79,6 +79,6 @@
     <string name="summary_rate">Mă poți susține scriind o recenzie de 5 stele în PlayStore. Dacă ceva nu funcționează, contactează-mă te rog înainte de a scrie recenzie negativă!</string>
     <string name="title_enableMessagesShortcut">Activează scurtătură mesaje.</string>
     <string name="summary_enableMessagesShortcut">Activând această opţiune, icon-ul mesaje Facebook se va deschide cu \'SlimSocial messages\' </string>
-    <string name="title_useSlimSocialSubfolderToDownloadedFiles">Utilizează subdirector \'SlimSocial\'</string>
+    <string name="title_useSlimSocialSubfolderToDownloadedFiles">Utilizează subdirector \'SlimFBViewer\'</string>
     <string name="summary_useSlimSocialSubfolderToDownloadedFiles">Salvează imaginile într-un subdirector în loc de directorul \'Download\'</string>
 </resources>

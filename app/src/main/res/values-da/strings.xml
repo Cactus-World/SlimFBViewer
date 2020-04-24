@@ -79,7 +79,7 @@
     <string name="summary_rate">Du kan støtte mig ved at give mig et 5-stjernet review i Play Store. Hvis noget ikke virker så kontakt mig venligst før du skriver et dårligt review</string>
     <string name="title_enableMessagesShortcut">Aktivér beskedgenvej</string>
     <string name="summary_enableMessagesShortcut">Aktiverer du denne, så kan SlimSocial åbne når du trykker på Facebooks besked ikon.</string>
-    <string name="title_useSlimSocialSubfolderToDownloadedFiles">Brug \'SlimSocial\' undermappe</string>
+    <string name="title_useSlimSocialSubfolderToDownloadedFiles">Brug \'SlimFBViewer\' undermappe</string>
     <string name="summary_useSlimSocialSubfolderToDownloadedFiles">Gem billeder i en undermappei stedet for Download mappen</string>
     <string name="shareLink">Del denne side</string>
     <string name="title_enableNotifications">Aktivér Notifikationer</string>

@@ -79,7 +79,7 @@
     <string name="summary_rate">Bạn có thể hỗ trợ tôi bằng cách viết bài đánh giá 5 sao trên PlayStore. Nếu có sự cố bất kỳ xảy ra, xin vui lòng liên hệ với tôi trước khi viết bình luận chê trách</string>
     <string name="title_enableMessagesShortcut">Bật phím tắt tin nhắn</string>
     <string name="summary_enableMessagesShortcut">Khi kích hoạt tính năng này, thẻ tin nhắn SlimSocial sẽ mở khi bạn nhấn vào biểu tượng tin nhắn Facebook</string>
-    <string name="title_useSlimSocialSubfolderToDownloadedFiles">Sử dụng thư mục con "SlimSocial"</string>
+    <string name="title_useSlimSocialSubfolderToDownloadedFiles">Sử dụng thư mục con SlimFBViewer</string>
     <string name="summary_useSlimSocialSubfolderToDownloadedFiles">Lưu ảnh trong thư mục con thay vì trong thư mục "Tải xuống"</string>
     <string name="shareLink">Chia sẻ trang này</string>
     <string name="title_enableNotifications">Bật thông báo</string>

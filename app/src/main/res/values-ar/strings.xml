@@ -79,7 +79,7 @@
     <string name="summary_rate">يمكنك دعم لي كتابة 5 نجوم الاستعراض في PlayStore. من فضلك إذا كان هناك شيء لا يعمل ، اتصل بي قبل كتابة مراجعة سيئة</string>
     <string name="title_enableMessagesShortcut">تمكين اختصار الرسائل</string>
     <string name="summary_enableMessagesShortcut">تمكين هذا ، سيتم فتح علامة التبويب رسائل SlimSocial عند النقر على أيقونة رسائل Facebook</string>
-    <string name="title_useSlimSocialSubfolderToDownloadedFiles">استخدم فرعي "SlimSocial"</string>
+    <string name="title_useSlimSocialSubfolderToDownloadedFiles">استخدم فرعي SlimFBViewerl</string>
     <string name="summary_useSlimSocialSubfolderToDownloadedFiles">حفظ الصور في مجلد فرعي بدلاً من المجلد "تنزيل"</string>
     <string name="shareLink">شارك هذه الصفحة</string>
     <string name="title_enableNotifications">تمكين التنبيهات</string>

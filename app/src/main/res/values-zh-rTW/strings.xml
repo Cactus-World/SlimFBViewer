@@ -79,7 +79,7 @@
     <string name="summary_rate">你可以透過在 PlayStore 給我五星評論來支持我。如果有什麼功能有問題，請在給我差評前先與我聯繫</string>
     <string name="title_enableMessagesShortcut">啟用訊息捷徑</string>
     <string name="summary_enableMessagesShortcut">啟用此功能後，當您點擊 Facebook 訊息圖示時，將打開 SlimSocial 上的訊息分頁</string>
-    <string name="title_useSlimSocialSubfolderToDownloadedFiles">使用 \'SlimSocial\' 子資料夾</string>
+    <string name="title_useSlimSocialSubfolderToDownloadedFiles">使用 \'SlimFBViewer\' 子資料夾</string>
     <string name="summary_useSlimSocialSubfolderToDownloadedFiles">將圖片保存在子資料夾中而不是 “下載” 資料夾中</string>
     <string name="shareLink">分享此頁面</string>
     <string name="title_enableNotifications">啟用通知</string>

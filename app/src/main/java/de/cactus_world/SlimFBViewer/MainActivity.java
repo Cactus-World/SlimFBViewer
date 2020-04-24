@@ -29,6 +29,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
+import android.util.ArraySet;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.KeyEvent;
@@ -79,7 +80,9 @@ import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -132,7 +135,7 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
     private WebChromeClient myWebChromeClient;
     private WebChromeClient.CustomViewCallback mCustomViewCallback;
     private android.webkit.CookieManager cookieManager;
-    private boolean darkThemeSet=false;
+    private boolean darkThemeSet = false;
 
     private class WebResourceRetrievalResponse {
         private String webResourceRetrievalType;
@@ -261,6 +264,7 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
 
     private View mCustomView;
     private Menu menuBar;
+    private HashSet<Integer> collapsableActionItems = new HashSet<Integer>(){{add(R.id.refresh); add(R.id.top);}};
     private Drawable notifications;
     private Drawable feed;
     private Drawable message;
@@ -274,7 +278,7 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
     private String fbMobileSearchUrl;
     private String fbMobileBookmarksUrl;
     private HashMap<String, Integer> notificationStates = new HashMap<String, Integer>();
-private int toolBarColor=0;
+    private int toolBarColor = 0;
 
     //*********************** ACTIVITY EVENTS ****************************
     @Override
@@ -312,13 +316,10 @@ private int toolBarColor=0;
         //swipeRefreshLayout.setTranslationY(-88);
 
 
-        try
-        {
+        try {
 //            getActionBar().setDisplayShowTitleEnabled(false);
             getActionBar().hide();
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -351,10 +352,9 @@ private int toolBarColor=0;
     }
 
     private void SetAppTheme() {
-        if (darkThemeSet)
-        {
+        if (darkThemeSet) {
             constraintLayout.setBackgroundColor(R.color.blackSlimFBViewerTheme);
-        }else {
+        } else {
             constraintLayout.setBackgroundColor(R.color.blueSlimFacebookTheme);
         }
 
@@ -363,8 +363,7 @@ private int toolBarColor=0;
     private void SetAppBarLayout() {
         if (darkThemeSet) {
             appBarLayout.getContext().setTheme(R.style.DarkTheme_AppBarOverlay);
-        }
-        else{
+        } else {
             appBarLayout.getContext().setTheme(R.style.DefaultTheme_AppBarOverlay);
         }
     }
@@ -372,8 +371,7 @@ private int toolBarColor=0;
     private void SetToolBarTheme() {
         if (darkThemeSet) {
             toolbar.setPopupTheme(R.style.DarkTheme_PopupOverlay);
-        }
-        else{
+        } else {
             toolbar.setPopupTheme(R.style.DefaultTheme_PopupOverlay);
 
         }
@@ -576,8 +574,7 @@ private int toolBarColor=0;
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
         webViewFacebook.onActivityResult(requestCode, resultCode, intent);
-        if (requestCode == PICTURE_ACTIVITY)
-        {
+        if (requestCode == PICTURE_ACTIVITY) {
             webViewFacebook.goBack();
         }
     }
@@ -892,7 +889,7 @@ private int toolBarColor=0;
                         SharedPreferences.Editor sharedPreferencesEditor = savedPreferences.edit();
                         sharedPreferencesEditor.putBoolean("hasRun", true);
                         sharedPreferencesEditor.commit();
-                        return super.shouldInterceptRequest(webView,webResourceRequest);
+                        return super.shouldInterceptRequest(webView, webResourceRequest);
                     }
                     if (webResourceRequest.getMethod().equals("GET") && savedPreferences.getBoolean("hasRun", false)) {
                         //if (webResourceRequest.isForMainFrame()) {
@@ -986,7 +983,7 @@ private int toolBarColor=0;
                                     //String test = httpURLConnection.getRequestMethod();
                                     InputStream inputStream = httpURLConnection.getInputStream();
 
-                                    if (!((String) ((List<String>) responseHeaders.get("Content-Type")).get(0)).contains("image") && !((String) ((List<String>) responseHeaders.get("Content-Type")).get(0)).contains("video")&& !((String) ((List<String>) responseHeaders.get("Content-Type")).get(0)).contains("audio")) {
+                                    if (!((String) ((List<String>) responseHeaders.get("Content-Type")).get(0)).contains("image") && !((String) ((List<String>) responseHeaders.get("Content-Type")).get(0)).contains("video") && !((String) ((List<String>) responseHeaders.get("Content-Type")).get(0)).contains("audio")) {
                                         bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
                                         StringBuffer buffer = new StringBuffer();
                                         String line = "";
@@ -1022,7 +1019,7 @@ private int toolBarColor=0;
                                             e.printStackTrace();
                                         }
                                         //return webResourceRetrievalResponse;
-                                    }else{//video or audio stream detected
+                                    } else {//video or audio stream detected
                                         return super.shouldInterceptRequest(webView, webResourceRequest);
                                     }
 
@@ -1064,9 +1061,8 @@ private int toolBarColor=0;
                             Pattern pattern = Pattern.compile("(this\\._updatePosition\\s*=\\s*function\\s*\\(\\).*?h\\s*=\\s*b\\(\\\"Vector\\\"\\)\\.getElementPosition\\(e\\);)");
                             Matcher matcher = pattern.matcher(webResourceRetrievalResponse.getWebResourceRetrievalContent());
                             StringBuffer newWebResponse = new StringBuffer();
-                            while (matcher.find())
-                            {
-                                matcher.appendReplacement(newWebResponse,matcher.group(1));
+                            while (matcher.find()) {
+                                matcher.appendReplacement(newWebResponse, matcher.group(1));
                                 newWebResponse.append("h = {y:(e.getBoundingClientRect().top + pageYOffset),x : (e.getBoundingClientRect().left + pageXOffset)};");
                             }
                             matcher.appendTail(newWebResponse);
@@ -1085,14 +1081,11 @@ private int toolBarColor=0;
 
                             }
                             */
-                            if (webResourceRetrievalResponse.webResourceRetrievalContent.contains(getString(R.string.messageHistorySelector)))
-                            {
-                                if (savedPreferences.getBoolean("pref_noMessageHistoryEntry",false))
-                                {
-                                    webResourceRetrievalResponse.webResourceRetrievalContent=webResourceRetrievalResponse.webResourceRetrievalContent.replace(getString(R.string.messageHistorySelector)+"0",getString(R.string.messageHistorySelector)+"1");
-                                }else
-                                {
-                                    webResourceRetrievalResponse.webResourceRetrievalContent=webResourceRetrievalResponse.webResourceRetrievalContent.replace(getString(R.string.messageHistorySelector)+"1",getString(R.string.messageHistorySelector)+"0");
+                            if (webResourceRetrievalResponse.webResourceRetrievalContent.contains(getString(R.string.messageHistorySelector))) {
+                                if (savedPreferences.getBoolean("pref_noMessageHistoryEntry", false)) {
+                                    webResourceRetrievalResponse.webResourceRetrievalContent = webResourceRetrievalResponse.webResourceRetrievalContent.replace(getString(R.string.messageHistorySelector) + "0", getString(R.string.messageHistorySelector) + "1");
+                                } else {
+                                    webResourceRetrievalResponse.webResourceRetrievalContent = webResourceRetrievalResponse.webResourceRetrievalContent.replace(getString(R.string.messageHistorySelector) + "1", getString(R.string.messageHistorySelector) + "0");
                                 }
                             }
                             Pattern pattern = Pattern.compile("(<div.*?data-sigil=\\\"MTopBlueBarHeader\\\"[^>]*)>");
@@ -1306,13 +1299,13 @@ private int toolBarColor=0;
         switch (savedPreferences.getString("pref_theme", "default")) {
             case "DarkTheme": {
                 setTheme(R.style.DarkTheme_NoActionBar);
-                toolBarColor=R.color.blackSlimFBViewerTheme;
+                toolBarColor = R.color.blackSlimFBViewerTheme;
                 this.darkThemeSet = true;
                 break;
             }
             default: {
                 setTheme(R.style.DefaultTheme_NoActionBar);
-                toolBarColor=R.color.blueSlimFacebookTheme;
+                toolBarColor = R.color.blueSlimFacebookTheme;
                 this.darkThemeSet = false;
                 break;
             }
@@ -1342,23 +1335,20 @@ private int toolBarColor=0;
     }
 
     private void GoNotifications() {
-        if (isFirstNotificationsLoad)
-        {
+        if (isFirstNotificationsLoad) {
             webViewFacebook.loadUrl(getString(R.string.urlFacebookMobileNotifications));
-            isFirstNotificationsLoad=false;
-        }else
-        {
+            isFirstNotificationsLoad = false;
+        } else {
             webViewFacebook.loadUrl("javascript:notifications_jewel.firstChild.click()");
         }
 
     }
 
     private void GoMessages() {
-        if (isFirstMessagesLoad)
-        {
+        if (isFirstMessagesLoad) {
             webViewFacebook.loadUrl(getString(R.string.urlFacebookMobileMessages));
-            isFirstMessagesLoad=false;
-        }else {
+            isFirstMessagesLoad = false;
+        } else {
             webViewFacebook.loadUrl("javascript:messages_jewel.firstChild.click()");
         }
     }
@@ -1373,7 +1363,7 @@ private int toolBarColor=0;
     }
 
     private void GoBookmarks() {
-        if (isFirstBookmarksLoad || savedPreferences.getBoolean("pref_noBar",false)) {
+        if (isFirstBookmarksLoad || savedPreferences.getBoolean("pref_noBar", false)) {
             webViewFacebook.loadUrl(getString(R.string.urlFacebookMobileBookmarks));
             isFirstBookmarksLoad = false;
         } else {
@@ -1419,7 +1409,7 @@ private int toolBarColor=0;
 
         if (b) {
             //open the activity to show the pic
-            startActivityForResult(new Intent(this, PictureActivity.class).putExtra("URL", url),PICTURE_ACTIVITY);
+            startActivityForResult(new Intent(this, PictureActivity.class).putExtra("URL", url), PICTURE_ACTIVITY);
         }
         /*if (url.contains(getString(R.string.urlFacebookMobileMessages))) {
             webViewFacebook.getWebViewClient().doUpdateVisitedHistory(webViewFacebook, url, false);
@@ -1577,9 +1567,11 @@ private int toolBarColor=0;
      }*/
     public void setMenuItemActive(Menu menu, MenuItem item) {
         ColorStateList colorStateList = null;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            colorStateList = item.getIconTintList();
-        }
+        if (item.getIcon() != null && ! collapsableActionItems.contains(item.getItemId()) ) {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                colorStateList = item.getIconTintList();
+            }
+
         if (colorStateList != null) {
             colorStateList = colorStateList.withAlpha(alphaNotSelected);
             setMenuItemColorState(menu, R.id.home, colorStateList);
@@ -1600,6 +1592,7 @@ private int toolBarColor=0;
             item.getIcon().getCurrent().setAlpha(alphaSelected);
         }
     }
+}
 
     public void setMenuItemColorState(Menu menu, int menuId, ColorStateList colorStateList) {
         MenuItem menuItem = menu.findItem(menuId);
@@ -1905,67 +1898,67 @@ private int toolBarColor=0;
         webViewFacebook.loadUrl(getString(R.string.editCss).replace("$css", css));
     }
 
-    // handle long clicks on links, an awesome way to avoid memory leaks
-    private static class MyHandler extends Handler {
-        MainActivity activity;
-        //thanks to FaceSlim
-        private final WeakReference<MainActivity> mActivity;
+// handle long clicks on links, an awesome way to avoid memory leaks
+private static class MyHandler extends Handler {
+    MainActivity activity;
+    //thanks to FaceSlim
+    private final WeakReference<MainActivity> mActivity;
 
-        public MyHandler(MainActivity activity) {
-            this.activity = activity;
-            mActivity = new WeakReference<>(activity);
-        }
+    public MyHandler(MainActivity activity) {
+        this.activity = activity;
+        mActivity = new WeakReference<>(activity);
+    }
 
-        @Override
-        public void handleMessage(Message msg) {
-            SharedPreferences savedPreferences = PreferenceManager.getDefaultSharedPreferences(activity); // setup the sharedPreferences
-            if (savedPreferences.getBoolean("pref_enableFastShare", true)) {
-                MainActivity activity = mActivity.get();
-                if (activity != null) {
+    @Override
+    public void handleMessage(Message msg) {
+        SharedPreferences savedPreferences = PreferenceManager.getDefaultSharedPreferences(activity); // setup the sharedPreferences
+        if (savedPreferences.getBoolean("pref_enableFastShare", true)) {
+            MainActivity activity = mActivity.get();
+            if (activity != null) {
 
-                    // get url to share
-                    String url = (String) msg.getData().get("url");
+                // get url to share
+                String url = (String) msg.getData().get("url");
 
-                    if (url != null) {
+                if (url != null) {
                     /* "clean" an url to remove Facebook tracking redirection while sharing
                     and recreate all the special characters */
-                        url = decodeUrl(cleanUrl(url));
+                    url = decodeUrl(cleanUrl(url));
 
-                        // create share intent for long clicked url
-                        Intent intent = new Intent(Intent.ACTION_SEND);
-                        intent.setType("text/plain");
-                        intent.putExtra(Intent.EXTRA_TEXT, url);
-                        activity.startActivity(Intent.createChooser(intent, activity.getString(R.string.shareThisLink)));
-                    }
+                    // create share intent for long clicked url
+                    Intent intent = new Intent(Intent.ACTION_SEND);
+                    intent.setType("text/plain");
+                    intent.putExtra(Intent.EXTRA_TEXT, url);
+                    activity.startActivity(Intent.createChooser(intent, activity.getString(R.string.shareThisLink)));
                 }
             }
         }
-
-        // "clean" an url and remove Facebook tracking redirection
-        private static String cleanUrl(String url) {
-            return url.replace("http://lm.facebook.com/l.php?u=", "")
-                    .replace("https://m.facebook.com/l.php?u=", "")
-                    .replace("http://0.facebook.com/l.php?u=", "")
-                    .replaceAll("&h=.*", "").replaceAll("\\?acontext=.*", "");
-        }
-
-        // url decoder, recreate all the special characters
-        private static String decodeUrl(String url) {
-            return url.replace("%3C", "<").replace("%3E", ">")
-                    .replace("%23", "#").replace("%25", "%")
-                    .replace("%7B", "{").replace("%7D", "}")
-                    .replace("%7C", "|").replace("%5C", "\\")
-                    .replace("%5E", "^").replace("%7E", "~")
-                    .replace("%5B", "[").replace("%5D", "]")
-                    .replace("%60", "`").replace("%3B", ";")
-                    .replace("%2F", "/").replace("%3F", "?")
-                    .replace("%3A", ":").replace("%40", "@")
-                    .replace("%3D", "=").replace("%26", "&")
-                    .replace("%24", "$").replace("%2B", "+")
-                    .replace("%22", "\"").replace("%2C", ",")
-                    .replace("%20", " ");
-        }
     }
+
+    // "clean" an url and remove Facebook tracking redirection
+    private static String cleanUrl(String url) {
+        return url.replace("http://lm.facebook.com/l.php?u=", "")
+                .replace("https://m.facebook.com/l.php?u=", "")
+                .replace("http://0.facebook.com/l.php?u=", "")
+                .replaceAll("&h=.*", "").replaceAll("\\?acontext=.*", "");
+    }
+
+    // url decoder, recreate all the special characters
+    private static String decodeUrl(String url) {
+        return url.replace("%3C", "<").replace("%3E", ">")
+                .replace("%23", "#").replace("%25", "%")
+                .replace("%7B", "{").replace("%7D", "}")
+                .replace("%7C", "|").replace("%5C", "\\")
+                .replace("%5E", "^").replace("%7E", "~")
+                .replace("%5B", "[").replace("%5D", "]")
+                .replace("%60", "`").replace("%3B", ";")
+                .replace("%2F", "/").replace("%3F", "?")
+                .replace("%3A", ":").replace("%40", "@")
+                .replace("%3D", "=").replace("%26", "&")
+                .replace("%24", "$").replace("%2B", "+")
+                .replace("%22", "\"").replace("%2C", ",")
+                .replace("%20", " ");
+    }
+}
 
 
 }
