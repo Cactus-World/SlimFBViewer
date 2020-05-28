@@ -1806,6 +1806,17 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
                 backgroundIcon.setAlpha(255);
                 backgroundIcon.draw(canvas);
 
+            }else //test to eliminate crash on API23 devices
+            {
+                icon = Bitmap.createBitmap(backgroundIcon.getIntrinsicWidth(), backgroundIcon.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+                //alphaPaint.setAlpha(255);
+                //alphaPaint.setColor(Color.WHITE);
+                Canvas canvas = new Canvas(icon);
+
+                backgroundIcon.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+                backgroundIcon.setAlpha(255);
+                backgroundIcon.draw(canvas);
+
             }
         } else {
             icon = ((BitmapDrawable) backgroundIcon).getBitmap();
