@@ -87,6 +87,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -277,7 +278,7 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
     private String fbMobileNotificationsUrl;
     private String fbMobileSearchUrl;
     private String fbMobileBookmarksUrl;
-    private HashMap<String, Integer> notificationStates = new HashMap<String, Integer>();
+    private ConcurrentHashMap <String, Integer> notificationStates = new ConcurrentHashMap<String, Integer>();
     private int toolBarColor = 0;
 
     //*********************** ACTIVITY EVENTS ****************************
@@ -1697,6 +1698,7 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
                     public void onReceiveValue(String html) {
                         Log.d("HTML", html);
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+
                             notificationStates.forEach((key, value) -> {
                                 if (html.contains(key)) {
                                     Pattern pattern = Pattern.compile("\\\\u003Cdiv\\s+class=\\\\\"_59te\\s+jewel\\s+_hzb.*?\\s+([A-Za-z]*?)Count\\\\\".*?id=\\\\\"([^_]*)_jewel\\\\\"[^>]*>\\\\u003Ca[^>]*>\\\\u003Cspan[^>]*>[^>]*\\\\u003C/span>\\\\u003Cdiv[^>]*>\\\\u003Cdiv[^>]*>\\\\u003Cspan class=\\\\\"_59tg\\\\\" data-sigil=\\\\\"count\\\\\">(\\d+)\\\\u003C/span>\\\\u003C/div>\\\\u003C/div>\\\\u003C/a>\\\\u003C/div>", Pattern.DOTALL);
@@ -1712,6 +1714,7 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
                                     }
                                 }
                             });
+
                         } else {
                             for (String key : notificationStates.keySet()) {
 

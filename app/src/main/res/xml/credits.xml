@@ -13,12 +13,12 @@
         android:key="prefCat_key_developerCredits"
         android:title="@string/prefCat_developersCredits_title">
         <PreferenceScreen
-            android:key="pref_CactusWold"
+            android:key="pref_CactusWorld"
             android:summary="@string/summary_LeonardoRignanese"
             android:title="@string/mainDeveloper">
             <intent
                 android:action="android.intent.action.VIEW"
-                android:data="https://github.com/rignaneseleo/SlimSocial-for-Facebook" />
+                android:data="https://github.com/Cactus-World/SlimFBViewer" />
         </PreferenceScreen>
         <!--<PreferenceScreen
             android:key="pref_SaschaHa"
