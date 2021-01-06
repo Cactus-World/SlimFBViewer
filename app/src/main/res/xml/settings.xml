@@ -76,9 +76,15 @@
 
         <de.cactus_world.SlimFBViewer.utils.SwitchWithoutBugs
             android:defaultValue="false"
-            android:key="pref_enableMessagesShortcut"
+            android:key="pref_useMessagesShortcut"
             android:summary="@string/summary_enableMessagesShortcut"
             android:title="@string/title_enableMessagesShortcut" />
+
+        <de.cactus_world.SlimFBViewer.utils.SwitchWithoutBugs
+            android:defaultValue="false"
+            android:key="pref_useAlternativeMessagesDisplay"
+            android:summary="@string/summary_enableAlternativeMessagesDisplay"
+            android:title="@string/title_enableAlternativeMessagesDisplay" />
 
 
         <!--Set the saving data -->

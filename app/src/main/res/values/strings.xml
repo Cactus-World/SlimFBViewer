@@ -131,6 +131,9 @@ SlimSocial for Facebook is an Open Source app realized by Leonardo Rignanese
     <string name="messageHistorySelector" translatable="false">href="/messages/?no_hist=</string>
     <string name="summary_noMessageHistoryEntry">Opening messages tab will not be included in history stack.</string>
     <string name="title_noMessageHistoryEntry">No entry for message tab in history</string>
+    <string name="summary_enableAlternativeMessagesDisplay">Use alternative display method for facebook messages.</string>
+    <string name="title_enableAlternativeMessagesDisplay">Alternative message display</string>
+    <string name="urlFacebookDesktopMessages">https://www.messenger.com/</string>
 
 
     <!--end other-->

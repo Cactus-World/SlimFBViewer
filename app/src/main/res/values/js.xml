@@ -26,7 +26,40 @@
 		}
 		fixMessages();
 </string>
+	<string name="adaptMessengerView" translatable="false">
+		javascript:function adaptMessengerView(css) {
+		var node = document.createElement(\'style\');
+		node.innerHTML = css;
+        document.body.appendChild(node);
+		}
+		adaptMessengerView(\'.rq0escxv.l9j0dhe7.du4w35lb.j83agx80.cbu4d94t.g5gj957u.f4tghd1a.ifue306u.kuivcneq {display:none;}\');
+	</string>
+	<string name="adaptMessageViewOld" translatable="false">
+		javascript: function adaptMessageView(){
+		var divs = document.getElementById(\'viewport\').children;
+		for(var i = 0; i &#60; divs.length; i++) {
+		if(divs[i].role == \'banner\')
+		divs[i].style.display=\'none\';
+		if((divs[i].class ==\'ehxjyohh kr520xx4 poy2od1o b3onmgus hv4rvrfc n7fi1qx3\') || (divs[i].class == \'rq0escxv l9j0dhe7 du4w35lb j83agx80 cbu4d94t pfnyh3mw d2edcug0 hpfvmrgz n5hh3s10 t63ysoy8\')
+		divs[i].style.display=\'none\';
+		if((divs[i].class ==\'rq0escxv l9j0dhe7 du4w35lb\'))
+		divs[i].style.margin-top=\'-55px\';
+		}
+	}
+		adaptMessageView();
 
+</string>
+	<string name="adaptMessageView" translatable="false">
+		javascript: function adaptMessageView(){
+		var divs = document.getElementByTagName(\'div\')
+		divs[3].setAttribute(\'style\',\'margin-top:-55px;\')
+		divs[6].setAttribute(\'style\',\'display:none\')
+		divs[1482].setAttribute(\'style\',\'display:none\')
+		}
+	}
+		window.setInterval(adaptMessageView(),2000);
+
+</string>
     <string name="hideHeaderFooterMessages" translatable="false">
 		javascript: function hideHeaderFooterMessages(){
 	var divs = document.getElementById(\'viewport\').children;

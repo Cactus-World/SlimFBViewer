@@ -96,4 +96,6 @@
     <string name="bookmarks">Lesezeichen</string>
     <string name="visitMyWebsite">Besuche meine Webseite</string>
     <string name="top" translatable="false">Zum Seitenanfang</string>
+    <string name="summary_enableAlternativeMessagesDisplay">Die privaten Nachrichten werden in einer alternativer Darstellung angezeigt.</string>
+    <string name="title_enableAlternativeMessagesDisplay">Alternative Nachrichtenanzeige</string>
 </resources>

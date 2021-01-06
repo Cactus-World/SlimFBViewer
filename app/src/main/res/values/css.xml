@@ -12,7 +12,8 @@
 	</string>
     <string name="noBar" translatable="false">
         #header div {display: block;  margin-top: -44px;}
-    </string>
+
+            </string>
     <string name="fixedBar" translatable="false">
 		#header{ position: fixed; z-index: 12; top: 0px; visibility: none }
 
@@ -27,7 +28,12 @@
 		text-align: center !important;
 		}
 	</string>
-
+    <string name="adaptMessengerViewCss" translatable="false">
+        .rq0escxv.l9j0dhe7.du4w35lb.j83agx80.cbu4d94t.g5gj957u.f4tghd1a.ifue306u.kuivcneq
+        {
+            display:none;
+        }
+    </string>
     <string name="removeMessengerDownload" translatable="false">
 		._s15 {
 		display: none;
