@@ -140,7 +140,9 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
     private android.webkit.CookieManager cookieManager;
     private boolean darkThemeSet = false;
     private String fbDesktopUserAgent ="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:83.0) Gecko/20100101 Firefox/83.0";
-    private String fbMobileUserAgent = "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36";
+    private String fbMobileUserAgentOld = "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36";
+    private String fbMobileUserAgent = "Mozilla/5.0 (Linux; Android 11; Pixel 5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.91 Mobile Safari/537.36";
+
     private String userAgent ="";
     private class WebResourceRetrievalResponse {
         private String webResourceRetrievalType;
@@ -661,7 +663,7 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
         WebSettings settings = webViewFacebook.getSettings();
 
         webViewFacebook.setDesktopMode(true);
-        settings.setUserAgentString("Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36");
+        settings.setUserAgentString(fbMobileUserAgent);
         settings.setJavaScriptEnabled(true);
         settings.setDomStorageEnabled(true);
         //set text zoom
@@ -685,7 +687,6 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
         settings.setAppCacheEnabled(true);
         settings.setLoadsImagesAutomatically(!savedPreferences.getBoolean("pref_doNotDownloadImages", false));//to save data
 
-        settings.setDisplayZoomControls(false);
         settings.setAllowUniversalAccessFromFileURLs(true);
         useOwnMessageDisplay = savedPreferences.getBoolean("pref_useAlternativeMessagesDisplay",false);
         /*this.cookieManager = new CookieManager(new CookieStore() {
