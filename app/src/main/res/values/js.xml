@@ -3,6 +3,8 @@
  * SlimFBViewer is an Open Source app realized by Cactus World Android Development <android@cactus-world.de> based on SlimFacebook by Leonardo Rignanese <rignanese.leo@gmail.com>
  * GNU GENERAL PUBLIC LICENSE  Version 2, June 1991
  * GITHUB: https://github.com/cactus_world/SlimFBViewer
+ *adaptMessengerInfoView(\'.rq0escxv.l9j0dhe7.du4w35lb.j83agx80.cbu4d94t.g5gj957u.f4tghd1a.ifue306u.kuivcneq.t63ysoy8 {top:76px;}\');
+
  */
 -->
 <resources>
@@ -34,6 +36,57 @@
 		}
 		adaptMessengerView(\'.rq0escxv.l9j0dhe7.du4w35lb.j83agx80.cbu4d94t.g5gj957u.f4tghd1a.ifue306u.kuivcneq {display:none;}\');
 	</string>
+	<string name="adaptMessengerInfoView" translatable="false">
+		javascript:function clickInfoButton() {
+		var infoButtons = document.getElementsByClassName(\'oajrlxb2 gs1a9yip g5ia77u1 mtkw9kbi tlpljxtp qensuy8j ppp5ayq2 goun2846 ccm00jje s44p3ltw mk2mc5f4 rt8b4zig n8ej3o3l agehan2d sk4xxmp2 rq0escxv nhd2j8a9 pq6dq46d mg4g778l btwxx1t3 pfnyh3mw p7hjln8o kvgmc6g5 cxmmr5t8 oygrvhab hcukyx3x tgvbjcpo hpfvmrgz jb3vyjys rz4wbd8a qt6c0cv9 a8nywdso l9j0dhe7 i1ao9s8h esuyzwwr f1sip0of du4w35lb lzcic4wl abiwlrkh p8dawk7l\');
+		if (infoButtons.fireEvent)
+		{
+			infoButtons.fireEvent(\'onclick\');
+		}
+		else
+		{
+			var mouseEvents = document.createEvent(\'MouseEvents\');
+			mouseEvents.initEvent(\'click\',true,false);
+
+			for (const infoButton of infoButtons){
+				var infoAttribute = infoButton.getAttribute(\'aria-label\');
+				if ( infoAttribute === \'Information über die Unterhaltung\')
+				{
+					infoButton.dispatchEvent(mouseEvents);
+				}
+			}
+		}
+		}
+		javascript:function adaptMessengerInfoView(css) {
+		var node = document.createElement(\'style\');
+		node.innerHTML = css;
+        document.body.appendChild(node);
+		var targetnode = document.getElementsByClassName(\'rq0escxv l9j0dhe7 du4w35lb j83agx80 cbu4d94t g5gj957u d2edcug0 hpfvmrgz rj1gh0hx buofh1pr dp1hu0rb\');
+		const config = {subtree:true,childList:true};
+		const callback = function(mutationsList, observer) {for(const mutation of mutationsList) {
+        	if (mutation.type === \'childList\') {
+         		const infoPane = document.getElementsByClassName(\'rq0escxv l9j0dhe7 du4w35lb q9uorilb\'); (\'rq0escxv pmk7jnqg du4w35lb i09qtzwb oaz4zybt n7fi1qx3 j9ispegn kr520xx4 s45kfl79 emlxlaya bkmhp75w spb7xbtv\');
+		 		for (const infoPaneItem of infoPane)
+		 		{
+					if (infoPaneItem.parentElement.className === \'rq0escxv l9j0dhe7 du4w35lb j83agx80 cbu4d94t pfnyh3mw d2edcug0 bp9cbjyn discj3wi ihqw7lf3\')
+					{
+						infoPaneItem.addEventListener(\'click\',clickInfoButton);
+					}
+		 		}
+			}
+		}
+		};
+		const observer = new MutationObserver(callback);
+		observer.observe(targetnode[0],config);
+		}
+		function startModifications()
+		{
+			adaptMessengerInfoView(\'.rq0escxv.l9j0dhe7.du4w35lb.j83agx80.cbu4d94t.g5gj957u.f4tghd1a.ifue306u.kuivcneq.t63ysoy8 {top:0px;}\');
+		}
+		window.onload = setTimeout(startModifications,1500);
+
+	</string>
+
 	<string name="adaptMessageViewOld" translatable="false">
 		javascript: function adaptMessageView(){
 		var divs = document.getElementById(\'viewport\').children;

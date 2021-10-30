@@ -85,6 +85,11 @@
             android:key="pref_useAlternativeMessagesDisplay"
             android:summary="@string/summary_enableAlternativeMessagesDisplay"
             android:title="@string/title_enableAlternativeMessagesDisplay" />
+        <de.cactus_world.SlimFBViewer.utils.SwitchWithoutBugs
+            android:defaultValue="false"
+            android:key="pref_enableInfoOnAlternativeMessagesDisplay"
+            android:summary="@string/summary_enableInfoOnAlternativeMessagesDisplay"
+            android:title="@string/title_enableInfoOnAlternativeMessagesDisplay" />
 
 
         <!--Set the saving data -->

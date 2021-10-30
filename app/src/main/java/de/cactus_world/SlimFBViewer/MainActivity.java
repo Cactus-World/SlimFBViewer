@@ -139,9 +139,9 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
     private WebChromeClient.CustomViewCallback mCustomViewCallback;
     private android.webkit.CookieManager cookieManager;
     private boolean darkThemeSet = false;
-    private String fbDesktopUserAgent ="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:83.0) Gecko/20100101 Firefox/83.0";
+    private String fbDesktopUserAgent ="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36";
     private String fbMobileUserAgentOld = "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36";
-    private String fbMobileUserAgent = "Mozilla/5.0 (Linux; Android 11; Pixel 5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.91 Mobile Safari/537.36";
+    private String fbMobileUserAgent = "Mozilla/5.0 (Linux; Android 9; Redmi 7A) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.66 Mobile Safari/537.36";
 
     private String userAgent ="";
     private class WebResourceRetrievalResponse {
@@ -363,9 +363,9 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
 
     private void SetAppTheme() {
         if (darkThemeSet) {
-            constraintLayout.setBackgroundColor(R.color.blackSlimFBViewerTheme);
+            constraintLayout.setBackgroundColor(getResources().getColor(R.color.blackSlimFBViewerTheme));
         } else {
-            constraintLayout.setBackgroundColor(R.color.blueSlimFacebookTheme);
+            constraintLayout.setBackgroundColor(getResources().getColor(R.color.blueSlimFacebookTheme));
         }
 
     }
@@ -664,6 +664,7 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
 
         webViewFacebook.setDesktopMode(true);
         settings.setUserAgentString(fbMobileUserAgent);
+        this.userAgent=fbMobileUserAgent;
         settings.setJavaScriptEnabled(true);
         settings.setDomStorageEnabled(true);
         //set text zoom
@@ -1400,6 +1401,8 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
             /*this.userAgent = fbMobileUserAgent;
             webViewFacebook.getSettings().setUserAgentString(userAgent);
             */
+            webViewFacebook.getSettings().setUserAgentString(fbMobileUserAgent);
+            this.userAgent = fbMobileUserAgent;
             this.swipeRefreshLayout.setEnabled(true);
             this.inOwnMessageDisplay=false;
             loadFromWeb = true;
@@ -1421,6 +1424,8 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
             /*this.userAgent = fbMobileUserAgent;
             webViewFacebook.getSettings().setUserAgentString(userAgent);
             */
+            webViewFacebook.getSettings().setUserAgentString(fbMobileUserAgent);
+            this.userAgent = fbMobileUserAgent;
             this.swipeRefreshLayout.setEnabled(true);
             this.inOwnMessageDisplay=false;
         }
@@ -1450,6 +1455,8 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
            webViewFacebook.getSettings().setUseWideViewPort(true);
            webViewFacebook.getSettings().setJavaScriptEnabled(true);
            */
+           webViewFacebook.getSettings().setUserAgentString(fbDesktopUserAgent);
+            this.userAgent = fbDesktopUserAgent;
            webViewFacebook.loadUrl(fbDesktopMessageUrl);
            this.swipeRefreshLayout.setEnabled(false);
            this.inOwnMessageDisplay=true;
@@ -1461,8 +1468,11 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
         }
         else
             {
-                this.userAgent = fbMobileUserAgent;
+                /*this.userAgent = fbMobileUserAgent;
                 webViewFacebook.getSettings().setUserAgentString(userAgent);
+                */
+                webViewFacebook.getSettings().setUserAgentString(fbMobileUserAgent);
+                this.userAgent = fbMobileUserAgent;
                 this.inOwnMessageDisplay=false;
                 if (isFirstMessagesLoad) {
                     webViewFacebook.loadUrl(getString(R.string.urlFacebookMobileMessages));
@@ -1479,6 +1489,8 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
             /*this.userAgent = fbMobileUserAgent;
             webViewFacebook.getSettings().setUserAgentString(userAgent);
             */
+            webViewFacebook.getSettings().setUserAgentString(fbMobileUserAgent);
+            this.userAgent = fbMobileUserAgent;
             this.swipeRefreshLayout.setEnabled(true);
             this.inOwnMessageDisplay=false;
         }
@@ -1496,6 +1508,8 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
            /* this.userAgent = fbMobileUserAgent;
             webViewFacebook.getSettings().setUserAgentString(userAgent);
              */
+            webViewFacebook.getSettings().setUserAgentString(fbMobileUserAgent);
+            this.userAgent = fbMobileUserAgent;
             this.swipeRefreshLayout.setEnabled(true);
             this.inOwnMessageDisplay=false;
         }
@@ -1513,6 +1527,8 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
             /*this.userAgent = fbMobileUserAgent;
             webViewFacebook.getSettings().setUserAgentString(userAgent);
              */
+            webViewFacebook.getSettings().setUserAgentString(fbMobileUserAgent);
+            this.userAgent = fbMobileUserAgent;
             this.swipeRefreshLayout.setEnabled(true);
             this.inOwnMessageDisplay=false;
         }//webViewFacebook.loadUrl(getString(R.string.urlFacebookMobileSearch));
@@ -1547,6 +1563,17 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
     @Override
     public boolean shouldLoadUrl(String url) {
         Log.d("MainActivity", "shouldLoadUrl: " + url);
+        String host = Uri.parse(url).getHost();
+        if (webViewFacebook.getSettings().getUserAgentString().equals(fbDesktopUserAgent) && host != null && host.contains("messenger"))
+        {
+            webViewFacebook.getSettings().setUserAgentString(fbMobileUserAgent);
+            this.userAgent = fbMobileUserAgent;
+        }
+        if (webViewFacebook.getSettings().getUserAgentString().equals(fbMobileUserAgent) && host != null && host.contains("messenger"))
+        {
+            webViewFacebook.getSettings().setUserAgentString(fbDesktopUserAgent);
+            this.userAgent = fbDesktopUserAgent;
+        }
         //Check is it's opening a image
         boolean b = Uri.parse(url).getHost() != null && Uri.parse(url).getHost().endsWith("fbcdn.net");
 
@@ -1574,9 +1601,13 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
         setMenuBarNotificationState(this.webViewFacebook, this.menuBar);
         ApplyCustomCss();
         webViewFacebook.loadUrl(getString(R.string.fixMarkPeople));
-        if (this.inOwnMessageDisplay)
+        if (this.inOwnMessageDisplay && !savedPreferences.getBoolean("pref_enableInfoOnAlternativeMessagesDisplay",false))
         {
             webViewFacebook.loadUrl(getString(R.string.adaptMessengerView));
+        }
+        else if (this.inOwnMessageDisplay)
+        {
+            webViewFacebook.loadUrl(getString(R.string.adaptMessengerInfoView));
         }
         // MyAdvancedWebView myAdvancedWebView = findViewById(webView);
         //myAdvancedWebView.scrollBy(0,88);

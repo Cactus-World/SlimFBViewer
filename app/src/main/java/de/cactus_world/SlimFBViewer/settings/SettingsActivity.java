@@ -107,7 +107,10 @@ public class SettingsActivity extends AppCompatActivity implements
                 Toast.makeText(SettingsActivity.this, R.string.refreshToApply, Toast.LENGTH_SHORT).show();
                 break;
             }
-            case "pref_doNotDownloadImages":
+            case "pref_enableInfoOnAlternativeMessagesDisplay": {
+                Toast.makeText(SettingsActivity.this, R.string.refreshToApply, Toast.LENGTH_SHORT).show();
+                break;
+            }case "pref_doNotDownloadImages":
             case "pref_allowGeolocation":
             case "pref_theme":
             case "pref_textSize": {
