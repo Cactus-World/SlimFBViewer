@@ -7,14 +7,28 @@ SlimSocial for Facebook is an Open Source app realized by Leonardo Rignanese
     <!--remove this from your translations-->
     <string name="launcher_name" translatable="false">Slim FB Viewer</string>
     <string name="actionbar_name" translatable="false">SlimFB</string>
-    <string name="urlFacebookMobile" translatable="false">https://touch.facebook.com/home.php</string>
+    <string name="urlFacebookMobileBase" translatable="false">https://touch.facebook.com/</string>
+    <string name="urlFacebookMobile" translatable="false">https://touch.facebook.com/home</string>
     <string name="urlMessages" translatable="false">https://mbasic.facebook.com/messages</string>
+    <string name="urlFacebookMobileNotifications" translatable="false">https://touch.facebook.com/notifications</string>
+    <string name="urlFacebookMobileMessages" translatable="false">https://touch.facebook.com/messages/</string>
+    <string name="urlFacebookMobileMessagesComposer" translatable="false">https://touch.facebook.com/messages/compose/dialog/?</string>
+    <string name="urlFacebookMobileFriends" translatable="false">https://touch.facebook.com/friends</string>
+    <string name="urlFacebookMobileBookmarks" translatable="false">https://touch.facebook.com/bookmarks</string>
+    <string name="urlFacebookMobileSearch" translatable="false">https://touch.facebook.com/search</string>
+<!--
+    <string name="urlFacebookMobile" translatable="false">https://touch.facebook.com/home.php</string>
+
+    <string name="urlFacebookMobileNotifications" translatable="false">https://touch.facebook.com/notifications.php</string>
+    <string name="urlFacebookMobileFriends" translatable="false">https://touch.facebook.com/friends/center/requests/?rfj</string>
+    <string name="urlFacebookMobileSearch" translatable="false">https://touch.facebook.com/home.php?soft=search</string>
     <string name="urlFacebookMobileNotifications" translatable="false">https://touch.facebook.com/notifications.php</string>
     <string name="urlFacebookMobileMessages" translatable="false">https://touch.facebook.com/messages/</string>
     <string name="urlFacebookMobileMessagesComposer" translatable="false">https://touch.facebook.com/messages/compose/dialog/?</string>
     <string name="urlFacebookMobileFriends" translatable="false">https://touch.facebook.com/friends/center/requests/?rfj</string>
     <string name="urlFacebookMobileBookmarks" translatable="false">https://touch.facebook.com/bookmarks</string>
     <string name="urlFacebookMobileSearch" translatable="false">https://touch.facebook.com/search/top/?_rdr</string>
+-->
     <string name="home" translatable="false">Home</string>
     <string name="top">Top</string>
     <string name="mainDeveloper" translatable="false">Cactus World Android Development</string>

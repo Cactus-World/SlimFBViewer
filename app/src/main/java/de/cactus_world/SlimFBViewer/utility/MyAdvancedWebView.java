@@ -100,6 +100,7 @@ public class MyAdvancedWebView extends WebView {
     protected WeakReference<Fragment> mFragment;
     protected Listener mListener;
     protected final List<String> mPermittedHostnames = new LinkedList<>();
+    protected android.webkit.CookieManager cookieManager;
     /**
      * File upload callback for platform versions prior to Android 5.0
      */
@@ -174,6 +175,15 @@ public class MyAdvancedWebView extends WebView {
     public void setWebChromeClient(final WebChromeClient client) {
         mCustomWebChromeClient = client;
     }
+    public void setCookieManager (android.webkit.CookieManager cookieManager)
+    {
+        this.cookieManager = cookieManager;
+    }
+    public android.webkit.CookieManager getCookieManager ()
+    {
+        return this.cookieManager;
+    }
+
 
     @SuppressLint("SetJavaScriptEnabled")
     public void setGeolocationEnabled(final boolean enabled) {
@@ -393,13 +403,13 @@ public class MyAdvancedWebView extends WebView {
 
     @SuppressWarnings("static-method")
     public void setCookiesEnabled(final boolean enabled) {
-        CookieManager.getInstance().setAcceptCookie(enabled);
+        getCookieManager().getInstance().setAcceptCookie(enabled);
     }
 
     @SuppressLint("NewApi")
     public void setThirdPartyCookiesEnabled(final boolean enabled) {
         if (Build.VERSION.SDK_INT >= 21) {
-            CookieManager.getInstance().setAcceptThirdPartyCookies(this, enabled);
+            getCookieManager().getInstance().setAcceptThirdPartyCookies(this, enabled);
         }
     }
 

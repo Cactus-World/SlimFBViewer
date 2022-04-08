@@ -12,7 +12,157 @@
         javascript:function fixComposeMessageAbort(){
         var a=(document.
     </string>
-    <string name="editCss" translatable="false">
+	<string name="getNotificationsCounts" translatable="false">
+		function getNotificationsCounts(){
+			var screen = document.getElementById(\'screen-root\');
+			while (typeof screen === \'undefined\'){
+				screen = document.getElementById(\'screen-root\');
+			}
+			var buttons = screen.getElementsByClassName(\'m bg-s3\');
+			while (typeof buttons === \'undefined\'){
+				buttons = screen.getElementsByClassName(\'m bg-s3\');
+			}
+			console.log(buttons);
+			var string = \'feed:\';
+			var tmp =buttons[1].getElementsByClassName(\'f6\');
+			console.log("Element 1:" + tmp.item(0).textContent);
+
+			if (tmp.length > 0)
+			{
+				string += tmp.item(0).textContent;
+			}
+			else
+			{
+				string += \'0\';
+			}
+			string += \';requests:\';1
+			tmp = buttons[3].getElementsByClassName(\'f6\');
+			if (tmp.length > 0)
+			{
+				console.log("Element 2:" + tmp.item(0).textContent);
+				string += tmp.item(0).textContent;
+			}
+			else
+			{
+				string += \'0\';
+			}
+			string += \';notifications:\';
+			tmp = buttons[9].getElementsByClassName(\'f6\');
+			if (tmp.length > 0)
+			{
+				console.log("Element 3:" + tmp.item(0).textContent);
+				string += tmp.item(0).textContent;
+			}
+			else
+			{
+				string += \'0\';
+			}
+			string += \';\';
+			return (string);
+		}
+		getNotificationsCounts();
+	</string>
+	<string name="removeBlueBar" translatable="false">
+		javascript:function removeBlueBar(){
+		if (typeof bluebar === \'undefined\')
+		{
+			var bluebar=document.getElementById(\'screen-root\');
+			console.log(document);
+			console.log(bluebar);
+			console.log(bluebar.childNodes);
+			var style = bluebar.childNodes[0];
+			if (style.childNodes[0].childElementCount != 0){
+				style = style.childNodes[0];
+			}else if (style.childNodes[1].childElementCount != 0){
+				style = style.childNodes[1];
+			}else{
+				window.setTimeout(removeBlueBar,200);
+				return;
+			}
+			style = style.childNodes[1];
+			var style_string = style.getAttribute(\'style\');
+			style_string += \'display: none\';
+			style.setAttribute(\'style\',style_string);
+		}else{
+			bluebar=document.getElementById(\'screen-root\');
+			console.log(document);
+			console.log(bluebar);
+			console.log(bluebar.childNodes);
+			var style = bluebar.childNodes[0];
+			if (style.childNodes[0].childElementCount != 0){
+				style = style.childNodes[0];
+			}else if (style.childNodes[1].childElementCount != 0){
+				style = style.childNodes[1];
+			}else{
+				window.setTimeout(removeBlueBar,200);
+				return;
+			}
+			style = style.childNodes[1];
+			var style_string = style.getAttribute(\'style\');
+			style_string += \'display: none\';
+			style.setAttribute(\'style\',style_string);
+		}
+		}
+		window.addEventListener(\'load\',removeBlueBar());
+	</string>
+	<string name="addBlueBar" translatable="false">
+		javascript:function addBlueBar(){
+		if (typeof bluebar === \'undefined\')
+		{
+			bluebar=document.getElementsByClassName(\'m displayed\');
+			bluebar[0].removeAttribute(\'style\');
+		}else{
+			bluebar=document.getElementsByClassName(\'m displayed\');
+			bluebar[0].removeAttribute(\'style\');
+		}
+		}
+		addBlueBar();
+	</string>
+	<string name="removeBlueBar.old" translatable="false">
+		javascript:function removeBlueBar(){
+		if (typeof bluebar === \'undefined\')
+		{
+			var bluebar=document.getElementById(\'header\');
+			var html = bluebar.outerHTML;
+			bluebar.outerHTML = html.replace(\'data-sigil=\"MTopBlueBarHeader\"\',\'data-sigil=\"MTopBlueBarHeader\" style=\"display:none\"\');
+		}else{
+			bluebar=document.getElementById(\'header\');
+			html = bluebar.outerHTML;
+			bluebar.outerHTML = html.replace(\'data-sigil=\"MTopBlueBarHeader\"\',\'data-sigil=\"MTopBlueBarHeader\" style=\"display:none\"\');
+		}
+		}
+		removeBlueBar();
+	</string>
+	<string name="addBlueBar.old" translatable="false">
+		javascript:function addBlueBar(){
+		if (typeof bluebar === \'undefined\')
+		{
+			var bluebar=document.getElementById(\'header\');
+			var html = bluebar.outerHTML;
+			bluebar.outerHTML = html.replace(\'data-sigil=\"MTopBlueBarHeader\" style=\"display:none\"\',\'data-sigil=\"MTopBlueBarHeader\"\');
+		}else{
+			bluebar=document.getElementById(\'header\');
+			html = bluebar.outerHTML;
+			bluebar.outerHTML = html.replace(\'data-sigil=\"MTopBlueBarHeader\" style=\"display:none\"\',\'data-sigil=\"MTopBlueBarHeader\"\');
+		}
+		}
+		addBlueBar();
+	</string>
+	<string name="openSearch" translatable="false">
+		javascript:function search(){
+		if (typeof search_button === \'undefined\')
+		{
+			var search_button = document.getElementsByName(\'Suchen\');
+			search_button[0].click();
+		}
+		else{
+			search_button = document.getElementsByName(\'Suchen\');
+			search_button[0].click();
+		}
+		}
+		search();
+	</string>
+	<string name="editCss" translatable="false">
 		javascript:function addStyle(css) {
 		var node = document.createElement(\'style\');
 		node.innerHTML = css;
@@ -28,6 +178,115 @@
 		}
 		fixMessages();
 </string>
+	<string name="removeBackButtons" translatable="false">
+		javascript:function removeBackButtons(currentView) {
+			console.log(\'in removeBackButtons\' + currentView);
+			if (typeof backButtons === \'undefined\'){
+		   		var backButtons = document.getElementsByClassName(\'m\');
+			}else{
+				backButtons = document.getElementsByClassName(\'m\');
+			}
+			console.log(backButtons+backButtons[5]+backButtons[7]);
+			switch (currentView) {
+				case \'search\':
+					if (backButtons[5] !== \'undefined\'){
+						var style_string = backButtons[5].getAttribute(\'style\');
+						if (!style_string.includes(\'display: none\'))
+						{
+							style_string += \'display: none\';
+						}
+						backButtons[5].setAttribute(\'style\',style_string);
+						console.log(\'Setting Attribute done\');
+					}else{
+						console.log(\'Setting Timeout\');
+						window.setTimeout(function (){removeBackButtons(currentView);},200);
+					}
+					break;
+				case \'bookmarks\':
+					if (backButtons[7] !== \'undefined\'){
+						var style_string = backButtons[7].getAttribute(\'style\');
+						if (!style_string.includes(\'display: none\'))
+						{
+							style_string += \'display: none\';
+						}
+						backButtons[7].setAttribute(\'style\',style_string);
+						console.log(\'Setting Attribute done\');
+					}else{
+						console.log(\'Setting Timeout\');
+						window.setTimeout(function (){removeBackButtons(currentView);},200);
+					}
+					break;
+				default:
+			}
+		}
+	</string>
+
+
+	<string name="navigateTo" translatable="false">
+		javascript:function navigateTo(destination, pressBackFirst, currentView) {
+		var index = 0;
+		if (currentView !== \'home\'){
+			index -=1;
+		}
+		if (typeof buttons === \'undefined\'){
+			var buttons = document.getElementsByClassName(\'m bg-s3\');
+		}else{
+			buttons = document.getElementsByClassName(\'m bg-s3\');
+		}
+		if (typeof buttons2 === \'undefined\'){
+			var buttons2 = document.getElementsByClassName(\'m bg-s4\');
+		}else{
+			buttons2 = document.getElementsByClassName(\'m bg-s4\');
+		}
+		if (pressBackFirst){
+			if (typeof backButtons === \'undefined\'){
+		   		var backButtons = document.getElementsByClassName(\'m\');
+			}else{
+				backButtons = document.getElementsByClassName(\'m\');
+			}
+			switch (currentView) {
+				case \'search\':
+					if (backbuttons[4] !== \'undefined\'){
+						backButtons[4].click();
+						break;
+					}
+
+				case \'bookmarks\':
+					if (backbuttons[4] !== \'undefined\'){
+						backButtons[6].click();
+						break;
+					}
+				default:
+			}
+		}
+
+		switch (destination) {
+			case \'friend_requests\':
+				buttons[index+4].click();
+				break;
+			case \'notifications\':
+				buttons[index+10].click();
+				break;
+			case \'bookmarks\':
+				if (currentView !== \'home\'){
+					buttons[2].click();
+				}
+				buttons2[1].click();
+				break;
+			case \'search\':
+				if (currentView === \'notifications\'){
+					buttons2[1].click();
+				}
+				buttons2[0].click();
+				break;
+			case \'home\':
+			default:
+				buttons[2].click();
+
+		}
+		}
+
+	</string>
 	<string name="adaptMessengerView" translatable="false">
 		javascript:function adaptMessengerView(css) {
 		var node = document.createElement(\'style\');

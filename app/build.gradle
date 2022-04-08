@@ -1,6 +1,20 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+        debug {
+            storeFile file('C:\\Users\\Admin\\.local\\.keystore.jks')
+            storePassword 'CcTs WrLd!!'
+            keyPassword 'CcTs WrLd!!'
+            keyAlias 'cactus world android development'
+        }
+        release {
+            storeFile file('C:\\Users\\Admin\\.local\\.keystore.jks')
+            storePassword 'CcTs WrLd!!'
+            keyAlias 'cactus world android development'
+            keyPassword 'CcTs WrLd!!'
+        }
+    }
     compileSdkVersion 29
     buildToolsVersion '29.0.2'
 
@@ -9,7 +23,7 @@ android {
         minSdkVersion 22
         targetSdkVersion 29
         versionCode 1
-        versionName '2.0'
+        versionName '2.4'
     }
 
     buildTypes {
@@ -17,6 +31,7 @@ android {
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
         debug {
             zipAlignEnabled true
