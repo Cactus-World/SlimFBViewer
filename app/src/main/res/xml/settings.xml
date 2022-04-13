@@ -90,6 +90,11 @@
             android:key="pref_enableInfoOnAlternativeMessagesDisplay"
             android:summary="@string/summary_enableInfoOnAlternativeMessagesDisplay"
             android:title="@string/title_enableInfoOnAlternativeMessagesDisplay" />
+        <de.cactus_world.SlimFBViewer.utils.SwitchWithoutBugs
+            android:defaultValue="false"
+            android:key="pref_openExternalPagesInSlimFBViewer"
+            android:summary="@string/summary_openExternalPagesInSlimFBViewer"
+            android:title="@string/title_openExternalPagesInSlimFBViewer" />
 
 
         <!--Set the saving data -->

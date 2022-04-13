@@ -23,7 +23,7 @@ android {
         minSdkVersion 22
         targetSdkVersion 29
         versionCode 1
-        versionName '2.4'
+        versionName '2.5'
     }
 
     buildTypes {
@@ -32,6 +32,20 @@ android {
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
+            applicationVariants.all{
+                    // this method is use to rename your all apk weather
+                    // it may be signed or unsigned(debug apk)
+                variant ->
+                    variant.outputs.each{
+                            // on below line we are setting a
+                            // name to our apk as GFG.apk
+                        output->
+                            def name = "SlimFBViewer.${variant.versionName}.apk"
+                            // on below line we are setting the
+                            // outputFile Name to our apk file.
+                            output.outputFileName = name
+                    }
+            }
         }
         debug {
             zipAlignEnabled true

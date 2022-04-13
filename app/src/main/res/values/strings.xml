@@ -63,6 +63,8 @@ SlimSocial for Facebook is an Open Source app realized by Leonardo Rignanese
     <string name="summary_noBar">The blue bar will be removed from the top</string>
     <string name="title_hideSponsoredPosts">Don\'t show sponsored posts</string>
     <string name="summary_hideSponsoredPosts">Some sponsored posts will be hidden</string>
+    <string name="title_openExternalPagesInSlimFBViewer">Open external links in SlimFBViewer</string>
+    <string name="summary_openExternalPagesInSlimFBViewer">Opens external links in SlimFBViewer instead of opening them in the system web browser.</string>
     <string name="title_downloadImages">Save Data </string>
     <string name="summary_downloadImages">Don\'t download images</string>
     <string name="summary_allowGeolocation">Facebook will be able to access to your position</string>
@@ -150,6 +152,7 @@ SlimSocial for Facebook is an Open Source app realized by Leonardo Rignanese
     <string name="summary_enableInfoOnAlternativeMessagesDisplay">Enable the info button for profile on alternative display method for facebook messages.</string>
     <string name="title_enableInfoOnAlternativeMessagesDisplay">Info on alternative message display</string>
     <string name="urlFacebookDesktopMessages">https://www.messenger.com/</string>
+    <string name="externalPageRequest"><![CDATA[<html><p><h1>External page requested.</h1><p> Redirecting...<p><h2> Press back to return to previous page.</h2></p></html>]]></string>
 
 
     <!--end other-->

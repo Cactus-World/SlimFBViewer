@@ -24,13 +24,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.ClientCertRequest;
 import android.webkit.ConsoleMessage;
-import android.webkit.CookieManager;
 import android.webkit.GeolocationPermissions.Callback;
 import android.webkit.HttpAuthHandler;
 import android.webkit.JsPromptResult;
 import android.webkit.JsResult;
 import android.webkit.PermissionRequest;
-import android.webkit.RenderProcessGoneDetail;
 import android.webkit.SslErrorHandler;
 import android.webkit.URLUtil;
 import android.webkit.ValueCallback;
@@ -67,6 +65,8 @@ import java.util.MissingResourceException;
 @SuppressWarnings("deprecation")
 public class MyAdvancedWebView extends WebView {
 
+
+
     public interface Listener {
         void onPageStarted(String url, Bitmap favicon);
 
@@ -100,6 +100,7 @@ public class MyAdvancedWebView extends WebView {
     protected WeakReference<Fragment> mFragment;
     protected Listener mListener;
     protected final List<String> mPermittedHostnames = new LinkedList<>();
+    protected String mExternalLinkPrefix ="EXTERNAL LINK PREFIX";
     protected android.webkit.CookieManager cookieManager;
     /**
      * File upload callback for platform versions prior to Android 5.0
@@ -383,7 +384,27 @@ public class MyAdvancedWebView extends WebView {
     public void clearPermittedHostnames() {
         mPermittedHostnames.clear();
     }
-
+    public void setExternalLinkPrefix(String externalLinkPrefix) {
+        mExternalLinkPrefix = "https://"+externalLinkPrefix;
+    }
+    public String getExternalLinkPrefix() {
+        return mExternalLinkPrefix;
+    }
+    public boolean isExternalLink(String url)
+    {
+        if (url.startsWith(mExternalLinkPrefix))
+        {
+            return true;
+        }else{
+            return false;
+        }
+    }
+    public String extractExternalLink(String externalLink){
+        String url = externalLink.replace(mExternalLinkPrefix,"");
+        url = url.substring(0,url.indexOf("&"));
+        url = Uri.decode(url);
+        return url;
+    }
     public boolean onBackPressed() {
         if (canGoBack()) {
             goBack();
@@ -392,7 +413,11 @@ public class MyAdvancedWebView extends WebView {
             return true;
         }
     }
-
+    @Override
+    public void goBackOrForward(int steps)
+    {
+        super.goBackOrForward(steps);
+    }
     @SuppressLint("NewApi")
     protected static void setAllowAccessFromFileUrls(final WebSettings webSettings) {
         if (Build.VERSION.SDK_INT >= 16) {
@@ -537,13 +562,16 @@ public class MyAdvancedWebView extends WebView {
 
             @Override
             public boolean shouldOverrideUrlLoading(final WebView view, final String url) {
-
+                String decoded_url = url;
                 // if the hostname may not be accessed
-                if (!isHostnameAllowed(url)) {
+                if (!(isHostnameAllowed(url)) || isExternalLink(url))  {
+                    if (isExternalLink(url)){
+                        decoded_url = extractExternalLink(url);
+                    }
                     // if a listener is available
                     if (mListener != null) {
                         // inform the listener about the request
-                        mListener.onExternalPageRequest(url);
+                        mListener.onExternalPageRequest(decoded_url);
                     }
 
                     // cancel the original request
@@ -562,10 +590,10 @@ public class MyAdvancedWebView extends WebView {
                 // route the request through the custom URL loading method
 
 
-                view.loadUrl(url);
-
+                //view.loadUrl(url);
+                return false;
                 // cancel the original request
-                return true;
+                //return true;
             }
 
             @Override
