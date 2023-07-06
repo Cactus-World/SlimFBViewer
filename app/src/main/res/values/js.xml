@@ -83,7 +83,15 @@
 				return;
 			}
 			style = style.childNodes[1];
-			var style_string = style.getAttribute(\'style\');
+			if (style === null)
+			{
+				return;
+			};
+		    var style_string;
+			try {
+				style_string = style.getAttribute(\'style\');
+			}
+			catch (e){};
 			style_string += \'display: none\';
 			style.setAttribute(\'style\',style_string);
 		}else{
@@ -102,7 +110,15 @@
 				return;
 			}
 			style = style.childNodes[1];
-			var style_string = style.getAttribute(\'style\');
+			if (style === null)
+			{
+				return;
+			};
+			var style_string;
+			try {
+				style_string = style.getAttribute(\'style\');
+			}
+			catch (e){};
 			style_string += \'display: none\';
 			style.setAttribute(\'style\',style_string);
 		}
@@ -119,50 +135,77 @@
 			console.log(bluebar);
 			console.log(bluebar.childNodes);
 			var style = bluebar.childNodes[0];
-			if (style.childNodes[0].childElementCount != 0){
+			if (style !== null &amp;&amp; style.childNodes[0].childElementCount != 0){
 				style = style.childNodes[0];
-			}else{
-				console.log(\'Setting Timeout for BlueBarRemovalNewsFeed\');
-				<!-- window.setTimeout(removeBlueBarNewsFeed,200); -->
+			}else {
+				<!-- console.log(\'Setting Timeout for BlueBarRemovalNewsFeed\');
+				window.setTimeout(removeBlueBarNewsFeed,200);-->
 				return;
 			}
-			if (style.childNodes[1] !== \'undefined\'){
+			if (style.childNodes[1] !== null){
 				style = style.childNodes[1];
 			}else{
-				console.log(\'Setting Timeout for BlueBarRemovalNewsFeed\');
-				window.setTimeout(removeBlueBarNewsFeed,200);
+				<!--console.log(\'Setting Timeout for BlueBarRemovalNewsFeed\');
+				window.setTimeout(removeBlueBarNewsFeed,200);-->
 				return;
 			}
-			var style_string = style.getAttribute(\'style\');
-			if (!style_string.includes(\'display: none;\'))
+			if (style === null)
+			{
+				return;
+			};
+			var style_string;
+			try {
+				style_string = style.getAttribute(\'style\');
+			}
+			catch (e){};
+			console.log (\'Style String #1: \' + style_string);
+			if (style_string !== null &amp;&amp; !style_string.includes(\'display: none;\'))
 			{
 				style_string += \'display: none;\';
+			}
+			else{
+				<!-- console.log(\'Setting Timeout for BlueBarNewsFeedRemoval\');
+			     window.setTimeout(function (){removeBlueBarNewsFeed();},200);-->
+				return;
 			}
 			style.setAttribute(\'style\',style_string);
 		}else{
 			bluebar=document.getElementById(\'screen-root\');
-			console.log(document);
+			<!--console.log(document);
 			console.log(bluebar);
-			console.log(bluebar.childNodes);
+			console.log(bluebar.childNodes);-->
 			var style = bluebar.childNodes[0];
-			if (style.childNodes[0].childElementCount != 0){
+			if (style !== null &amp;&amp; style.childNodes[0].childElementCount != 0){
 				style = style.childNodes[0];
 			}else{
-				console.log(\'Setting Timeout for BlueBarRemoval\');
-			<!-- window.setTimeout(function (){removeBlueBar(pageType);},200);-->
-			return;
-			}
-			if (style.childNodes[1] !== \'undefined\'){
-				style = style.childNodes[1];
-			}else{
-				console.log(\'Setting Timeout for BlueBarRemovalNewsFeed\');
-				window.setTimeout(removeBlueBarNewsFeed,200);
+				<!--console.log(\'Setting Timeout for BlueBarNewsFeedRemoval\');
+			    window.setTimeout(function (){removeBlueBarNewsFeed();},200);-->
 				return;
 			}
-			var style_string = style.getAttribute(\'style\');
-			if (!style_string.includes(\'display: none;\'))
+			if (style.childNodes[1] !== null){
+				style = style.childNodes[1];
+			}else{
+				<!--console.log(\'Setting Timeout for BlueBarRemovalNewsFeed\');
+				window.setTimeout(removeBlueBarNewsFeed,200);-->
+				return;
+			}
+			if (style === null)
+			{
+				return;
+			};
+			var style_string;
+			try {
+				style_string = style.getAttribute(\'style\');
+			}
+			catch (e){};
+			console.log (\'Style String #2: \' + style_string);
+			if (style_string !== null &amp;&amp; !style_string.includes(\'display: none;\'))
 			{
 				style_string += \'display: none;\';
+			}else{
+				<!--console.log(\'Setting Timeout for BlueBarRemoval\');
+			    window.setTimeout(function (){removeBlueBar(pageType);},200);-->
+				return;
 			}
 			style.setAttribute(\'style\',style_string);
 		}
@@ -170,6 +213,7 @@
 		}
 		try{
 			window.removeEvent(\'load\',removeBlueBarNewsFeed);
+			window.removeEvent(\'load\',removeBlueBar2);
 		}
 		catch(e)
 		{};
@@ -192,36 +236,56 @@
 			console.log(bluebar);
 			console.log(bluebar.childNodes);
 			var style = bluebar.childNodes[0];
-			if (style.childNodes[1].childElementCount != 0 ){
+			if (style !== null \&amp;\&amp; style.childNodes[1] !== null \&amp;\&amp; style.childNodes[1].childElementCount != 0 ){
 				style = style.childNodes[1];
 			}else{
-				console.log(\'Setting Timeout for BlueBarRemoval\');
-				<!--window.setTimeout(function (){removeBlueBar2();},200);-->
+				<!--console.log(\'Setting Timeout for BlueBarRemoval\');
+				window.setTimeout(function (){removeBlueBar2();},200);-->
+
 				return;
 			}
-			style = style.childNodes[1];
-			var style_string = style.getAttribute(\'style\');
-			if (!style_string.includes(\'display: none;\'))
+			<!-- style = style.childNodes[1]; -->
+			if (style === null)
+			{
+				return;
+			};
+			var style_string;
+			try {
+				style_string = style.getAttribute(\'style\');
+			}
+			catch (e){};
+			if (style_string !== null &amp;&amp; !style_string.includes(\'display: none;\'))
 			{
 				style_string += \'display: none;\';
+			}
+			else{
+				return;
 			}
 			style.setAttribute(\'style\',style_string);
 		}else{
 			bluebar=document.getElementById(\'screen-root\');
-			console.log(document);
+			<!--console.log(document);
 			console.log(bluebar);
-			console.log(bluebar.childNodes);
+			console.log(bluebar.childNodes);-->
 			var style = bluebar.childNodes[0];
-			if (style.childNodes[1].childElementCount != 0 ){
+			if (style !== null &amp;&amp;style.childNodes[1] !== null \&amp;\&amp;  style.childNodes[1].childElementCount != 0 ){
 				style = style.childNodes[1];
 			}else{
-				console.log(\'Setting Timeout for BlueBarRemoval\');
-			<!---window.setTimeout(function (){removeBlueBar2();},200);-->
+				<!--console.log(\'Setting Timeout for BlueBarRemoval\');
+				window.setTimeout(function (){removeBlueBar2();},200);-->
 				return;
 			}
-			style = style.childNodes[1];
-			var style_string = style.getAttribute(\'style\');
-			if (!style_string.includes(\'display: none;\'))
+			<!-- style = style.childNodes[1];-->
+			if (style === null)
+			{
+				return;
+			};
+			var style_string;
+			try {
+				style_string = style.getAttribute(\'style\');
+			}
+			catch (e){};
+			if (style_string !== null &amp;&amp; !style_string.includes(\'display: none;\'))
 			{
 				style_string += \'display: none;\';
 			}
@@ -230,13 +294,142 @@
 		}
 		try{
 			window.removeEvent(\'load\',removeBlueBar2);
+			window.removeEvent(\'load\',removeBlueBarNewsFeed);
 		}
 		catch(e)
 		{};
         window.addEventListener(\'load\',removeBlueBar2());
+	</string>
 
 
+	<string name="removeBlueBarNewsFeed2" translatable="false">
+		javascript:function removeBlueBarNewsFeed2(mutations,observerNewsFeed){
+		console.log(\'Running BlueBarRemovalNewsFeed2...\');
+		var style;
+		if (typeof bluebarNewsFeed === \'undefined\')
+		{
+			var bluebarNewsFeed=document.getElementById(\'screen-root\');
+			console.log(document);
+			console.log(bluebarNewsFeed);
+			console.log(bluebarNewsFeed.childNodes);
+			style = bluebarNewsFeed.childNodes[0];
+			console.log(\'Childnode 0:\'+style);
 
+		if (style === null)
+			{
+				return;
+			};
+			style.style.height=\'auto\';
+			console.log(\'Node is:\'+style.childNodes[0]);
+			console.log(\'Child-Node 1 is:\'+style.childNodes[0].childNodes[2]);
+			console.log(\'Child-Node 2 is:\'+style.childNodes[0].childNodes[3]);
+			style.childNodes[0].childNodes[2].style.display=\'none\';
+			style.childNodes[0].childNodes[3].style.display=\'none\';
+		}else{
+			bluebar=document.getElementById(\'screen-root\');
+			style = bluebarNewsFeed.childNodes[0];
+
+		if (style === null)
+			{
+				return;
+			};
+			style.style.height=\'auto\';
+			console.log(\'Node is:\'+style.childNodes[0]);
+
+			console.log(\'Child-Node 1 is:\'+style.childNodes[0].childNodes[2]);
+			console.log(\'Child-Node 2 is:\'+style.childNodes[0].childNodes[3]);
+			style.childNodes[0].childNodes[2].style.display=\'none\';
+			style.childNodes[0].childNodes[3].style.display=\'none\';
+			observerNewsFeed.disconnect();
+		}
+		}
+		var observerNewsFeed;
+
+		if (typeof observerNewsFeed === \'undefined\')
+		{
+			observerNewsFeed = new MutationObserver(removeBlueBarNewsFeed2);
+
+		}
+		try{
+			const config = {childList:true,
+							attributes:true,
+							characterData:true,
+							subtree:true };
+			<!--observerNewsFeed.observe(document.getElementById(\'screen-root\').childNodes[0],config);-->
+			observerNewsFeed.observe(document,config);
+		}catch (e){
+			<!--observerNewsFeed.observe(document.getElementById(\'screen-root\').childNodes[0],config);-->
+			observerNewsFeed.observe(document,config);
+		};
+
+	</string>
+	<string name="removeBlueBar3" translatable="false">
+		javascript:function removeBlueBar3(mutations,observer){
+		console.log(\'Running BlueBarRemoval3...\');
+		var style;
+		if (typeof bluebar === \'undefined\')
+		{
+			var bluebar=document.getElementById(\'screen-root\');
+			console.log(document);
+			console.log(bluebar);
+			console.log(bluebar.childNodes);
+			style = bluebar.childNodes[0];
+			console.log(\'Childnode 0:\'+style);
+
+		if (style === null)
+			{
+				return;
+			};
+			style.style.height=\'auto\';
+			console.log(\'Node is:\'+style);
+			console.log(\'Child-Node 1 is:\'+style.childNodes[1]);
+			console.log(\'Child-Node 2 is:\'+style.childNodes[1].childNodes[2]);
+			style.childNodes[1].childNodes[2].style.display=\'none\';
+			if (style.childNodes[1].childNodes[2].style.display== \'none\')
+			{
+				observer.disconnect();
+			}
+		}else{
+			bluebar=document.getElementById(\'screen-root\');
+			console.log(document);
+			console.log(bluebar);
+			console.log(bluebar.childNodes);
+			style = bluebar.childNodes[0];
+			console.log(\'Childnode 0:\'+style);
+
+		if (style === null)
+			{
+				return;
+			};
+			style.style.height=\'auto\';
+			console.log(\'Node is:\'+style.childNodes[0]);
+			console.log(\'Child-Node 1 is:\'+style.childNodes[1]);
+			console.log(\'Child-Node 2 is:\'+style.childNodes[1].childNodes[2]);
+			style.childNodes[1].childNodes[2].style.display=\'none\';
+			if (style.childNodes[1].childNodes[2].style.display== \'none\')
+			{
+				observer.disconnect();
+			}
+		}
+		}
+		var observer;
+
+		if (typeof observer === \'undefined\')
+		{
+			observer = new MutationObserver(removeBlueBar3);
+
+		}
+		try{
+			const config = {childList:true,
+							attributes:true,
+							characterData:true,
+							subtree:true };
+			<!-- observer.observe(document.getElementById(\'screen-root\'),config); -->
+			observer.observe(document,config);
+		}catch(e){
+			<!-- observer.observe(document.getElementById(\'screen-root\'),config); -->
+			observer.observe(document,config);
+		}
 	</string>
 	<string name="addBlueBar" translatable="false">
 		javascript:function addBlueBar(){
@@ -322,7 +515,7 @@
 			console.log(backButtons+backButtons[5]+backButtons[7]);
 			switch (currentView) {
 				case \'search\':
-					if (backButtons[5] !== \'undefined\'){
+					if (backButtons[5] !== null){
 						var style_string = backButtons[5].getAttribute(\'style\');
 						if (!style_string.includes(\'display: none;\'))
 						{
@@ -331,7 +524,7 @@
 						backButtons[5].setAttribute(\'style\',style_string);
 
 						console.log(\'Setting Attribute done\');
-						if (backButtons[4] !== \'undefined\'){
+						if (backButtons[4] !== null){
 							backButtons[4].removeAttribute(\'data-action-id\');
 						}
 					}else{
@@ -340,14 +533,14 @@
 					}
 					break;
 				case \'bookmarks\':
-					if (backButtons[7] !== \'undefined\'){
+					if (backButtons[7] !== null){
 						var style_string = backButtons[7].getAttribute(\'style\');
 						if (!style_string.includes(\'display: none;\'))
 						{
 							style_string += \'display: none;\';
 						}
 						backButtons[7].setAttribute(\'style\',style_string);
-						if (backButtons[6] !== \'undefined\'){
+						if (backButtons[6] !== null){
 							backButtons[6].removeAttribute(\'data-action-id\');
 						}
 						console.log(\'Setting Attribute done\');
@@ -361,70 +554,142 @@
 		}
 	</string>
 
-	<string name="getNotificationsStates" translatable="false"> 
-		(function (){
+	<string name="getNotificationsStates" translatable="false">
+		function getNotificationStates(){
+		var newsFeed=false;
+		console.log(\'Window Location: \' + window.location);
+		if (window.location.href === \'https://touch.facebook.com/\')
+		{
+			newsFeed=true;
+			console.log(\'Newsfeed page\');
+		}
+
 		var screen = document.getElementById(\'screen-root\');
 		while (typeof screen === \'undefined\'){
 			screen = document.getElementById(\'screen-root\');
 		}
-		var buttons = screen.getElementsByClassName(\'m bg-s3\');
+		var buttons = screen.getElementsByClassName(\'m\');
 		while (typeof buttons === \'undefined\'){
-			buttons = screen.getElementsByClassName(\'m bg-s3\');
+			buttons = screen.getElementsByClassName(\'m\');
 		}
 		console.log(\'IN SCRIPT:\'+buttons);
-		try{
+		if (!newsFeed)
+		{
 			var string = \'feed:\';
-			var tmp = buttons[1].getElementsByClassName(\'f6\');
-			if (tmp.length > 0){
-				console.log(\'Element 1:\' + tmp.item(0).textContent);
-				string += tmp.item(0).textContent;
-			}else{
-				tmp = buttons[0].getElementsByClassName(\'f6\');
-				if (tmp.length > 0){
-					console.log(\'Element 1:\' + tmp.item(0).textContent);
-					string += tmp.item(0).textContent;
-				}else{
-					string += \'0\';
-				}
-			};
+			try{
+				string+= buttons.item(2).childNodes.item(2).childNodes.item(0).childNodes.item(2).outerText;
+			}catch(e){
+				string += \'0\';
+			}
 			string += \';
 			requests:\';
-			tmp = buttons[3].getElementsByClassName(\'f6\');
-			if (tmp.length > 0){
-				console.log(\'Element 2:\' + tmp.item(0).textContent);
-				string += tmp.item(0).textContent;
-			}else{
-				tmp = buttons[2].getElementsByClassName(\'f6\');
-				if (tmp.length > 0){
-					console.log(\'Element 2:\' + tmp.item(0).textContent);
-					string += tmp.item(0).textContent;
-				}else{
-					string += \'0\';
-				}
+			try{
+				string+= buttons.item(2).childNodes.item(2).childNodes.item(1).childNodes.item(2).outerText;
+			}catch(e){
+				string += \'0\';
+			}
+			string += \';
+			messages:\';
+			try{
+				string+= buttons.item(2).childNodes.item(2).childNodes.item(2).childNodes.item(2).outerText;
+			}catch(e){
+				string += \'0\';
+			}
+			string += \';
+			videos:\';
+			try{
+				string+= buttons.item(2).childNodes.item(2).childNodes.item(3).childNodes.item(2).outerText;
+			}catch(e){
+				string += \'0\';
 			}
 			string += \';
 			notifications:\';
-			tmp = buttons[9].getElementsByClassName(\'f6\');
-			if (tmp.length > 0){
-				console.log(\'Element 3:\' + tmp.item(0).textContent);
-				string += tmp.item(0).textContent;
-			}else{
-				tmp = buttons[8].getElementsByClassName(\'f6\');
-				if (tmp.length > 0){
-					console.log(\'Element 3:\' + tmp.item(0).textContent);
-					string += tmp.item(0).textContent;
-				}else{
-					string += \'0\';
-				}
+			try{
+				string+= buttons.item(2).childNodes.item(2).childNodes.item(4).childNodes.item(2).outerText;
+			}catch(e){
+				string += \'0\';
 			}
 			string += \';\';
 		}
-		catch(e)
+		else
 		{
-			string =\'feed:0;requests:0;notifications:0;\'
+			var string = \'feed:\';
+			try{
+				string+= buttons.item(1).childNodes.item(3).childNodes.item(0).childNodes.item(2).outerText;
+			}catch(e){
+				string += \'0\';
+			}
+			string += \';
+			requests:\';
+			try{
+				string+= buttons.item(1).childNodes.item(3).childNodes.item(1).childNodes.item(2).outerText;
+			}catch(e){
+				string += \'0\';
+			}
+			string += \';
+			messages:\';
+				try{
+				string+= buttons.item(1).childNodes.item(3).childNodes.item(2).childNodes.item(2).outerText;
+			}catch(e){
+				string += \'0\';
+			}
+			string += \';
+			videos:\';
+				try{
+				string+= buttons.item(1).childNodes.item(3).childNodes.item(3).childNodes.item(2).outerText;
+			}catch(e){
+				string += \'0\';
+			}
+			string += \';
+			notifications:\';
+			try{
+				string+= buttons.item(1).childNodes.item(3).childNodes.item(4).childNodes.item(2).outerText;
+			}catch(e){
+				string += \'0\';
+			}
+			string += \';\';
 		}
+		string.replaceAll(\':;\',\':0;\');
+		console.log(\'Notification-String is: \'+string);
 		return (string);
-		})();</string>
+		}
+		getNotificationStates();
+	</string>
+	<string name="installNotificationObserver" translatable="false">
+		javascript:function observeNotifications(){
+		var screen = document.getElementById(\'screen-root\');
+		while (typeof screen === \'undefined\'){
+			screen = document.getElementById(\'screen-root\');
+		}
+		var observeArea = screen.getElementsByClassName(\'m\');
+		while (typeof observeArea === \'undefined\'){
+			observeArea = screen.getElementsByClassName(\'m\');
+		}
+		var observerNotificationBar;
+		var callback = function (){window.SlimFBViewer.newNotificationState();};
+		if (typeof observerNotificationBar === \'undefined\')
+		{
+
+			observerNotificationBar = new MutationObserver(callback);
+
+		}
+		try{
+			observerNotificationBar.disconnect();
+		}catch(e){};
+		try{
+			const config = {childList:true,
+							attributes:true,
+							characterData:true,
+							subtree:true };
+		<!--observerNotificationBar.observe(document.getElementById(\'screen-root\').childNodes[0],config);-->
+		observerNotificationBar.observe(observeArea[11],config);
+		}catch (e){
+		<!--observerNotificationBar.observe(document.getElementById(\'screen-root\').childNodes[0],config);-->
+		observerNotificationBar.observe(observeArea[11],config);
+		};
+		}
+		observeNotifications();
+	</string>
 	<string name="navigateTo" translatable="false">
 		javascript:function navigateTo(destination, pressBackFirst, currentView) {
 		var index = 0;
@@ -449,13 +714,13 @@
 			}
 			switch (currentView) {
 				case \'search\':
-					if (backbuttons[4] !== \'undefined\'){
+					if (backbuttons[4] !== null){
 						backButtons[4].click();
 						break;
 					}
 
 				case \'bookmarks\':
-					if (backbuttons[4] !== \'undefined\'){
+					if (backbuttons[4] !== null){
 						backButtons[6].click();
 						break;
 					}
@@ -487,6 +752,58 @@
 				buttons[2].click();
 
 		}
+		observeBlueBar(destination);
+
+		}
+		function observeBlueBar(destination)
+		{
+			switch (destination){
+				case \'home\':
+					if (typeof observerNewsFeed === \'undefined\')
+					{
+						var observerNewsFeed;
+						observerNewsFeed = new MutationObserver(removeBlueBarNewsFeed2);
+
+					}
+					try
+					{
+						const config = {childList:true,
+
+									subtree:true };
+						<!--observerNewsFeed.observe(document.getElementById(\'screen-root\'),config);-->
+						observerNewsFeed.observe(document,config);
+					}catch (e)
+					{
+						<!--observerNewsFeed.observe(document.getElementById(\'screen-root\'),config);-->
+						observerNewsFeed.observe(document,config);
+
+					}
+					break;
+				case \'friend_requests\':
+				case \'notifications\':
+					if (typeof observer === \'undefined\')
+					{
+						var observer;
+						observer = new MutationObserver(removeBlueBar3);
+
+					}
+					try
+					{
+						const config = {childList:true,
+									attributes:true,
+									characterData:true,
+									subtree:true };
+						<!--observer.observe(document.getElementById(\'screen-root\'),config);-->
+						observer.observe(document,config);
+					}catch (e)
+					{
+						<!--observer.observe(document.getElementById(\'screen-root\'),config);-->
+						observer.observe(document,config);
+					}
+					break;
+				default:
+					break;
+			}
 		}
 
 	</string>
@@ -545,7 +862,7 @@
 		{
 			adaptMessengerInfoView(\'.rq0escxv.l9j0dhe7.du4w35lb.j83agx80.cbu4d94t.g5gj957u.f4tghd1a.ifue306u.kuivcneq.t63ysoy8 {top:0px;}\');
 		}
-		window.onload = setTimeout(startModifications,1500);
+		window.addEventListener(\'onload\', (evt) => {setTimeout(startModifications,1500);});
 
 	</string>
 
@@ -603,5 +920,53 @@ hideHeaderFooterMessages();
 		}
 		fixMarkPeople();
 	</string>
+<string name="goBack" translatable="false">
+	javascript:function goBack(){
+		var backButton = window.top.frames.window.document.querySelector(\'[data-sigil=\"MBackNavBarClick\"]\');
+		backButton = document.querySelector(\"[data-action-id=\'99\']\");
+		console.log(\'Back button is: \'+backButton);
+		var backButton2 = window.top.frames.window.document.querySelector(\"[id=\'MBackNavBar\']\");
+		console.log(\'Back button 2 is: \'+backButton2);
+		var backButton3 = window.top.frames.window.document.querySelector(\"[id=\'MBackNavBarLeftArrow\']\");
+		console.log(\'Back button 3 is: \'+backButton2);
+		var backButton4 = window.top.frames.window.document.getElementById(\'u_0_d_aC\');
+		console.log(\'Back button 4 is: \'+backButton3);
+		console.log(\'Window list is: \'+window.top.frames);
+		<!--window.SlimFBViewer.echoElement(document.body.innerHtml);
+		window.SlimFBViewer.echoElement(document.body.outerHtml);
+	    window.SlimFBViewer.echoElement(window);-->
 
+
+		if (backButton !== null) {
+			backButton.click();
+		}else{
+			window.history.back();
+		}
+
+	}
+	<!-- window.addEventListener(\'change\'goBack(); -->
+
+</string>
+	<string name="goBack2" translatable="false">
+	javascript:function goBack(){
+		if (backButton !== null) {
+			backButton.click();
+		}
+	}
+	javascript:function installGoBackFunction(){
+		var backButton,backButtonNavBar;
+		if (backButton === null){
+		   		//var backButtons = document.getElementById(\'MBackNavBarLeftArrow\');
+				//backButtonNavBar = document.getElementById(\'MBackNavBar\');
+				backButton = document.querySelector("[data-sigil=\'MBackNavBarClick\']");
+		}
+		console.log(\'Got backbutton:\' + backButton);
+	}
+	try{
+			window.removeEvent(\'load\',setTimeout);
+		}
+		catch(e)
+		{};
+	window.addEventListener(\'load\', setTimeout(installGoBackFunction,200));
+</string>
 </resources>

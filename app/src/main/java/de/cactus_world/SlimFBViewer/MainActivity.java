@@ -118,8 +118,15 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
     private JavaScriptInterface jsInterface;
     private WebViewClient webViewClient;
     private WebViewClient originalWebViewClient;
+    private Runnable goBackRunner = new Runnable() {
+        @Override
+        public void run() {
+            onBackPressed(true);
+        }
+    };
+    private boolean goBackRunnerInstalled = false;
     private SharedPreferences savedPreferences;//contains all the values of saved preferences
-    private String pageLocation="";
+    private String pageLocation = "";
     private boolean noConnectionError = false;//flag: is true if there is a connection error. It should reload the last useful page
 
     private boolean isSharer = false;//flag: true if the app is called from sharer
@@ -127,7 +134,7 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
     private boolean cssLoaded = false;
     private String currentView = "home";
     private boolean isFirstBookmarksLoad = true;
-    private boolean isFirstSearchLoad  = true;
+    private boolean isFirstSearchLoad = true;
     private boolean isFirstFeedLoad = true;
     private boolean isFirstMessagesLoad = true;
     private boolean isFirstNotificationsLoad = true;
@@ -137,8 +144,8 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
     private boolean inSearch = false;
     private boolean inBookmarks = false;
     private boolean softkeyBackPressed = false;
-    private int runCounter=0;
-    private int historyIndexOffset=0;
+    private int runCounter = 0;
+    private int historyIndexOffset = 0;
     // create link handler (long clicked links)
     private final MyHandler linkHandler = new MyHandler(this);
 
@@ -148,11 +155,12 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
     private WebChromeClient.CustomViewCallback mCustomViewCallback;
     private android.webkit.CookieManager cookieManager = android.webkit.CookieManager.getInstance();
     private boolean darkThemeSet = false;
-    private String fbDesktopUserAgent ="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.50 Safari/537.36";
+    private String fbDesktopUserAgent = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.50 Safari/537.36";
     private String fbMobileUserAgentOld = "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36";
     private String fbMobileUserAgent = "Mozilla/5.0 (Linux; Android 9; G8441) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.50 Mobile Safari/537.36";
 
-    private String userAgent ="";
+    private String userAgent = "";
+
     private class WebResourceRetrievalResponse {
         private String webResourceRetrievalType;
         private String webResourceContentEncoding;
@@ -280,7 +288,10 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
 
     private View mCustomView;
     private Menu menuBar;
-    private HashSet<Integer> collapsableActionItems = new HashSet<Integer>(){{add(R.id.refresh); add(R.id.top);}};
+    private HashSet<Integer> collapsableActionItems = new HashSet<Integer>() {{
+        add(R.id.refresh);
+        add(R.id.top);
+    }};
     private Drawable notifications;
     private Drawable feed;
     private Drawable message;
@@ -295,7 +306,7 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
     private String fbMobileNotificationsUrl;
     private String fbMobileSearchUrl;
     private String fbMobileBookmarksUrl;
-    private ConcurrentHashMap <String, Integer> notificationStates = new ConcurrentHashMap<String, Integer>();
+    private ConcurrentHashMap<String, Integer> notificationStates = new ConcurrentHashMap<String, Integer>();
     private int toolBarColor = 0;
 
     //*********************** ACTIVITY EVENTS ****************************
@@ -402,6 +413,7 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
         this.notificationStates.put("feed", 0);
         this.notificationStates.put("requests", 0);
         this.notificationStates.put("messages", 0);
+        this.notificationStates.put("videos", 0);
         this.notificationStates.put("notifications", 0);
     }
 
@@ -678,10 +690,10 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
 
         webViewFacebook.setDesktopMode(false);
         settings.setUserAgentString(fbMobileUserAgent);
-        this.userAgent=fbMobileUserAgent;
+        this.userAgent = fbMobileUserAgent;
         settings.setJavaScriptEnabled(true);
         jsInterface = new JavaScriptInterface(this);
-        webViewFacebook.addJavascriptInterface(jsInterface,"SlimFBViewer");
+        webViewFacebook.addJavascriptInterface(jsInterface, "SlimFBViewer");
         settings.setDomStorageEnabled(true);
         //set text zoom
         int zoom = Integer.parseInt(savedPreferences.getString("pref_textSize", "100"));
@@ -705,7 +717,7 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
         settings.setLoadsImagesAutomatically(!savedPreferences.getBoolean("pref_doNotDownloadImages", false));//to save data
 
         settings.setAllowUniversalAccessFromFileURLs(true);
-        useOwnMessageDisplay = savedPreferences.getBoolean("pref_useAlternativeMessagesDisplay",false);
+        useOwnMessageDisplay = savedPreferences.getBoolean("pref_useAlternativeMessagesDisplay", false);
         /*this.cookieManager = new CookieManager(new CookieStore() {
             @Override
             public void add(URI uri, HttpCookie cookie) {
@@ -739,7 +751,7 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
         },CookiePolicy.ACCEPT_ALL);
 
         */
-        webViewFacebook.setCookieManager (this.cookieManager);
+        webViewFacebook.setCookieManager(this.cookieManager);
 
         //cookieManager.setAcceptThirdPartyCookies(webViewFacebook,true);
 
@@ -787,10 +799,11 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
 
 
             }
+
             @Override
             public boolean shouldOverrideUrlLoading(final WebView view, final String url) {
 
-                String tmp =view.getOriginalUrl();
+                String tmp = view.getOriginalUrl();
                 //webViewFacebook.loadUrl(view.getOriginalUrl());
                 return false;
                 //super.shouldOverrideUrlLoading(view, view.getOriginalUrl());
@@ -845,7 +858,6 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
             }
 
 
-
             public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
                 if (Build.VERSION.SDK_INT >= 11) {
                     {
@@ -868,8 +880,7 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
                 {
                     String origin = view.getOriginalUrl();
                     String request_url = view.getUrl();
-                    if (origin.equals(request_url))
-                    {
+                    if (origin.equals(request_url)) {
                         super.doUpdateVisitedHistory(view, url, isReload);
                     }
 
@@ -934,8 +945,7 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
 
             public WebResourceResponse shouldInterceptRequest2(WebView webView, WebResourceRequest webResourceRequest) {
                 String url = webResourceRequest.getUrl().toString();
-                if (webResourceRequest.getMethod().equals("POST"))
-                {
+                if (webResourceRequest.getMethod().equals("POST")) {
                     return super.shouldInterceptRequest(webView, webResourceRequest);
                 }
                 if (savedPreferences.getBoolean("pref_noBar", true)) {
@@ -949,8 +959,7 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
                         sharedPreferencesEditor.commit();
                         return super.shouldInterceptRequest(webView, webResourceRequest);
                     }
-                    if (inOwnMessageDisplay)
-                    {
+                    if (inOwnMessageDisplay) {
                         //return super.shouldInterceptRequest(webView,webResourceRequest);
                     }
                     if (webResourceRequest.getMethod().equals("GET") && savedPreferences.getBoolean("hasRun", false)) {
@@ -971,10 +980,9 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
                             if (isInternetAvailable()) {
                                 try {
                                     //String userAgent = "";
-                                    if (userAgent.equals(fbDesktopUserAgent))
-                                    {
-                                        url = url.replace("m.facebook","facebook");
-                                        url = url.replace("touch.facebook","facebook");
+                                    if (userAgent.equals(fbDesktopUserAgent)) {
+                                        url = url.replace("m.facebook", "facebook");
+                                        url = url.replace("touch.facebook", "facebook");
                                     }
                                     /*if (url.toString().startsWith("https://facebook.com/messages/"))
                                     {
@@ -1057,8 +1065,7 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
                 }
 */
                                     //String test = httpURLConnection.getRequestMethod();
-                                    if (responseCode == 302)
-                                    {
+                                    if (responseCode == 302) {
                                         return super.shouldInterceptRequest(webView, webResourceRequest);
                                     }
                                     InputStream inputStream = httpURLConnection.getInputStream();
@@ -1125,21 +1132,17 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
                         Object webResourceRRequest;
                         ByteArrayInputStream webResponse = null;
                         Boolean isTextType = false;
-                        if (webResourceRetrievalResponse != null){
+                        if (webResourceRetrievalResponse != null) {
                             String webResourceRetrievalType = webResourceRetrievalResponse.getWebResourceRetrievalType();
-                            if (webResourceRetrievalType != null)
-                            {
-                                 switch (webResourceRetrievalType)
-                                {
+                            if (webResourceRetrievalType != null) {
+                                switch (webResourceRetrievalType) {
                                     case "text/html":
                                     case "text/javascript":
-                                    case "application/x-javascript":
-                                    {
+                                    case "application/x-javascript": {
                                         isTextType = true;
                                         break;
                                     }
-                                    default:
-                                    {
+                                    default: {
                                         isTextType = false;
                                         break;
                                     }
@@ -1160,7 +1163,7 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
                             matcher.appendTail(newWebResponse);
                             webResourceRetrievalResponse.setWebResourceRetrievalContent(newWebResponse.toString());
                         }*/
-                            if (webResourceRetrievalResponse != null && url.contains(getString(R.string.urlFacebookMobileMessages))) {
+                        if (webResourceRetrievalResponse != null && url.contains(getString(R.string.urlFacebookMobileMessages))) {
                             Pattern pattern = Pattern.compile("(<div.*?data-sigil=\\\"MTopBlueBarHeader\\\"[^>]*)>");
                             Matcher matcher = pattern.matcher(webResourceRetrievalResponse.getWebResourceRetrievalContent());
                             StringBuffer newWebResponse = new StringBuffer();
@@ -1170,7 +1173,7 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
                                 //matcher.appendReplacement(newWebResponse,matcher.group(1)+">");
                             }
                             matcher.appendTail(newWebResponse);
-                                webResourceRetrievalResponse.setWebResourceRetrievalContent(newWebResponse.toString());
+                            webResourceRetrievalResponse.setWebResourceRetrievalContent(newWebResponse.toString());
                         }
                         if (webResourceRetrievalResponse != null && webResourceRetrievalResponse.webResourceRetrievalContent != null && webResourceRetrievalResponse.webResourceRetrievalContent.contains("this._updatePosition")) {
                             Pattern pattern = Pattern.compile("(this\\._updatePosition\\s*=\\s*function\\s*\\(\\).*?h\\s*=\\s*b\\(\\\"Vector\\\"\\)\\.getElementPosition\\(e\\);)");
@@ -1442,15 +1445,14 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
     private void GoHome(boolean loadFromWeb) {
         this.inSearch = false;
         this.inBookmarks = false;
-        if (this.inOwnMessageDisplay)
-        {
+        if (this.inOwnMessageDisplay) {
             /*this.userAgent = fbMobileUserAgent;
             webViewFacebook.getSettings().setUserAgentString(userAgent);
             */
             webViewFacebook.getSettings().setUserAgentString(fbMobileUserAgent);
             this.userAgent = fbMobileUserAgent;
             this.swipeRefreshLayout.setEnabled(true);
-            this.inOwnMessageDisplay=false;
+            this.inOwnMessageDisplay = false;
             loadFromWeb = true;
         }
         if (loadFromWeb || this.inSearch || this.inBookmarks) {
@@ -1463,7 +1465,10 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
         } else {
             //webViewFacebook.loadUrl("javascript:feed_jewel.firstChild.click()");
             webViewFacebook.loadUrl(getString(R.string.navigateTo));
-            webViewFacebook.loadUrl("javascript:navigateTo(\'home\',\'"+ String.valueOf((boolean) (this.inBookmarks || this.inSearch))+"\',\'"+currentView+"\')");
+            webViewFacebook.loadUrl("javascript:navigateTo(\'home\',\'" + String.valueOf((boolean) (this.inBookmarks || this.inSearch)) + "\',\'" + currentView + "\')");
+        }
+        if (savedPreferences.getBoolean("pref_noBar", true)) {
+            webViewFacebook.loadUrl(getString(R.string.removeBlueBarNewsFeed2));
         }
         this.currentView = "home";
         this.inSearch = false;
@@ -1471,27 +1476,26 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
     }
 
     private void GoNotifications() {
-        if (this.inOwnMessageDisplay)
-        {
+        if (this.inOwnMessageDisplay) {
             /*this.userAgent = fbMobileUserAgent;
             webViewFacebook.getSettings().setUserAgentString(userAgent);
             */
             webViewFacebook.getSettings().setUserAgentString(fbMobileUserAgent);
             this.userAgent = fbMobileUserAgent;
             this.swipeRefreshLayout.setEnabled(true);
-            this.inOwnMessageDisplay=false;
+            this.inOwnMessageDisplay = false;
             //webViewFacebook.loadUrl("javascript:navigateTo(\'home\',\'"+ String.valueOf((boolean) (this.inBookmarks || this.inSearch))+"\',\'"+currentView+"\')");
             webViewFacebook.loadUrl(getString(R.string.urlFacebookMobileNotifications));
-        }else if (isFirstNotificationsLoad || this.inSearch || this.inBookmarks) {
+        } else if (isFirstNotificationsLoad || this.inSearch || this.inBookmarks) {
             webViewFacebook.loadUrl(getString(R.string.urlFacebookMobileNotifications));
             //isFirstNotificationsLoad = false;
-        }
-         else
-
-        {
+        } else {
             //webViewFacebook.loadUrl("javascript:notifications_jewel.firstChild.click()");
             webViewFacebook.loadUrl(getString(R.string.navigateTo));
-            webViewFacebook.loadUrl("javascript:navigateTo(\'notifications\',\'"+ String.valueOf((boolean) (this.inBookmarks || this.inSearch))+"\',\'"+currentView+"\')");
+            webViewFacebook.loadUrl("javascript:navigateTo(\'notifications\',\'" + String.valueOf((boolean) (this.inBookmarks || this.inSearch)) + "\',\'" + currentView + "\')");
+        }
+        if (savedPreferences.getBoolean("pref_noBar", true)) {
+            webViewFacebook.loadUrl(getString(R.string.removeBlueBar3));
         }
         this.inSearch = false;
         this.inBookmarks = false;
@@ -1501,9 +1505,8 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
     private void GoMessages() {
         this.inSearch = false;
         this.inBookmarks = false;
-        useOwnMessageDisplay = savedPreferences.getBoolean("pref_useAlternativeMessagesDisplay",false);
-        if (useOwnMessageDisplay)
-        {
+        useOwnMessageDisplay = savedPreferences.getBoolean("pref_useAlternativeMessagesDisplay", false);
+        if (useOwnMessageDisplay) {
            /*this.userAgent = fbDesktopUserAgent;
            webViewFacebook.setDesktopMode(true);
             webViewFacebook.getSettings().setUserAgentString(userAgent);
@@ -1517,49 +1520,46 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
            webViewFacebook.getSettings().setUseWideViewPort(true);
            webViewFacebook.getSettings().setJavaScriptEnabled(true);
            */
-           webViewFacebook.getSettings().setUserAgentString(fbDesktopUserAgent);
-           webViewFacebook.setDesktopMode(true);
-           this.userAgent = fbDesktopUserAgent;
-           webViewFacebook.loadUrl(fbDesktopMessageUrl);
-           this.swipeRefreshLayout.setEnabled(false);
-           this.inOwnMessageDisplay=true;
-           this.isFirstFeedLoad=true;
-           this.isFirstFriendRequestsLoad=true;
-           this.isFirstBookmarksLoad=true;
-           this.isFirstNotificationsLoad=true;
-           this.isFirstMessagesLoad=true;
-        }
-        else
-            {
+            webViewFacebook.getSettings().setUserAgentString(fbDesktopUserAgent);
+            webViewFacebook.setDesktopMode(true);
+            this.userAgent = fbDesktopUserAgent;
+            webViewFacebook.loadUrl(fbDesktopMessageUrl);
+            this.swipeRefreshLayout.setEnabled(false);
+            this.inOwnMessageDisplay = true;
+            this.isFirstFeedLoad = true;
+            this.isFirstFriendRequestsLoad = true;
+            this.isFirstBookmarksLoad = true;
+            this.isFirstNotificationsLoad = true;
+            this.isFirstMessagesLoad = true;
+        } else {
                 /*this.userAgent = fbMobileUserAgent;
                 webViewFacebook.getSettings().setUserAgentString(userAgent);
                 */
-                webViewFacebook.getSettings().setUserAgentString(fbMobileUserAgent);
-                webViewFacebook.setDesktopMode(false);
-                this.userAgent = fbMobileUserAgent;
-                this.inOwnMessageDisplay=false;
-                if (isFirstMessagesLoad) {
-                    webViewFacebook.loadUrl(getString(R.string.urlFacebookMobileMessages));
-                    isFirstMessagesLoad = false;
-                } else {
-                    //webViewFacebook.loadUrl("javascript:messages_jewel.firstChild.click()");
-                    webViewFacebook.loadUrl(getString(R.string.navigateTo));
-                    webViewFacebook.loadUrl("javascript:navigateTo(\'messages\',\'"+ String.valueOf((boolean) (this.inBookmarks || this.inSearch))+"\',\'"+currentView+"\')");
-                }
+            webViewFacebook.getSettings().setUserAgentString(fbMobileUserAgent);
+            webViewFacebook.setDesktopMode(false);
+            this.userAgent = fbMobileUserAgent;
+            this.inOwnMessageDisplay = false;
+            if (isFirstMessagesLoad) {
+                webViewFacebook.loadUrl(getString(R.string.urlFacebookMobileMessages));
+                isFirstMessagesLoad = false;
+            } else {
+                //webViewFacebook.loadUrl("javascript:messages_jewel.firstChild.click()");
+                webViewFacebook.loadUrl(getString(R.string.navigateTo));
+                webViewFacebook.loadUrl("javascript:navigateTo(\'messages\',\'" + String.valueOf((boolean) (this.inBookmarks || this.inSearch)) + "\',\'" + currentView + "\')");
+            }
         }
         this.currentView = "messages";
     }
 
     private void GoFriends() {
-        if (this.inOwnMessageDisplay)
-        {
+        if (this.inOwnMessageDisplay) {
             /*this.userAgent = fbMobileUserAgent;
             webViewFacebook.getSettings().setUserAgentString(userAgent);
             */
             webViewFacebook.getSettings().setUserAgentString(fbMobileUserAgent);
             this.userAgent = fbMobileUserAgent;
             this.swipeRefreshLayout.setEnabled(true);
-            this.inOwnMessageDisplay=false;
+            this.inOwnMessageDisplay = false;
             //webViewFacebook.loadUrl("javascript:navigateTo(\'home\',\'"+ String.valueOf((boolean) (this.inBookmarks || this.inSearch))+"\',\'"+currentView+"\')");
             webViewFacebook.loadUrl(getString(R.string.urlFacebookMobileFriends));
         }
@@ -1569,7 +1569,12 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
         } else {
             //webViewFacebook.loadUrl("javascript:requests_jewel.firstChild.click()");
             webViewFacebook.loadUrl(getString(R.string.navigateTo));
-            webViewFacebook.loadUrl("javascript:navigateTo(\'friend_requests\',\'"+ String.valueOf((boolean) (this.inBookmarks || this.inSearch))+"\',\'"+currentView+"\')");
+
+            webViewFacebook.loadUrl("javascript:navigateTo(\'friend_requests\',\'" + String.valueOf((boolean) (this.inBookmarks || this.inSearch)) + "\',\'" + currentView + "\')");
+
+        }
+        if (savedPreferences.getBoolean("pref_noBar", true)) {
+            webViewFacebook.loadUrl(getString(R.string.removeBlueBar3));
         }
         this.currentView = "friend_requests";
         this.inSearch = false;
@@ -1578,15 +1583,14 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
     }
 
     private void GoBookmarks() {
-        if (this.inOwnMessageDisplay)
-        {
+        if (this.inOwnMessageDisplay) {
            /* this.userAgent = fbMobileUserAgent;
             webViewFacebook.getSettings().setUserAgentString(userAgent);
              */
             webViewFacebook.getSettings().setUserAgentString(fbMobileUserAgent);
             this.userAgent = fbMobileUserAgent;
             this.swipeRefreshLayout.setEnabled(true);
-            this.inOwnMessageDisplay=false;
+            this.inOwnMessageDisplay = false;
             //webViewFacebook.loadUrl("javascript:navigateTo(\'home\',\'"+ String.valueOf((boolean) (this.inBookmarks || this.inSearch))+"\',\'"+currentView+"\')");
             webViewFacebook.loadUrl(getString(R.string.urlFacebookMobileBookmarks));
         }
@@ -1596,7 +1600,7 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
         } else {
             //webViewFacebook.loadUrl("javascript:bookmarks_jewel.firstChild.click()");
             webViewFacebook.loadUrl(getString(R.string.navigateTo));
-            webViewFacebook.loadUrl("javascript:navigateTo(\'bookmarks\',\'"+ String.valueOf((boolean) (this.inBookmarks || this.inSearch))+"\',\'"+currentView+"\')");
+            webViewFacebook.loadUrl("javascript:navigateTo(\'bookmarks\',\'" + String.valueOf((boolean) (this.inBookmarks || this.inSearch)) + "\',\'" + currentView + "\')");
         }
         this.currentView = "bookmarks";
         this.inSearch = false;
@@ -1620,7 +1624,7 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
         }
         if (isFirstSearchLoad || this.inSearch || this.inBookmarks) {
             webViewFacebook.loadUrl(getString(R.string.urlFacebookMobileSearch));
-        }else {
+        } else {
             webViewFacebook.loadUrl(getString(R.string.navigateTo));
             webViewFacebook.loadUrl("javascript:navigateTo(\'search\',\'" + String.valueOf((boolean) (this.inBookmarks || this.inSearch)) + "\',\'" + currentView + "\')");
             //webViewFacebook.loadUrl(getString(R.string.urlFacebookMobile));
@@ -1656,28 +1660,36 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
                 setMenuItemActive(this.menuBar, this.menuBar.findItem(R.id.bookmarks));
             }*/
             //webViewFacebook.reload();
-            webViewFacebook.loadUrl( "javascript:window.location.replace(\""+url+"\")" );
+            webViewFacebook.loadUrl("javascript:window.location.replace(\"" + url + "\")");
             /*if (this.inSearch || this.inBookmarks) {
                 //webViewFacebook.loadUrl(getString(R.string.removeBackButtons));
                 //webViewFacebook.loadUrl("javascript:window.addEventListener('load',removeBackButtons.bind(null,'" + this.currentView + "'))");
                 //this.historyIndexOffset = 2;
             } else*/
-            switch (this.currentView)
-            {
-                case "notifications" :
-                case "friend_requests" :
-                    webViewFacebook.loadUrl(getString(R.string.removeBlueBar2));
+            switch (this.currentView) {
+                case "notifications":
+                case "friend_requests":
+                    if (savedPreferences.getBoolean("pref_noBar", true)) {
+                        webViewFacebook.loadUrl(getString(R.string.removeBlueBar3));
+                    }
+                    //webViewFacebook.loadUrl(getString(R.string.goBack));
                     break;
-                case "search" :
-                case "bookmarks" :
+                case "search":
+                case "bookmarks":
                     webViewFacebook.loadUrl(getString(R.string.removeBackButtons));
+                    //webViewFacebook.loadUrl(getString(R.string.goBack));
                     break;
                 case "home":
                 default:
-                    webViewFacebook.loadUrl(getString(R.string.removeBlueBarNewsFeed));
+                    if (savedPreferences.getBoolean("pref_noBar", true)) {
+                        webViewFacebook.loadUrl(getString(R.string.removeBlueBarNewsFeed2));
+                    }
+                    //webViewFacebook.loadUrl(getString(R.string.removeBlueBar3));
+                    //webViewFacebook.loadUrl(getString(R.string.goBack));
                     break;
                 //this.historyIndexOffset = 0;
             }
+            webViewFacebook.loadUrl(getString(R.string.installNotificationObserver));
 
 
         }
@@ -1689,13 +1701,11 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
     public boolean shouldLoadUrl(String url) {
         Log.d("MainActivity", "shouldLoadUrl: " + url);
         String host = Uri.parse(url).getHost();
-        if (webViewFacebook.getSettings().getUserAgentString().equals(fbDesktopUserAgent) && host != null && ! host.contains("messenger"))
-        {
+        if (webViewFacebook.getSettings().getUserAgentString().equals(fbDesktopUserAgent) && host != null && !host.contains("messenger")) {
             webViewFacebook.getSettings().setUserAgentString(fbMobileUserAgent);
             this.userAgent = fbMobileUserAgent;
         }
-        if (webViewFacebook.getSettings().getUserAgentString().equals(fbMobileUserAgent) && host != null && host.contains("messenger"))
-        {
+        if (webViewFacebook.getSettings().getUserAgentString().equals(fbMobileUserAgent) && host != null && host.contains("messenger")) {
             webViewFacebook.getSettings().setUserAgentString(fbDesktopUserAgent);
             this.userAgent = fbDesktopUserAgent;
         }
@@ -1718,42 +1728,47 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
     @Override
     public void onPageStarted(String url, Bitmap favicon) {
         //swipeRefreshLayout.setVisibility(View.INVISIBLE);
-        this.runCounter=0;
+        this.runCounter = 0;
         swipeRefreshLayout.setRefreshing(true);
+
 
     }
 
     @Override
     public void onPageFinished(String url) {
         //this.swipeRefreshLayout.setRefreshing(true);
-        setMenuBarNotificationState(this.webViewFacebook, this.menuBar);
+        if (!(this.inSearch || this.inBookmarks)) {
+            setMenuBarNotificationState(this.webViewFacebook, this.menuBar);
+        }
+        webViewFacebook.loadUrl(getString(R.string.installNotificationObserver));
         ApplyCustomCss();
+        webViewFacebook.loadUrl((getString(R.string.goBack)));
         webViewFacebook.loadUrl(getString(R.string.fixMarkPeople));
         WebBackForwardList wbfl = webViewFacebook.copyBackForwardList();
         WebHistoryItem webHistoryItem = wbfl.getCurrentItem();
-        boolean isFacebookNewsFeedUrl = webHistoryItem.getOriginalUrl().contains(fbMobileNewsfeedUrl);
-        if ( ! this.inSearch && savedPreferences.getBoolean("pref_noBar", true))
-        {
+        boolean isFacebookNewsFeedUrl = webHistoryItem.getOriginalUrl().contains(fbMobileNewsfeedUrl) || webHistoryItem.getOriginalUrl().equals(fbMobileBaseUrl);
+        if (!this.inSearch && savedPreferences.getBoolean("pref_noBar", true)) {
             /*if (url.equals(R.string.urlFacebookMobileSearch)){
                 webViewFacebook.loadUrl(getString(R.string.addBlueBar));
             }else {*/
-                //webViewFacebook.loadUrl(getString(R.string.removeBlueBar));
-                if (isFacebookNewsFeedUrl)
-                {
-                   // webViewFacebook.loadUrl("javascript:removeBlueBar('isFacebookNewsFeedUrl');");
-                    //webViewFacebook.loadUrl("javascript:window.addEventListener('load',removeBlueBar.bind(null,'isFacebookNewsFeedUrl'))");
-                    webViewFacebook.loadUrl(getString(R.string.removeBlueBarNewsFeed));
-                }else if (!(this.inSearch || this.inBookmarks)){
-                    //webViewFacebook.loadUrl("javascript:removeBlueBar('isNotFacebookNewsFeedUrl');");
-                    //webViewFacebook.loadUrl("javascript:window.addEventListener('load',removeBlueBar.bind(null,'isNotFacebookNewsFeedUrl'))");
-                    webViewFacebook.loadUrl(getString(R.string.removeBlueBar2));
-                }
+            //webViewFacebook.loadUrl(getString(R.string.removeBlueBar));
+            if (isFacebookNewsFeedUrl) {
+                // webViewFacebook.loadUrl("javascript:removeBlueBar('isFacebookNewsFeedUrl');");
+                //webViewFacebook.loadUrl("javascript:window.addEventListener('load',removeBlueBar.bind(null,'isFacebookNewsFeedUrl'))");
+
+                //webViewFacebook.loadUrl(getString(R.string.removeBlueBarNewsFeed)); OLd Facebook
+                webViewFacebook.loadUrl(getString(R.string.removeBlueBarNewsFeed2));
+
+            } else if (!(this.inSearch || this.inBookmarks)) {
+                //webViewFacebook.loadUrl("javascript:removeBlueBar('isNotFacebookNewsFeedUrl');");
+                //webViewFacebook.loadUrl("javascript:window.addEventListener('load',removeBlueBar.bind(null,'isNotFacebookNewsFeedUrl'))");
+                webViewFacebook.loadUrl(getString(R.string.removeBlueBar3));
+            }
 
 
             //}
         }
-        if (! this.inSearch && ! savedPreferences.getBoolean("pref_noBar", true))
-        {
+        if (!this.inSearch && !savedPreferences.getBoolean("pref_noBar", true)) {
             webViewFacebook.loadUrl(getString(R.string.addBlueBar));
         }
 
@@ -1761,17 +1776,14 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
         {
             webViewFacebook.loadUrl(getString(R.string.openSearch));
         }*/
-        if (this.inSearch || this.inBookmarks){
+        if (this.inSearch || this.inBookmarks) {
             webViewFacebook.loadUrl(getString(R.string.removeBackButtons));
             this.webViewFacebook.loadUrl("javascript:try{window.removeEvent('load',removeBackButtons);}catch(e){};");
-            webViewFacebook.loadUrl("javascript:window.addEventListener('load',removeBackButtons.bind(null,'"+this.currentView+"'))");
+            webViewFacebook.loadUrl("javascript:window.addEventListener('load',removeBackButtons.bind(null,'" + this.currentView + "'))");
         }
-        if (this.inOwnMessageDisplay && !savedPreferences.getBoolean("pref_enableInfoOnAlternativeMessagesDisplay",false))
-        {
+        if (this.inOwnMessageDisplay && !savedPreferences.getBoolean("pref_enableInfoOnAlternativeMessagesDisplay", false)) {
             webViewFacebook.loadUrl(getString(R.string.adaptMessengerView));
-        }
-        else if (this.inOwnMessageDisplay)
-        {
+        } else if (this.inOwnMessageDisplay) {
             webViewFacebook.loadUrl(getString(R.string.adaptMessengerInfoView));
         }
         // MyAdvancedWebView myAdvancedWebView = findViewById(webView);
@@ -1779,10 +1791,14 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
         if (savedPreferences.getBoolean("pref_enableMessagesShortcut", false)) {
             webViewFacebook.loadUrl(getString(R.string.fixMessages));
         }
-        this.useOwnMessageDisplay = savedPreferences.getBoolean("pref_enabledAlternativeMessagesDisplay",false);
+        this.useOwnMessageDisplay = savedPreferences.getBoolean("pref_enabledAlternativeMessagesDisplay", false);
 
         this.webViewFacebook.loadUrl("javascript:try{window.removeEvent('click',identifyClick);}catch(e){};");
-        this.webViewFacebook.loadUrl("javascript:window.addEventListener('click',identifyClick = function(evt){var id = -1; try{if(typeof evt.srcElement !== 'undefined') {id = evt.srcElement.getAttributeNode('data-action-id').value;console.log('Button clicked: '+id);}}catch(exception){id = -1;console.log('No button hit.')}; if (id === '99' || id === '32745'){window.SlimFBViewer.historyBackPressed(id);evt.preventDefault();evt.stopPropagation();}});");
+        this.webViewFacebook.loadUrl("javascript:window.addEventListener('click',identifyClick = function(evt){var id = -1; try{if(typeof evt.srcElement !== null) {id = evt.srcElement.getAttributeNode('data-action-id').value;console.log('Button clicked: '+id+' Event: '+evt);}}catch(exception){id = -1;console.log('No button hit.')}; if (id === '99' || id === '32745'){window.SlimFBViewer.historyBackPressed(id);evt.preventDefault();evt.stopPropagation();}});");
+        //this.webViewFacebook.loadUrl(getString(R.string.goBack));
+        this.upDateActiveArea();
+        //webViewFacebook.loadUrl(("javascript:window.addEventListener( \"load\", (event) => {window.scroll(-1,-1);console.log(\"Page is loaded\");});"));
+        //webViewFacebook.loadUrl(("javascript:window.scroll(-1,-1);console.log(\"Page is loaded\");"));
         swipeRefreshLayout.setRefreshing(false);
         //swipeRefreshLayout.setVisibility(View.VISIBLE);
         //webViewFacebook.invalidate();
@@ -1821,7 +1837,6 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
         }
 
 
-
     }
 
     public boolean isInternetAvailable() {
@@ -1845,7 +1860,7 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
 
         if (this.savedPreferences.getBoolean("pref_openExternalPagesInSlimFBViewer", false)) {
             webViewFacebook.loadUrl(url);
-        }else{
+        } else {
             if (Uri.parse(url).getHost() != null && Uri.parse(url).getHost().endsWith("slimsocial.leo")) {
                 //he clicked on messages
                 startActivity(new Intent(this, MessagesActivity.class));
@@ -1865,54 +1880,57 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
             }
         }
     }
+
     //*********************** BUTTON ****************************
     // handling the back button and softkey "back" pressed
-    public void softkeyBackPressed(String key)
-    {
+    public void softkeyBackPressed(String key) {
         this.softkeyBackPressed = true;
-        if (key.equals("99") ||(key.equals("32745") && this.inBookmarks)){
-        this.webViewFacebook.post(new Runnable() {
-            @Override
-            public void run() {
-                onBackPressed(true);
+        if (key.equals("99") || (key.equals("32745") && this.inBookmarks)) {
+            //this.webViewFacebook.removeCallbacks(goBackRunner);
+            if (!this.goBackRunnerInstalled) {
+                this.webViewFacebook.post(goBackRunner);
+                this.goBackRunnerInstalled = true;
             }
-        });
+        } else if (key.equals("99") || (key.equals("32745")) && this.goBackRunnerInstalled) {
+            this.webViewFacebook.removeCallbacks(this.goBackRunner);
+
         }
+
     }
-    public void onBackPressed(boolean isSoftKey){
 
-        if (isSoftKey && this.runCounter==0)
-        {
-            this.softkeyBackPressed=true;
-            this.onBackPressed();
+    public void onBackPressed(boolean isSoftKey) {
 
-        }
-        else if (!isSoftKey){
-            this.softkeyBackPressed=false;
+        if (isSoftKey && this.runCounter == 0) {
+            this.softkeyBackPressed = true;
+            this.upDateActiveArea();
+            //this.onBackPressed();
+
+        } else if (!isSoftKey) {
+            this.softkeyBackPressed = false;
             this.onBackPressed();
         }
         this.runCounter++;
-        if(this.runCounter == 4)
-        {
-            this.runCounter=0;
+        if (this.runCounter == 4) {
+            this.runCounter = 0;
         }
     }
 
-    public void goBackOrForward(int steps)
-    {
+    public void goBackOrForward(int steps) {
         int back = steps;
         webViewFacebook.goBackOrForward(steps);
     }
+
     @Override
     public void onBackPressed() {
         boolean goBackFromSearch = this.inSearch;
         boolean goBackFromBookmarks = this.inBookmarks;
+        this.softkeyBackPressed = false;
         if (mCustomView != null) {
             myWebChromeClient.onHideCustomView();//hide video player
         } else {
             if (webViewFacebook.canGoBack()) {
                 WebBackForwardList wbfl = webViewFacebook.copyBackForwardList();
-                WebHistoryItem currentWebHistoryItem = wbfl.getCurrentItem();
+       /*  here       WebHistoryItem currentWebHistoryItem = wbfl.getCurrentItem();
                 int index = wbfl.getCurrentIndex();
                 int offset = 1;
                 if ((currentWebHistoryItem.getOriginalUrl().equals(fbMobileBaseUrl))){
@@ -1928,7 +1946,8 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
                         //this.historyIndexOffset = 0;
                     }*/
 
-                }
+       /* here         }
+
  /*               else{
                     this.historyIndexOffset = 0;
                 }
@@ -1979,25 +1998,25 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
                         this.historyIndexOffset = 0;
                     }
  */
-                    wbfl = webViewFacebook.copyBackForwardList();
+ /* here                   wbfl = webViewFacebook.copyBackForwardList();
                    /*if (!this.softkeyBackPressed)
                    {
                        currentWebHistoryItem = wbfl.getItemAtIndex(wbfl.getCurrentIndex()-offset);
 
                    }else{*/
-                       if (wbfl.getCurrentIndex()>1) {
+ /* here                      if (wbfl.getCurrentIndex()>1) {
                            offset = 2;
                        }else{
                            offset = 1 ;
                        }
                    /*}*/
-                index=wbfl.getCurrentIndex()-offset;
+ /* here               index=wbfl.getCurrentIndex()-offset;
                    if (index < 0)
                    {
                        index = 0;
                    }
 
-                while (!wbfl.getItemAtIndex(index).getUrl().equals(wbfl.getItemAtIndex(index).getOriginalUrl()))
+                while (wbfl.getItemAtIndex(index)!= null && !wbfl.getItemAtIndex(index).getUrl().equals(wbfl.getItemAtIndex(index).getOriginalUrl()))
                     {
                         if (index < 0){
                          break;
@@ -2008,60 +2027,40 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
                     }
 
                 currentWebHistoryItem = wbfl.getItemAtIndex(index);
-                String url = currentWebHistoryItem.getOriginalUrl();
+   here */
+                /*webViewFacebook.evaluateJavascript("function goBack() {var evt = new MouseEvent('click',{bubbles: true});document.getElementById('MBackNavBar').dispatchEvent(evt);document.getElementById('MBackNavBar').click();}goBack();", new ValueCallback<String>() {
+                    @Override
+                    public void onReceiveValue(String value) {
 
-                if (url.contains(fbMobileNewsfeedUrl)) {
-                        setMenuItemActive(this.menuBar, this.menuBar.findItem(R.id.home));
-                        this.inSearch = false;
-                        this.inBookmarks = false;
-                        this.inOwnMessageDisplay = false;
-                        this.currentView = "home";
-                    } else if (url.contains(fbMobileFriendsUrl)) {
-                        setMenuItemActive(this.menuBar, this.menuBar.findItem(R.id.friends));
-                        this.inSearch = false;
-                        this.inBookmarks = false;
-                        this.inOwnMessageDisplay = false;
-                        this.currentView = "friend_requests";
-                    } else if (url.contains(fbMobileMessageUrl) || url.contains(fbDesktopMessageUrl)) {
-                        setMenuItemActive(this.menuBar, this.menuBar.findItem(R.id.message));
-                        this.inSearch = false;
-                        this.inBookmarks = false;
-                        this.inOwnMessageDisplay = true;
-                        this.currentView = "messages";
-                    } else if (url.contains(fbMobileNotificationsUrl)) {
-                        setMenuItemActive(this.menuBar, this.menuBar.findItem(R.id.notifications));
-                        this.inSearch = false;
-                        this.inBookmarks = false;
-                        this.inOwnMessageDisplay = false;
-                        this.currentView = "notifications";
-                    } else if (url.contains(fbMobileSearchUrl)) {
-                        setMenuItemActive(this.menuBar, this.menuBar.findItem(R.id.search));
-                        this.inSearch = true;
-                        this.inBookmarks = false;
-                        this.inOwnMessageDisplay = false;
-                        this.currentView = "search";
-                    } else if (url.contains(fbMobileBookmarksUrl)) {
-                        setMenuItemActive(this.menuBar, this.menuBar.findItem(R.id.bookmarks));
-                        this.inSearch = false;
-                        this.inBookmarks = true;
-                        this.inOwnMessageDisplay = false;
-                        this.currentView = "bookmarks";
                     }
+                });*/
+                // webViewFacebook.loadUrl(getString(R.string.goBack));
+                if (!this.softkeyBackPressed) {
+                    //webViewFacebook.goBack();
+                    webViewFacebook.loadUrl(getString(R.string.goBack));
+                    webViewFacebook.loadUrl("javascript:goBack();");
 
-                    //wbfl = webViewFacebook.copyBackForwardList();
-                    //backReferenceId = wbfl.getCurrentIndex();
-                    //String original_url = webViewFacebook.getOriginalUrl();
-                    //url = webViewFacebook.getUrl();
-                    //for (int i = this.historyIndexOffset+2;i>0;i--) {
-                    //index = backReferenceId - wbfl.getCurrentIndex();
+                } else {
+                    this.softkeyBackPressed = false;
+                }
+                this.upDateActiveArea();
+
+                //wbfl = webViewFacebook.copyBackForwardList();
+                //backReferenceId = wbfl.getCurrentIndex();
+                //String original_url = webViewFacebook.getOriginalUrl();
+                //url = webViewFacebook.getUrl();
+                //for (int i = this.historyIndexOffset+2;i>0;i--) {
+                //index = backReferenceId - wbfl.getCurrentIndex();
                 //                        webViewFacebook.goBackOrForward(index);
-                    if (!this.softkeyBackPressed)
-                    {
-                        //webViewFacebook.goBack();
-                        webViewFacebook.goBackOrForward(offset * -1);
-                    }else{
-                        this.softkeyBackPressed=false;
-                        //if (goBackFromSearch || goBackFromBookmarks)
+                //}
+
+                if (!this.softkeyBackPressed) {
+                    //webViewFacebook.goBack();
+                    // here webViewFacebook.goBackOrForward(offset * -1);
+
+                } else {
+                    this.softkeyBackPressed = false;
+                    //if (goBackFromSearch || goBackFromBookmarks)
 //                        {
 //                            webViewFacebook.loadUrl(currentWebHistoryItem.getUrl());
 //                            /*webViewFacebook.goBackOrForward(-2);
@@ -2072,53 +2071,100 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
 //                            }*/
 //                            //this.inSearch = false;
 //                        }
+                }
+                //webViewFacebook.goBack();
+                //}
+                //webViewFacebook.loadUrl(url);
+                //wbfl = webViewFacebook.copyBackForwardList();
+                //backReferenceId = wbfl.getCurrentIndex();
+
+                //url = webViewFacebook.getUrl();
+                //original_url = webViewFacebook.getOriginalUrl();
+                String url = webViewFacebook.getOriginalUrl();
+                if (this.inSearch || this.inBookmarks) {
+                    //webViewFacebook.loadUrl(getString(R.string.removeBackButtons));
+                    //webViewFacebook.loadUrl("javascript:window.addEventListener('load',removeBackButtons.bind(null,'" + this.currentView + "'))");
+                    //this.historyIndexOffset = 2;
+
+                } else {
+                    boolean isFacebookNewsFeedUrl = url.contains(fbMobileNewsfeedUrl);
+                    //webViewFacebook.loadUrl(getString(R.string.removeBlueBar));
+
+                    if (isFacebookNewsFeedUrl && savedPreferences.getBoolean("pref_noBar", true)) {
+                        //webViewFacebook.loadUrl("javascript:removeBlueBar('isFacebookNewsFeedUrl');");
+                        //webViewFacebook.loadUrl("javascript:window.addEventListener('load',removeBlueBar.bind(null,'isFacebookNewsFeedUrl'))");
+                        this.webViewFacebook.loadUrl(getString(R.string.removeBlueBarNewsFeed2));
+                        //this.webViewFacebook.loadUrl(getString(R.string.goBack));
+                    } else if (savedPreferences.getBoolean("pref_noBar", true)){
+                        //webViewFacebook.loadUrl("javascript:removeBlueBar('isNotFacebookNewsFeedUrl');");
+                        //webViewFacebook.loadUrl("javascript:window.addEventListener('load',removeBlueBar.bind(null,'isNotFacebookNewsFeedUrl'))");
+                        this.webViewFacebook.loadUrl(getString(R.string.removeBlueBar3));
+                        //this.webViewFacebook.loadUrl(getString(R.string.goBack));
                     }
-                    //webViewFacebook.goBack();
-                    //}
-                    //webViewFacebook.loadUrl(url);
-                    //wbfl = webViewFacebook.copyBackForwardList();
-                    //backReferenceId = wbfl.getCurrentIndex();
-
-                    //url = webViewFacebook.getUrl();
-                    //original_url = webViewFacebook.getOriginalUrl();
-                    if (this.inSearch || this.inBookmarks) {
-                        //webViewFacebook.loadUrl(getString(R.string.removeBackButtons));
-                        //webViewFacebook.loadUrl("javascript:window.addEventListener('load',removeBackButtons.bind(null,'" + this.currentView + "'))");
-                        //this.historyIndexOffset = 2;
-
-                    } else {
-                        boolean isFacebookNewsFeedUrl = url.contains(fbMobileNewsfeedUrl);
-                        //webViewFacebook.loadUrl(getString(R.string.removeBlueBar));
-
-                        if (isFacebookNewsFeedUrl)
-                        {
-                            //webViewFacebook.loadUrl("javascript:removeBlueBar('isFacebookNewsFeedUrl');");
-                            //webViewFacebook.loadUrl("javascript:window.addEventListener('load',removeBlueBar.bind(null,'isFacebookNewsFeedUrl'))");
-                            this.webViewFacebook.loadUrl(getString(R.string.removeBlueBarNewsFeed));
-                        }else{
-                            //webViewFacebook.loadUrl("javascript:removeBlueBar('isNotFacebookNewsFeedUrl');");
-                            //webViewFacebook.loadUrl("javascript:window.addEventListener('load',removeBlueBar.bind(null,'isNotFacebookNewsFeedUrl'))");
-                            this.webViewFacebook.loadUrl(getString(R.string.removeBlueBar2));
-                        }
-                        this.historyIndexOffset = 0;
-                    }/*
+                    this.historyIndexOffset = 0;
+                }/*
 
                 /*}else {
                     finish();
                 }
 */
 
-            }else {
-                    if (!this.softkeyBackPressed)
-                    {
-                        finish();// close app
-                    }
+            } else {
+                if (!this.softkeyBackPressed) {
+                    finish();// close app
                 }
+            }
 
         }
     }
-    public void setMenuItemsActive(String url)
-    {
+
+    private void upDateActiveArea() {
+        WebHistoryItem currentWebHistoryItem = this.webViewFacebook.copyBackForwardList().getCurrentItem();
+        String url = "";
+        if (currentWebHistoryItem != null) {
+            url = currentWebHistoryItem.getOriginalUrl();
+
+            if (url.contains(fbMobileNewsfeedUrl)) {
+                setMenuItemActive(this.menuBar, this.menuBar.findItem(R.id.home));
+                this.inSearch = false;
+                this.inBookmarks = false;
+                this.inOwnMessageDisplay = false;
+                this.currentView = "home";
+            } else if (url.contains(fbMobileFriendsUrl)) {
+                setMenuItemActive(this.menuBar, this.menuBar.findItem(R.id.friends));
+                this.inSearch = false;
+                this.inBookmarks = false;
+                this.inOwnMessageDisplay = false;
+                this.currentView = "friend_requests";
+            } else if (url.contains(fbMobileMessageUrl) || url.contains(fbDesktopMessageUrl)) {
+                setMenuItemActive(this.menuBar, this.menuBar.findItem(R.id.message));
+                this.inSearch = false;
+                this.inBookmarks = false;
+                this.inOwnMessageDisplay = true;
+                this.currentView = "messages";
+            } else if (url.contains(fbMobileNotificationsUrl)) {
+                setMenuItemActive(this.menuBar, this.menuBar.findItem(R.id.notifications));
+                this.inSearch = false;
+                this.inBookmarks = false;
+                this.inOwnMessageDisplay = false;
+                this.currentView = "notifications";
+            } else if (url.contains(fbMobileSearchUrl)) {
+                setMenuItemActive(this.menuBar, this.menuBar.findItem(R.id.search));
+                this.inSearch = true;
+                this.inBookmarks = false;
+                this.inOwnMessageDisplay = false;
+                this.currentView = "search";
+            } else if (url.contains(fbMobileBookmarksUrl)) {
+                setMenuItemActive(this.menuBar, this.menuBar.findItem(R.id.bookmarks));
+                this.inSearch = false;
+                this.inBookmarks = true;
+                this.inOwnMessageDisplay = false;
+                this.currentView = "bookmarks";
+            }
+        }
+    }
+
+    public void setMenuItemsActive(String url) {
         if (url.contains(fbMobileNewsfeedUrl)) {
             setMenuItemActive(this.menuBar, this.menuBar.findItem(R.id.home));
             this.inSearch = false;
@@ -2157,6 +2203,7 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
             this.currentView = "bookmarks";
         }
     }
+
     //*********************** MENU ****************************
     //add my menu
     @Override
@@ -2182,32 +2229,32 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
      }*/
     public void setMenuItemActive(Menu menu, MenuItem item) {
         ColorStateList colorStateList = null;
-        if (item.getIcon() != null && ! collapsableActionItems.contains(item.getItemId()) ) {
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+        if (item.getIcon() != null && !collapsableActionItems.contains(item.getItemId())) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 colorStateList = item.getIconTintList();
             }
 
-        if (colorStateList != null) {
-            colorStateList = colorStateList.withAlpha(alphaNotSelected);
-            setMenuItemColorState(menu, R.id.home, colorStateList);
-            setMenuItemColorState(menu, R.id.friends, colorStateList);
-            setMenuItemColorState(menu, R.id.message, colorStateList);
-            setMenuItemColorState(menu, R.id.notifications, colorStateList);
-            setMenuItemColorState(menu, R.id.search, colorStateList);
-            setMenuItemColorState(menu, R.id.bookmarks, colorStateList);
-            colorStateList = colorStateList.withAlpha(alphaSelected);
-            setMenuItemColorState(menu, item.getItemId(), colorStateList);
-        } else {
-            menu.findItem(R.id.home).getIcon().getCurrent().setAlpha(alphaNotSelected);
-            menu.findItem(R.id.friends).getIcon().getCurrent().setAlpha(alphaNotSelected);
-            menu.findItem(R.id.message).getIcon().getCurrent().setAlpha(alphaNotSelected);
-            menu.findItem(R.id.notifications).getIcon().getCurrent().setAlpha(alphaNotSelected);
-            menu.findItem(R.id.search).getIcon().getCurrent().setAlpha(alphaNotSelected);
-            menu.findItem(R.id.bookmarks).getIcon().getCurrent().setAlpha(alphaNotSelected);
-            item.getIcon().getCurrent().setAlpha(alphaSelected);
+            if (colorStateList != null) {
+                colorStateList = colorStateList.withAlpha(alphaNotSelected);
+                setMenuItemColorState(menu, R.id.home, colorStateList);
+                setMenuItemColorState(menu, R.id.friends, colorStateList);
+                setMenuItemColorState(menu, R.id.message, colorStateList);
+                setMenuItemColorState(menu, R.id.notifications, colorStateList);
+                setMenuItemColorState(menu, R.id.search, colorStateList);
+                setMenuItemColorState(menu, R.id.bookmarks, colorStateList);
+                colorStateList = colorStateList.withAlpha(alphaSelected);
+                setMenuItemColorState(menu, item.getItemId(), colorStateList);
+            } else {
+                menu.findItem(R.id.home).getIcon().getCurrent().setAlpha(alphaNotSelected);
+                menu.findItem(R.id.friends).getIcon().getCurrent().setAlpha(alphaNotSelected);
+                menu.findItem(R.id.message).getIcon().getCurrent().setAlpha(alphaNotSelected);
+                menu.findItem(R.id.notifications).getIcon().getCurrent().setAlpha(alphaNotSelected);
+                menu.findItem(R.id.search).getIcon().getCurrent().setAlpha(alphaNotSelected);
+                menu.findItem(R.id.bookmarks).getIcon().getCurrent().setAlpha(alphaNotSelected);
+                item.getIcon().getCurrent().setAlpha(alphaSelected);
+            }
         }
     }
-}
 
     public void setMenuItemColorState(Menu menu, int menuId, ColorStateList colorStateList) {
         MenuItem menuItem = menu.findItem(menuId);
@@ -2246,17 +2293,17 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
                 break;
             }
             case R.id.shareLink: {//share this page
-                Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+                Intent sharingIntent = new Intent(Intent.ACTION_SEND);
                 sharingIntent.setType("text/plain");
-                sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, MyHandler.cleanUrl(webViewFacebook.getUrl()));
+                sharingIntent.putExtra(Intent.EXTRA_TEXT, MyHandler.cleanUrl(webViewFacebook.getUrl()));
                 startActivity(Intent.createChooser(sharingIntent, getResources().getString(R.string.shareThisLink)));
 
                 break;
             }
             case R.id.share: {//share this app
-                Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+                Intent sharingIntent = new Intent(Intent.ACTION_SEND);
                 sharingIntent.setType("text/plain");
-                sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, getResources().getString(R.string.downloadThisApp));
+                sharingIntent.putExtra(Intent.EXTRA_TEXT, getResources().getString(R.string.downloadThisApp));
                 startActivity(Intent.createChooser(sharingIntent, getResources().getString(R.string.shareThisApp)));
 
                 Toast.makeText(getApplicationContext(), getResources().getString(R.string.thanks),
@@ -2303,6 +2350,7 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
         return true;
         //return super.onOptionsItemSelected(item);
     }
+
     public void setMenuBarNotificationState(WebView wv, Menu menu) {
         wv.evaluateJavascript( //"(function (){var screen = document.getElementById('screen-root');while (typeof screen === 'undefined'){screen = document.getElementById('screen-root');}var buttons = screen.getElementsByClassName('m bg-s3');while (typeof buttons === 'undefined'){buttons = screen.getElementsByClassName('m bg-s3');}console.log('IN SCRIPT:'+buttons);var string = 'feed:';var tmp = buttons[1].getElementsByClassName('f6');if (tmp.length > 0){console.log('Element 1:' + tmp.item(0).textContent);string += tmp.item(0).textContent;}else{tmp = buttons[0].getElementsByClassName('f6');if (tmp.length > 0){console.log('Element 1:' + tmp.item(0).textContent);string += tmp.item(0).textContent;}else {string += '0';}};string += ';requests:';tmp = buttons[3].getElementsByClassName('f6');if (tmp.length > 0){console.log('Element 2:' + tmp.item(0).textContent);string += tmp.item(0).textContent;}else{tmp = buttons[2].getElementsByClassName('f6');if (tmp.length > 0){console.log('Element 2:' + tmp.item(0).textContent);string += tmp.item(0).textContent;}else {string += '0';}}string += ';notifications:';tmp = buttons[9].getElementsByClassName('f6');	if (tmp.length > 0){console.log('Element 3:' + tmp.item(0).textContent);string += tmp.item(0).textContent;}else{tmp = buttons[8].getElementsByClassName('f6');if (tmp.length > 0){console.log('Element 3:' + tmp.item(0).textContent);string += tmp.item(0).textContent;}else {string += '0';}}string += ';';return (string);})();"
                 getString(R.string.getNotificationsStates),
@@ -2314,13 +2362,11 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
 
                             notificationStates.forEach((key, value) -> {
                                 if (html.contains(key)) {
-                                    int count_offset = html.indexOf(key)+key.length()+1;
-                                    try{
-                                        notificationStates.put(key, Integer.parseInt(html.substring(count_offset, html.indexOf(";",count_offset))));
-                                    }
-                                    catch (NumberFormatException numberFormatException)
-                                    {
-                                        notificationStates.put(key,0);
+                                    int count_offset = html.indexOf(key) + key.length() + 1;
+                                    try {
+                                        notificationStates.put(key, Integer.parseInt(html.substring(count_offset, html.indexOf(";", count_offset))));
+                                    } catch (NumberFormatException numberFormatException) {
+                                        notificationStates.put(key, 0);
                                     }
 
                                 }
@@ -2330,17 +2376,15 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
                             for (String key : notificationStates.keySet()) {
 
                                 if (html.contains(key)) {
-                                    int count_offset = html.indexOf(key)+key.length()+1;
-                                    try{
-                                        notificationStates.put(key, Integer.parseInt(html.substring(count_offset, html.indexOf(";",count_offset))));
-                                    }
-                                    catch (NumberFormatException numberFormatException)
-                                    {
-                                        notificationStates.put(key,0);
-                                    }
+                                    int count_offset = html.indexOf(key) + key.length() + 1;
+                                    try {
+                                        notificationStates.put(key, Integer.parseInt(html.substring(count_offset, html.indexOf(";", count_offset))));
+                                    } catch (NumberFormatException numberFormatException) {
+                                        notificationStates.put(key, 0);
                                     }
                                 }
                             }
+                        }
                         if (notificationStates.get("feed") > 0) {
                             MenuItem menuItem = menu.findItem(R.id.home);
                             int alpha = menuItem.getIcon().getCurrent().getAlpha();
@@ -2393,6 +2437,7 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
                 });
 
     }
+
     public void setMenuBarNotificationStateOld(WebView wv, Menu menu) {
         wv.evaluateJavascript(
                 "(function() { return ('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>'); })();",
@@ -2512,7 +2557,7 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
                 backgroundIcon.setAlpha(255);
                 backgroundIcon.draw(canvas);
 
-            }else //test to eliminate crash on API23 devices
+            } else //test to eliminate crash on API23 devices
             {
                 icon = Bitmap.createBitmap(backgroundIcon.getIntrinsicWidth(), backgroundIcon.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
                 //alphaPaint.setAlpha(255);
@@ -2573,6 +2618,7 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
         if (Uri.parse(url).getHost() != null && Uri.parse(url).getHost().endsWith("facebook.com")) {
             url = url.replace("mbasic.facebook.com", "touch.facebook.com");
             url = url.replace("www.facebook.com", "touch.facebook.com");
+            url = url.replace("m.facebook.com", "touch.facebook.com");
         }
         return url;
     }
@@ -2614,85 +2660,117 @@ public class MainActivity extends AppCompatActivity implements MyAdvancedWebView
         //apply the customizations
         webViewFacebook.loadUrl(getString(R.string.editCss).replace("$css", css));
     }
-    public class JavaScriptInterface {
-        private MainActivity activity;
 
-        public JavaScriptInterface(MainActivity activity) {
-            this.activity = activity;
+        public class JavaScriptInterface {
+            private MainActivity activity;
+            private WebView webview;
+
+            public JavaScriptInterface(MainActivity activity) {
+                this.activity = activity;
+            }
+
+            @JavascriptInterface
+            public void historyBackPressed(String jsValue) {
+                this.activity.softkeyBackPressed(jsValue);
+            }
+            @JavascriptInterface
+            public void noBackKey(String jsValue) {
+                this.activity.noBackKey();
+            }
+            @JavascriptInterface
+            public void setPageLocation(String location) {
+                this.activity.pageLocation = location;
+            }
+            @JavascriptInterface
+            public void echoElement(String element) {
+                this.activity.echoElement(element);
+            }
+            @JavascriptInterface
+            public void newNotificationState()
+            {
+                this.activity.webViewFacebook.post(new Runnable() {
+                @Override
+                public void run() {
+                    activity.setMenuBarNotificationState(activity.webViewFacebook, activity.menuBar);
+                }
+            });
+            }
         }
 
-        @JavascriptInterface
-        public void historyBackPressed(String jsValue){
-            this.activity.softkeyBackPressed(jsValue);
-        }
-        @JavascriptInterface
-        public void setPageLocation(String location)
+    private void echoElement(String element) {
+        String el = element;
+    }
+
+    private void noBackKey() {
+        if (this.webViewFacebook.canGoBack())
         {
-            this.activity.pageLocation = location;
+            this.webViewFacebook.goBack();
         }
     }
 // handle long clicks on links, an awesome way to avoid memory leaks
 
-    private static class MyHandler extends Handler {
-    MainActivity activity;
-    //thanks to FaceSlim
-    private final WeakReference<MainActivity> mActivity;
+        private static class MyHandler extends Handler {
+            MainActivity activity;
+            //thanks to FaceSlim
+            private final WeakReference<MainActivity> mActivity;
 
-    public MyHandler(MainActivity activity) {
-        this.activity = activity;
-        mActivity = new WeakReference<>(activity);
-    }
+            public MyHandler(MainActivity activity) {
+                this.activity = activity;
+                mActivity = new WeakReference<>(activity);
+            }
 
-    @Override
-    public void handleMessage(Message msg) {
-        SharedPreferences savedPreferences = PreferenceManager.getDefaultSharedPreferences(activity); // setup the sharedPreferences
-        if (savedPreferences.getBoolean("pref_enableFastShare", true)) {
-            MainActivity activity = mActivity.get();
-            if (activity != null) {
+            @Override
+            public void handleMessage(Message msg) {
+                SharedPreferences savedPreferences = PreferenceManager.getDefaultSharedPreferences(activity); // setup the sharedPreferences
+                if (savedPreferences.getBoolean("pref_enableFastShare", true)) {
+                    MainActivity activity = mActivity.get();
+                    if (activity != null) {
 
-                // get url to share
-                String url = (String) msg.getData().get("url");
+                        // get url to share
+                        String url = (String) msg.getData().get("url");
 
-                if (url != null) {
+                        if (url != null) {
                     /* "clean" an url to remove Facebook tracking redirection while sharing
                     and recreate all the special characters */
-                    url = decodeUrl(cleanUrl(url));
+                            url = decodeUrl(cleanUrl(url));
 
-                    // create share intent for long clicked url
-                    Intent intent = new Intent(Intent.ACTION_SEND);
-                    intent.setType("text/plain");
-                    intent.putExtra(Intent.EXTRA_TEXT, url);
-                    activity.startActivity(Intent.createChooser(intent, activity.getString(R.string.shareThisLink)));
+                            // create share intent for long clicked url
+                            Intent intent = new Intent(Intent.ACTION_SEND);
+                            intent.setType("text/plain");
+                            intent.putExtra(Intent.EXTRA_TEXT, url);
+                            activity.startActivity(Intent.createChooser(intent, activity.getString(R.string.shareThisLink)));
+                        }
+                    }
                 }
             }
+
+            // "clean" an url and remove Facebook tracking redirection
+            private static String cleanUrl(String url) {
+                return url.replace("http://lm.facebook.com/l.php?u=", "")
+                        .replace("https://m.facebook.com/l.php?u=", "")
+                        .replace("http://0.facebook.com/l.php?u=", "")
+                        .replaceAll("&h=.*", "").replaceAll("\\?acontext=.*", "");
+            }
+
+            // url decoder, recreate all the special characters
+            private static String decodeUrl(String url) {
+                return url.replace("%3C", "<").replace("%3E", ">")
+                        .replace("%23", "#").replace("%25", "%")
+                        .replace("%7B", "{").replace("%7D", "}")
+                        .replace("%7C", "|").replace("%5C", "\\")
+                        .replace("%5E", "^").replace("%7E", "~")
+                        .replace("%5B", "[").replace("%5D", "]")
+                        .replace("%60", "`").replace("%3B", ";")
+                        .replace("%2F", "/").replace("%3F", "?")
+                        .replace("%3A", ":").replace("%40", "@")
+                        .replace("%3D", "=").replace("%26", "&")
+                        .replace("%24", "$").replace("%2B", "+")
+                        .replace("%22", "\"").replace("%2C", ",")
+                        .replace("%20", " ");
+            }
         }
+
+
     }
 
-    // "clean" an url and remove Facebook tracking redirection
-    private static String cleanUrl(String url) {
-        return url.replace("http://lm.facebook.com/l.php?u=", "")
-                .replace("https://m.facebook.com/l.php?u=", "")
-                .replace("http://0.facebook.com/l.php?u=", "")
-                .replaceAll("&h=.*", "").replaceAll("\\?acontext=.*", "");
-    }
 
-    // url decoder, recreate all the special characters
-    private static String decodeUrl(String url) {
-        return url.replace("%3C", "<").replace("%3E", ">")
-                .replace("%23", "#").replace("%25", "%")
-                .replace("%7B", "{").replace("%7D", "}")
-                .replace("%7C", "|").replace("%5C", "\\")
-                .replace("%5E", "^").replace("%7E", "~")
-                .replace("%5B", "[").replace("%5D", "]")
-                .replace("%60", "`").replace("%3B", ";")
-                .replace("%2F", "/").replace("%3F", "?")
-                .replace("%3A", ":").replace("%40", "@")
-                .replace("%3D", "=").replace("%26", "&")
-                .replace("%24", "$").replace("%2B", "+")
-                .replace("%22", "\"").replace("%2C", ",")
-                .replace("%20", " ");
-    }
-}
-
-
-}
