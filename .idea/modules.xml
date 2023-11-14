@@ -4,7 +4,6 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/SlimFBViewer.iml" filepath="$PROJECT_DIR$/.idea/SlimFBViewer.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/SlimFBViewer.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/SlimFBViewer.app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/SlimFBViewer.app.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/SlimFBViewer.app.androidTest.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/SlimFBViewer.app.main.iml" filepath="$PROJECT_DIR$/.idea/modules/app/SlimFBViewer.app.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/SlimFBViewer.app.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/SlimFBViewer.app.unitTest.iml" />
     </modules>

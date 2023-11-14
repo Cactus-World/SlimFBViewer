@@ -8,7 +8,7 @@ SlimSocial for Facebook is an Open Source app realized by Leonardo Rignanese
     <string name="launcher_name" translatable="false">Slim FB Viewer</string>
     <string name="actionbar_name" translatable="false">SlimFB</string>
     <string name="urlFacebookMobileBase" translatable="false">https://touch.facebook.com/</string>
-    <string name="urlFacebookMobile" translatable="false">https://touch.facebook.com/home</string>
+    <string name="urlFacebookMobile" translatable="false">https://touch.facebook.com/home.php</string>
     <string name="urlMessages" translatable="false">https://mbasic.facebook.com/messages</string>
     <string name="urlFacebookMobileNotifications" translatable="false">https://touch.facebook.com/notifications</string>
     <string name="urlFacebookMobileMessages" translatable="false">https://touch.facebook.com/messages/</string>
