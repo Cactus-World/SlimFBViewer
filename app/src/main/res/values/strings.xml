@@ -151,7 +151,8 @@ SlimSocial for Facebook is an Open Source app realized by Leonardo Rignanese
     <string name="title_enableAlternativeMessagesDisplay">Alternative message display</string>
     <string name="summary_enableInfoOnAlternativeMessagesDisplay">Enable the info button for profile on alternative display method for facebook messages.</string>
     <string name="title_enableInfoOnAlternativeMessagesDisplay">Info on alternative message display</string>
-    <string name="urlFacebookDesktopMessages">https://www.messenger.com/</string>
+    <string name="urlFacebookDesktopMessagesOld">https://www.messenger.com/</string>
+    <string name="urlFacebookDesktopMessages">https://www.facebook.com/messages/</string>
     <string name="externalPageRequest"><![CDATA[<html><p><h1>External page requested.</h1><p> Redirecting...<p><h2> Press back to return to previous page.</h2></p></html>]]></string>
 
 
